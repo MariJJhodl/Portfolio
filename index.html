@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MariJ — Community Management Portfolio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
@@ -24,7 +26,7 @@
         }
 
         body {
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            font-family: 'Segoe UI', 'Noto Sans', system-ui, -apple-system, sans-serif;
             background: var(--bg);
             color: var(--text);
             line-height: 1.6;
@@ -475,7 +477,7 @@
             <div class="insight-card">
                 <div class="insight-label">Telegram</div>
                 <div class="insight-value">+54%</div>
-                <div class="insight-detail">Growth from ~300 to 468 members (Oct 2025 – Feb 2026)</div>
+                <div class="insight-detail">Growth from ~300 to 468 members (Feb 2025 – Feb 2026)</div>
             </div>
             <div class="insight-card">
                 <div class="insight-label">Discord</div>
@@ -731,7 +733,7 @@
     new Chart(document.getElementById('telegramChart'), {
         type: 'line',
         data: {
-            labels: ['Oct 2025', 'Nov 2025', 'Dec 2025', 'Jan 2026', 'Feb 2026'],
+            labels: ['Feb 2025', 'May 2025', 'Aug 2025', 'Nov 2025', 'Feb 2026'],
             datasets: [{
                 label: 'Telegram Members',
                 data: [300, 340, 390, 448, 468],
