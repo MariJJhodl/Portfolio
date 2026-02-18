@@ -2,7 +2,7 @@
 
 A static portfolio site showcasing the work done by MariJ as Project Coordinator at [Plan ₿ Network](https://planb.network) and outside of the organization.
 
-Live at: **https://marjjhodl.github.io/Portfolio** *(or your GitHub Pages URL)*
+Live at: **https://marijjhodl.github.io/Portfolio/**
 
 ---
 
