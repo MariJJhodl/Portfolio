@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Organization — MariJ</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: #1a1a2e;
+            color: #eaeaea;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        a { color: #f7931a; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+
+        .back-link {
+            display: inline-block;
+            padding: 1.5rem 2rem 0;
+            font-size: 0.95rem;
+        }
+        .back-link::before { content: '\2190 '; }
+
+        header {
+            text-align: center;
+            padding: 2rem 2rem 1rem;
+        }
+        header h1 {
+            font-size: 2.4rem;
+            color: #f7931a;
+            font-weight: 700;
+            margin-bottom: 0.3rem;
+        }
+        header p {
+            font-size: 1.1rem;
+            color: #4a90a4;
+        }
+
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 1.5rem 3rem;
+        }
+
+        /* Top Stats */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.2rem;
+            margin: 2rem 0 2.5rem;
+        }
+        .stat-card {
+            background: #16213e;
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            border: 1px solid rgba(247,147,26,0.15);
+        }
+        .stat-card .value {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #f7931a;
+        }
+        .stat-card .label {
+            font-size: 0.92rem;
+            color: #4a90a4;
+            margin-top: 0.3rem;
+        }
+
+        /* Section titles */
+        .section-title {
+            font-size: 1.5rem;
+            color: #f7931a;
+            margin: 2.5rem 0 1rem;
+            padding-bottom: 0.4rem;
+            border-bottom: 2px solid rgba(247,147,26,0.25);
+        }
+
+        /* Table */
+        .table-wrap {
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid rgba(74,144,164,0.2);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+            min-width: 920px;
+        }
+        thead th {
+            background: #0f1a30;
+            color: #4a90a4;
+            font-weight: 600;
+            text-align: left;
+            padding: 0.8rem 0.7rem;
+            position: sticky;
+            top: 0;
+            white-space: nowrap;
+        }
+        tbody tr { background: #16213e; }
+        tbody tr:nth-child(even) { background: #1a2540; }
+        tbody tr:hover { background: rgba(247,147,26,0.08); }
+        tbody td {
+            padding: 0.65rem 0.7rem;
+            border-top: 1px solid rgba(74,144,164,0.1);
+            white-space: nowrap;
+        }
+        .tier-badge {
+            display: inline-block;
+            padding: 0.15rem 0.6rem;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.82rem;
+            text-align: center;
+            min-width: 28px;
+        }
+        .tier-a { background: rgba(247,147,26,0.2); color: #f7931a; border: 1px solid #f7931a; }
+        .tier-b { background: rgba(74,144,164,0.2); color: #4a90a4; border: 1px solid #4a90a4; }
+        .tier-c { background: rgba(234,234,234,0.08); color: #b8b8c8; border: 1px solid #888; }
+
+        /* Charts */
+        .charts-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-top: 1.2rem;
+        }
+        .chart-card {
+            background: #16213e;
+            border-radius: 12px;
+            padding: 1.2rem;
+            border: 1px solid rgba(74,144,164,0.15);
+        }
+        .chart-card h3 {
+            font-size: 1rem;
+            color: #4a90a4;
+            margin-bottom: 0.8rem;
+            text-align: center;
+        }
+        .chart-card canvas { width: 100% !important; }
+
+        /* Country flags */
+        .flags-section {
+            margin-top: 1.2rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8rem 1.5rem;
+            justify-content: center;
+            font-size: 1.1rem;
+        }
+        .flag-item { white-space: nowrap; }
+
+        /* Feedback */
+        .feedback-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.2rem;
+            margin-top: 1.2rem;
+        }
+        .feedback-card {
+            background: #16213e;
+            border-left: 3px solid #f7931a;
+            border-radius: 0 10px 10px 0;
+            padding: 1.2rem 1.4rem;
+        }
+        .feedback-card .quote {
+            font-style: italic;
+            color: #eaeaea;
+            margin-bottom: 0.5rem;
+            line-height: 1.5;
+        }
+        .feedback-card .quote::before { content: '\201C'; color: #f7931a; font-size: 1.3rem; }
+        .feedback-card .quote::after { content: '\201D'; color: #f7931a; font-size: 1.3rem; }
+        .feedback-card .source {
+            font-size: 0.85rem;
+            color: #4a90a4;
+            text-align: right;
+        }
+
+        footer {
+            text-align: center;
+            padding: 2.5rem 1rem 2rem;
+            color: #666;
+            font-size: 0.88rem;
+            border-top: 1px solid rgba(74,144,164,0.15);
+            margin-top: 2rem;
+        }
+        footer a { color: #4a90a4; }
+
+        @media (max-width: 800px) {
+            header h1 { font-size: 1.6rem; }
+            .charts-row { grid-template-columns: 1fr; }
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 480px) {
+            .stats-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<a href="index.html" class="back-link">Back to Portfolio</a>
+
+<header>
+    <h1>Event Organization</h1>
+    <p>Events coordinated by MariJ</p>
+</header>
+
+<div class="container">
+
+    <!-- ₿-CERT Section Title -->
+    <h2 class="section-title" style="margin-top:2rem;">₿-CERT Test Events</h2>
+    <p style="color:#4a90a4;font-size:1rem;margin-bottom:1.5rem;">Feb 2025 &ndash; Jan 2026 &middot; 20 events &middot; 12 countries</p>
+
+    <!-- Top Stats -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="value">20</div>
+            <div class="label">Events Coordinated</div>
+        </div>
+        <div class="stat-card">
+            <div class="value">12</div>
+            <div class="label">Countries</div>
+        </div>
+        <div class="stat-card">
+            <div class="value">560+</div>
+            <div class="label">Total Participants</div>
+        </div>
+        <div class="stat-card">
+            <div class="value">Every Event</div>
+            <div class="label">Feedback Collected</div>
+        </div>
+    </div>
+
+    <!-- Events Table -->
+    <h2 class="section-title">All Events</h2>
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Event</th>
+                    <th>Location</th>
+                    <th>Country</th>
+                    <th>Tier</th>
+                    <th>Participants</th>
+                    <th>+80% Rate</th>
+                    <th>Mean Score</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>2025-02-18</td>
+                    <td>₿-CERT Test at Polytechnic University of Turin</td>
+                    <td>Turin</td>
+                    <td>Italy</td>
+                    <td><span class="tier-badge tier-c">C</span></td>
+                    <td>47</td>
+                    <td>2.13%</td>
+                    <td>53.19</td>
+                </tr>
+                <tr>
+                    <td>2025-03-13</td>
+                    <td>₿-CERT Test at Malm&ouml; Bitcoin Meetup</td>
+                    <td>Malm&ouml;</td>
+                    <td>Sweden</td>
+                    <td><span class="tier-badge tier-c">C</span></td>
+                    <td>9</td>
+                    <td>33.33%</td>
+                    <td>59.56</td>
+                </tr>
+                <tr>
+                    <td>2025-04-26</td>
+                    <td>₿-CERT Test in English in Lugano</td>
+                    <td>Lugano</td>
+                    <td>Switzerland</td>
+                    <td><span class="tier-badge tier-a">A</span></td>
+                    <td>26</td>
+                    <td>0.00%</td>
+                    <td>50.50</td>
+                </tr>
+                <tr>
+                    <td>2025-04-26</td>
+                    <td>₿-CERT Test in Italian in Lugano</td>
+                    <td>Lugano</td>
+                    <td>Switzerland</td>
+                    <td><span class="tier-badge tier-a">A</span></td>
+                    <td>&mdash;</td>
+                    <td>&mdash;</td>
+                    <td>&mdash;</td>
+                </tr>
+                <tr>
+                    <td>2025-05-24</td>
+                    <td>₿-CERT Test in Surabaya</td>
+                    <td>Surabaya</td>
+                    <td>Indonesia</td>
+                    <td><span class="tier-badge tier-c">C</span></td>
+                    <td>15</td>
+                    <td>0.00%</td>
+                    <td>45.67</td>
+                </tr>
+                <tr>
+                    <td>2025-06-07</td>
+                    <td>₿-CERT Test in Cotonou</td>
+                    <td>Cotonou</td>
+                    <td>Benin</td>
+                    <td><span class="tier-badge tier-c">C</span></td>
+                    <td>25</td>
+                    <td>0.00%</td>
+                    <td>28.56</td>
+                </tr>
+                <tr>
+                    <td>2025-06-18</td>
+                    <td>₿-CERT Test at BTC Prague Dev/Hack Day</td>
+                    <td>Prague</td>
+                    <td>Czech Republic</td>
+                    <td><span class="tier-badge tier-b">B</span></td>
+                    <td>17</td>
+                    <td>17.65%</td>
+                    <td>65.53</td>
+                </tr>
+                <tr>
+                    <td>2025-06-27</td>
+                    <td>₿-CERT Test at Polytechnic University of Turin</td>
+                    <td>Turin</td>
+                    <td>Italy</td>
+                    <td><span class="tier-badge tier-c">C</span></td>
+                    <td>31</td>
+                    <td>0.00%</td>
+                    <td>55.55</td>
+                </tr>
+                <tr>
+                    <td>2025-07-05</td>
+                    <td>₿-CERT Test at Paradigme Bitcoin</td>
+                    <td>Switzerland</td>
+                    <td>Switzerland</td>
+                    <td><span class="tier-badge tier-b">B</span></td>
+                    <td>15</td>
+                    <td>0.00%</td>
+                    <td>58.40</td>
+                </tr>
+                <tr>
+                    <td>2025-07-06</td>
+                    <td>₿-CERT Test in Cotonou</td>
+                    <td>Cotonou</td>
+                    <td>Benin</td>
+                    <td><span class="tier-badge tier-c">C</span></td>
+                    <td>36</td>
+                    <td>0.00%</td>
+                    <td>32.61</td>
+                </tr>
+                <tr>
+                    <td>2025-08-10</td>
+                    <td>₿-CERT Test at Baltic Honeybadger</td>
+                    <td>Riga</td>
+                    <td>Latvia</td>
+                    <td><span class="tier-badge tier-b">B</span></td>
+                    <td>19</td>
+                    <td>5.26%</td>
+                    <td>62.26</td>
+                </tr>
+                <tr>
+                    <td>2025-08-23</td>
+                    <td>₿-CERT Test at Bitshala</td>
+                    <td>India</td>
+                    <td>India</td>
+                    <td><span class="tier-badge tier-c">C</span></td>
+                    <td>9</td>
+                    <td>0.00%</td>
+                    <td>50.22</td>
+                </tr>
+                <tr>
+                    <td>2025-09-07</td>
+                    <td>₿-CERT Test at Taipei University/Community</td>
+                    <td>Taipei</td>
+                    <td>Taiwan</td>
+                    <td><span class="tier-badge tier-c">C</span></td>
+                    <td>15</td>
+                    <td>0.00%</td>
+                    <td>45.00</td>
+                </tr>
+                <tr>
+                    <td>2025-09-19</td>
+                    <td>₿-CERT Test at Taipei University/Community</td>
+                    <td>Taipei</td>
+                    <td>Taiwan</td>
+                    <td><span class="tier-badge tier-c">C</span></td>
+                    <td>98</td>
+                    <td>0.00%</td>
+                    <td>25.00</td>
+                </tr>
+                <tr>
+                    <td>2025-09-27</td>
+                    <td>₿-CERT Test at Lille Community</td>
+                    <td>Lille</td>
+                    <td>France</td>
+                    <td><span class="tier-badge tier-c">C</span></td>
+                    <td>29</td>
+                    <td>6.90%</td>
+                    <td>55.00</td>
+                </tr>
+                <tr>
+                    <td>2025-10-24</td>
+                    <td>₿-CERT Test at Plan ₿ Forum</td>
+                    <td>Switzerland</td>
+                    <td>Switzerland</td>
+                    <td><span class="tier-badge tier-a">A</span></td>
+                    <td>36</td>
+                    <td>0.00%</td>
+                    <td>50.00</td>
+                </tr>
+                <tr>
+                    <td>2025-10-25</td>
+                    <td>₿-CERT Test at Plan ₿ Forum (Day 2)</td>
+                    <td>Switzerland</td>
+                    <td>Switzerland</td>
+                    <td><span class="tier-badge tier-a">A</span></td>
+                    <td>&mdash;</td>
+                    <td>&mdash;</td>
+                    <td>&mdash;</td>
+                </tr>
+                <tr>
+                    <td>2025-11-08</td>
+                    <td>₿-CERT Test at Satsconf</td>
+                    <td>Brazil</td>
+                    <td>Brazil</td>
+                    <td><span class="tier-badge tier-b">B</span></td>
+                    <td>12</td>
+                    <td>0.00%</td>
+                    <td>&mdash;</td>
+                </tr>
+                <tr>
+                    <td>2025-11-20</td>
+                    <td>₿-CERT Test at Jednadvacet Community</td>
+                    <td>Czech Republic</td>
+                    <td>Czech Republic</td>
+                    <td><span class="tier-badge tier-c">C</span></td>
+                    <td>12</td>
+                    <td>0.00%</td>
+                    <td>&mdash;</td>
+                </tr>
+                <tr>
+                    <td>2025-12-12</td>
+                    <td>₿-CERT Test at Cologne Community</td>
+                    <td>Cologne</td>
+                    <td>Germany</td>
+                    <td><span class="tier-badge tier-c">C</span></td>
+                    <td>6</td>
+                    <td>33.33%</td>
+                    <td>58.00</td>
+                </tr>
+                <tr>
+                    <td>2025-12-20</td>
+                    <td>₿-CERT Test at Bitcoinstitution</td>
+                    <td>Indonesia</td>
+                    <td>Indonesia</td>
+                    <td><span class="tier-badge tier-c">C</span></td>
+                    <td>10</td>
+                    <td>0.00%</td>
+                    <td>43.00</td>
+                </tr>
+                <tr>
+                    <td>2026-01-09</td>
+                    <td>₿-CERT Test at National Taipei Univ. of Technology</td>
+                    <td>Taipei</td>
+                    <td>Taiwan</td>
+                    <td><span class="tier-badge tier-c">C</span></td>
+                    <td>94</td>
+                    <td>1.06%</td>
+                    <td>29.40</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Charts: Participants & Mean Scores -->
+    <h2 class="section-title">Charts</h2>
+    <div class="charts-row">
+        <div class="chart-card">
+            <h3>Participants per City</h3>
+            <canvas id="chartParticipants"></canvas>
+        </div>
+        <div class="chart-card">
+            <h3>Mean Score per City</h3>
+            <canvas id="chartScores"></canvas>
+        </div>
+    </div>
+
+    <!-- Geographic Distribution -->
+    <h2 class="section-title">Geographic Distribution</h2>
+    <div class="chart-card" style="margin-top:1.2rem;">
+        <h3>Total Participants by Country</h3>
+        <canvas id="chartGeo"></canvas>
+    </div>
+
+    <!-- Countries Reached -->
+    <h2 class="section-title">Countries Reached</h2>
+    <div class="flags-section">
+        <span class="flag-item">&#127470;&#127481; Italy</span>
+        <span class="flag-item">&#127480;&#127466; Sweden</span>
+        <span class="flag-item">&#127464;&#127469; Switzerland</span>
+        <span class="flag-item">&#127470;&#127465; Indonesia</span>
+        <span class="flag-item">&#127463;&#127471; Benin</span>
+        <span class="flag-item">&#127464;&#127487; Czech Republic</span>
+        <span class="flag-item">&#127470;&#127475; India</span>
+        <span class="flag-item">&#127481;&#127484; Taiwan</span>
+        <span class="flag-item">&#127467;&#127479; France</span>
+        <span class="flag-item">&#127463;&#127479; Brazil</span>
+        <span class="flag-item">&#127465;&#127466; Germany</span>
+        <span class="flag-item">&#127473;&#127483; Latvia</span>
+    </div>
+
+    <!-- Student Feedback -->
+    <h2 class="section-title">Student Feedback</h2>
+    <div class="feedback-grid">
+        <div class="feedback-card">
+            <div class="quote">You have done a good job, well done!</div>
+            <div class="source">&mdash; Turin</div>
+        </div>
+        <div class="feedback-card">
+            <div class="quote">I have found this test is a good and interesting idea</div>
+            <div class="source">&mdash; Turin</div>
+        </div>
+        <div class="feedback-card">
+            <div class="quote">Great initiative. 80% of correct answers is very tough</div>
+            <div class="source">&mdash; Turin</div>
+        </div>
+        <div class="feedback-card">
+            <div class="quote">This looks serious!</div>
+            <div class="source">&mdash; India</div>
+        </div>
+        <div class="feedback-card">
+            <div class="quote">Awesome idea. It's really engaging for non-tech bitcoiners</div>
+            <div class="source">&mdash; India</div>
+        </div>
+        <div class="feedback-card">
+            <div class="quote">Not your everyday test. Enjoyed the many different angles</div>
+            <div class="source">&mdash; India</div>
+        </div>
+        <div class="feedback-card">
+            <div class="quote">Tough Cookie</div>
+            <div class="source">&mdash; BTC Prague</div>
+        </div>
+        <div class="feedback-card">
+            <div class="quote">Hard test!</div>
+            <div class="source">&mdash; Paradigme Bitcoin</div>
+        </div>
+    </div>
+</div>
+
+<!-- Spazio21 Section -->
+<div class="container" style="margin-top:2.5rem;">
+    <h2 class="section-title">Spazio21</h2>
+    <p style="color:#4a90a4;font-size:1rem;margin-bottom:1.5rem;">Event Coordination Assistant &middot; Italian &middot; 800+ participants</p>
+
+    <!-- Spazio21 Stats -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="value">800+</div>
+            <div class="label">Total Participants</div>
+        </div>
+        <div class="stat-card">
+            <div class="value">1</div>
+            <div class="label">Edition Assisted</div>
+        </div>
+        <div class="stat-card">
+            <div class="value">Italian</div>
+            <div class="label">Event Language</div>
+        </div>
+        <div class="stat-card">
+            <div class="value">3</div>
+            <div class="label">Areas of Contribution</div>
+        </div>
+    </div>
+
+    <!-- Description -->
+    <div style="background:#16213e;border-radius:1rem;border:1px solid rgba(247,147,26,0.15);padding:2rem;margin-top:1.5rem;">
+        <p style="color:#ccc;font-size:.95rem;line-height:1.8;margin-bottom:1.5rem;">
+            Spazio21 is a Bitcoin education event held in Italian, dedicated to workshops for all knowledge levels.
+            As event coordination assistant, I contributed across three areas:
+        </p>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin-bottom:1.5rem;">
+            <div style="background:#0f1a30;border-radius:.75rem;padding:1rem 1.2rem;border-left:3px solid #f7931a;">
+                <div style="font-size:.8rem;color:#f7931a;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.4rem;">Logistics</div>
+                <div style="color:#eaeaea;font-size:.9rem;">Helped organise event logistics and on-site coordination</div>
+            </div>
+            <div style="background:#0f1a30;border-radius:.75rem;padding:1rem 1.2rem;border-left:3px solid #f7931a;">
+                <div style="font-size:.8rem;color:#f7931a;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.4rem;">Social Media</div>
+                <div style="color:#eaeaea;font-size:.9rem;">Created promotional content for X (Twitter) to drive attendance</div>
+            </div>
+            <div style="background:#0f1a30;border-radius:.75rem;padding:1rem 1.2rem;border-left:3px solid #f7931a;">
+                <div style="font-size:.8rem;color:#f7931a;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.4rem;">Web Content</div>
+                <div style="color:#eaeaea;font-size:.9rem;">Managed and updated content for the official website</div>
+            </div>
+        </div>
+        <div style="display:flex;gap:.8rem;flex-wrap:wrap;">
+            <a href="https://x.com/Spazio21" target="_blank" rel="noopener" style="display:inline-block;padding:.5rem 1.2rem;border:1px solid #f7931a;border-radius:.5rem;color:#f7931a;font-weight:600;transition:background .2s,color .2s;">
+                @Spazio21 on X &rarr;
+            </a>
+            <a href="https://spazio21.com/" target="_blank" rel="noopener" style="display:inline-block;padding:.5rem 1.2rem;border:1px solid #f7931a;border-radius:.5rem;color:#f7931a;font-weight:600;transition:background .2s,color .2s;">
+                spazio21.com &rarr;
+            </a>
+        </div>
+    </div>
+</div>
+
+<footer>
+    MariJ &mdash; Event Management Portfolio | Contact: <a href="mailto:marjjhodl@proton.me">marjjhodl@proton.me</a>
+</footer>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+    var orange = '#f7931a';
+    var teal = '#4a90a4';
+    var gridColor = 'rgba(234,234,234,0.08)';
+    var tickColor = '#b8b8c8';
+
+    Chart.defaults.color = tickColor;
+    Chart.defaults.borderColor = gridColor;
+
+    // Events with participant data (skip rows with dashes)
+    var eventsWithData = [
+        { label: 'Turin (Feb)', participants: 47, score: 53.19 },
+        { label: 'Malm\u00f6', participants: 9, score: 59.56 },
+        { label: 'Lugano (EN)', participants: 26, score: 50.50 },
+        { label: 'Surabaya', participants: 15, score: 45.67 },
+        { label: 'Cotonou (Jun)', participants: 25, score: 28.56 },
+        { label: 'BTC Prague', participants: 17, score: 65.53 },
+        { label: 'Turin (Jun)', participants: 31, score: 55.55 },
+        { label: 'Paradigme', participants: 15, score: 58.40 },
+        { label: 'Cotonou (Jul)', participants: 36, score: 32.61 },
+        { label: 'Baltic HB', participants: 19, score: 62.26 },
+        { label: 'Bitshala', participants: 9, score: 50.22 },
+        { label: 'Taipei (Sep 7)', participants: 15, score: 45.00 },
+        { label: 'Taipei (Sep 19)', participants: 98, score: 25.00 },
+        { label: 'Lille', participants: 29, score: 55.00 },
+        { label: 'Plan \u20bf Forum', participants: 36, score: 50.00 },
+        { label: 'Satsconf', participants: 12, score: null },
+        { label: 'Jednadvacet', participants: 12, score: null },
+        { label: 'Cologne', participants: 6, score: 58.00 },
+        { label: 'Bitcoinstitution', participants: 10, score: 43.00 },
+        { label: 'Taipei (Jan)', participants: 94, score: 29.40 }
+    ];
+
+    var labels = eventsWithData.map(function(e) { return e.label; });
+    var participants = eventsWithData.map(function(e) { return e.participants; });
+    var scores = eventsWithData.map(function(e) { return e.score; });
+
+    // Participants per City (aggregated, sorted descending)
+    // Note: Baltic HB is mislabeled "Benin" in source data — city is Riga, Latvia.
+    // Lugano groups: Lugano EN + Plan ₿ Forum (both held in Lugano); 2 further Lugano sessions had no recorded data.
+    // Turin: 2 sessions (Feb + Jun); Cotonou: 2 sessions (Jun + Jul); Taipei: 3 sessions.
+    var citiesData = [
+        { label: 'Taipei',           participants: 207, events: 3, country: 'Taiwan' },
+        { label: 'Turin',            participants: 78,  events: 2, country: 'Italy' },
+        { label: 'Lugano',           participants: 62,  events: 2, country: 'Switzerland' },
+        { label: 'Cotonou',          participants: 61,  events: 2, country: 'Benin' },
+        { label: 'Lille',            participants: 29,  events: 1, country: 'France' },
+        { label: 'Riga',             participants: 19,  events: 1, country: 'Latvia' },
+        { label: 'Prague',           participants: 17,  events: 1, country: 'Czech Republic' },
+        { label: 'Surabaya',         participants: 15,  events: 1, country: 'Indonesia' },
+        { label: 'Paradigme',        participants: 15,  events: 1, country: 'Switzerland' },
+        { label: 'Satsconf',         participants: 12,  events: 1, country: 'Brazil' },
+        { label: 'Jednadvacet',      participants: 12,  events: 1, country: 'Czech Republic' },
+        { label: 'Bitcoinstitution', participants: 10,  events: 1, country: 'Indonesia' },
+        { label: 'Malmö',            participants: 9,   events: 1, country: 'Sweden' },
+        { label: 'Bitshala',         participants: 9,   events: 1, country: 'India' },
+        { label: 'Cologne',          participants: 6,   events: 1, country: 'Germany' }
+    ];
+    var cityLabels = citiesData.map(function(c) {
+        return c.events > 1 ? c.label + ' (' + c.events + ' events)' : c.label;
+    });
+    var cityParticipants = citiesData.map(function(c) { return c.participants; });
+
+    new Chart(document.getElementById('chartParticipants'), {
+        type: 'bar',
+        data: {
+            labels: cityLabels,
+            datasets: [{
+                label: 'Participants',
+                data: cityParticipants,
+                backgroundColor: orange,
+                borderRadius: 4
+            }]
+        },
+        options: {
+            indexAxis: 'y',
+            responsive: true,
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    callbacks: {
+                        label: function(ctx) {
+                            var d = citiesData[ctx.dataIndex];
+                            return [
+                                ' ' + d.participants + ' participants',
+                                ' ' + d.events + ' event' + (d.events > 1 ? 's' : '') + ' \u00b7 ' + d.country
+                            ];
+                        }
+                    }
+                }
+            },
+            scales: {
+                x: { grid: { color: gridColor }, ticks: { color: tickColor } },
+                y: { grid: { display: false }, ticks: { color: tickColor, font: { size: 11 } } }
+            }
+        }
+    });
+
+    // Mean Score per City (weighted average for multi-event cities, sorted descending)
+    // Scores from Excel. Multi-event cities: weighted avg = sum(score_i × participants_i) / sum(participants_i)
+    // Turin:    (53.19×47 + 55.55×31) / 78  = 54.13
+    // Lugano:   (50.50×26 + 52.36×36) / 62  = 51.58
+    // Cotonou:  (28.56×25 + 32.61×36) / 61  = 30.95
+    // Taipei:   (41.07×15 + 27.90×98 + 29.45×94) / 207 = 29.56
+    var citiesScoreData = [
+        { label: 'Prague',           score: 65.53, events: 1, country: 'Czech Republic' },
+        { label: 'Riga',             score: 62.26, events: 1, country: 'Latvia' },
+        { label: 'Malmö',            score: 59.56, events: 1, country: 'Sweden' },
+        { label: 'Cologne',          score: 58.83, events: 1, country: 'Germany' },
+        { label: 'Paradigme',        score: 58.40, events: 1, country: 'Switzerland' },
+        { label: 'Lille',            score: 56.24, events: 1, country: 'France' },
+        { label: 'Turin',            score: 54.13, events: 2, country: 'Italy' },
+        { label: 'Jednadvacet',      score: 51.67, events: 1, country: 'Czech Republic' },
+        { label: 'Lugano',           score: 51.58, events: 2, country: 'Switzerland' },
+        { label: 'Bitshala',         score: 50.22, events: 1, country: 'India' },
+        { label: 'Surabaya',         score: 45.67, events: 1, country: 'Indonesia' },
+        { label: 'Bitcoinstitution', score: 43.70, events: 1, country: 'Indonesia' },
+        { label: 'Satsconf',         score: 43.67, events: 1, country: 'Brazil' },
+        { label: 'Cotonou',          score: 30.95, events: 2, country: 'Benin' },
+        { label: 'Taipei',           score: 29.56, events: 3, country: 'Taiwan' }
+    ];
+    var cityScoreLabels = citiesScoreData.map(function(c) {
+        return c.events > 1 ? c.label + ' (' + c.events + ' events)' : c.label;
+    });
+    var cityScoreValues = citiesScoreData.map(function(c) { return c.score; });
+
+    new Chart(document.getElementById('chartScores'), {
+        type: 'bar',
+        data: {
+            labels: cityScoreLabels,
+            datasets: [{
+                label: 'Mean Score',
+                data: cityScoreValues,
+                backgroundColor: teal,
+                borderRadius: 4
+            }]
+        },
+        options: {
+            indexAxis: 'y',
+            responsive: true,
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    callbacks: {
+                        label: function(ctx) {
+                            var d = citiesScoreData[ctx.dataIndex];
+                            return [
+                                ' ' + d.score.toFixed(2) + ' / 100',
+                                ' ' + d.events + ' event' + (d.events > 1 ? 's' : '') + ' \u00b7 ' + d.country
+                            ];
+                        }
+                    }
+                }
+            },
+            scales: {
+                x: { min: 0, max: 100, grid: { color: gridColor }, ticks: { color: tickColor } },
+                y: { grid: { display: false }, ticks: { color: tickColor, font: { size: 11 } } }
+            }
+        }
+    });
+
+    // Geographic distribution chart
+    var geoLabels = ['Taiwan', 'Italy', 'Switzerland', 'Benin', 'France', 'Czech Republic', 'Indonesia', 'Latvia', 'Brazil', 'Sweden', 'India', 'Germany'];
+    var geoData =   [207,      78,      77,            61,      29,       29,               25,          19,       12,       9,        9,       6];
+
+    new Chart(document.getElementById('chartGeo'), {
+        type: 'bar',
+        data: {
+            labels: geoLabels,
+            datasets: [{
+                label: 'Total Participants',
+                data: geoData,
+                backgroundColor: geoLabels.map(function(_, i) { return i % 2 === 0 ? orange : teal; }),
+                borderRadius: 4
+            }]
+        },
+        options: {
+            indexAxis: 'y',
+            responsive: true,
+            plugins: { legend: { display: false } },
+            scales: {
+                x: { grid: { color: gridColor }, ticks: { color: tickColor } },
+                y: { grid: { display: false }, ticks: { color: tickColor, font: { size: 12 } } }
+            }
+        }
+    });
+
+});
+</script>
+
+</body>
+</html>

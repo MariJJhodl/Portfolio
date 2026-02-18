@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contributor Experience Survey — Year One | MariJ</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
+    background:#1a1a2e;
+    color:#eaeaea;
+    line-height:1.6;
+    min-height:100vh;
+  }
+  a{color:#f7931a;text-decoration:none}
+  a:hover{text-decoration:underline}
+  .container{max-width:1200px;margin:0 auto;padding:1.5rem}
+  .back-link{display:inline-block;margin-bottom:1.5rem;font-size:.95rem;opacity:.85;transition:opacity .2s}
+  .back-link:hover{opacity:1}
+
+  header{text-align:center;padding:2.5rem 0 1.5rem}
+  header h1{font-size:clamp(1.5rem,4vw,2.4rem);color:#f7931a;margin-bottom:.4rem}
+  header p.subtitle{font-size:1.05rem;color:#4a90a4;margin-bottom:.15rem}
+
+  /* stat row */
+  .stats-row{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(170px,1fr));
+    gap:1rem;
+    margin:2rem 0;
+  }
+  .stat-card{
+    background:#16213e;
+    border-radius:1rem;
+    padding:1.4rem 1rem;
+    text-align:center;
+    transition:transform .25s,box-shadow .25s;
+  }
+  .stat-card:hover{transform:translateY(-4px);box-shadow:0 8px 24px rgba(247,147,26,.15)}
+  .stat-card .num{font-size:2rem;font-weight:700;color:#f7931a}
+  .stat-card .label{font-size:.85rem;color:#b8b8c8;margin-top:.25rem}
+
+  /* section */
+  .section{margin:2.5rem 0}
+  .section-title{font-size:1.35rem;color:#f7931a;margin-bottom:1rem;border-left:4px solid #4a90a4;padding-left:.75rem}
+
+  /* cards grid */
+  .card{
+    background:#16213e;
+    border-radius:1rem;
+    padding:1.5rem;
+    transition:transform .25s,box-shadow .25s;
+  }
+  .card:hover{transform:translateY(-4px);box-shadow:0 8px 24px rgba(247,147,26,.12)}
+
+  .charts-row{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+    gap:1.5rem;
+  }
+  .chart-wrap{position:relative;width:100%;max-height:340px}
+  .chart-wrap canvas{width:100%!important;height:100%!important}
+
+  .doughnut-container{max-width:420px;margin:0 auto}
+
+  /* quotes */
+  .quote-list{list-style:none;display:flex;flex-direction:column;gap:1rem}
+  .quote-list li{
+    background:#16213e;
+    border-radius:1rem;
+    padding:1.2rem 1.5rem;
+    border-left:4px solid #4a90a4;
+    font-style:italic;
+    transition:transform .25s,box-shadow .25s;
+  }
+  .quote-list li:hover{transform:translateY(-3px);box-shadow:0 6px 20px rgba(74,144,164,.15)}
+  .quote-list li .attr{display:block;margin-top:.5rem;font-style:normal;font-size:.85rem;color:#f7931a}
+
+  /* impact cards */
+  .impact-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+    gap:1rem;
+  }
+  .impact-card{
+    background:#16213e;
+    border-radius:1rem;
+    padding:1.3rem;
+    transition:transform .25s,box-shadow .25s;
+  }
+  .impact-card:hover{transform:translateY(-4px);box-shadow:0 8px 24px rgba(247,147,26,.12)}
+  .impact-card .country{font-weight:700;color:#4a90a4;margin-bottom:.4rem;font-size:1.05rem}
+  .impact-card .quote{font-style:italic;font-size:.93rem;color:#ccc}
+
+  footer{
+    text-align:center;
+    padding:2.5rem 0 1.5rem;
+    margin-top:2rem;
+    border-top:1px solid #2a2a4e;
+    font-size:.85rem;
+    color:#888;
+  }
+
+  @media(max-width:600px){
+    .container{padding:1rem}
+    header h1{font-size:1.4rem}
+    .stats-row{grid-template-columns:repeat(2,1fr)}
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <a href="index.html" class="back-link">&larr; Back to Dashboard</a>
+
+  <header>
+    <h1>Contributor Experience Survey &mdash; Year One</h1>
+    <p class="subtitle">Survey designed and managed by MariJ</p>
+    <p class="subtitle">Sept 2024 &ndash; Apr 2025 &nbsp;|&nbsp; 43 Responses</p>
+  </header>
+
+  <!-- Top Stats -->
+  <div class="stats-row">
+    <div class="stat-card"><div class="num">43</div><div class="label">Respondents</div></div>
+    <div class="stat-card"><div class="num">12+</div><div class="label">Native Languages</div></div>
+    <div class="stat-card"><div class="num">7.1/10</div><div class="label">Avg Translation Quality</div></div>
+    <div class="stat-card"><div class="num">6.2/10</div><div class="label">Avg Technical Terms Quality</div></div>
+    <div class="stat-card"><div class="num">100%</div><div class="label">Would Contribute Again</div></div>
+  </div>
+
+  <!-- Translation Quality -->
+  <div class="section">
+    <h2 class="section-title">Translation Quality Ratings</h2>
+    <div class="charts-row">
+      <div class="card">
+        <h3 style="margin-bottom:.75rem;font-size:1rem;color:#4a90a4">General Translation Quality</h3>
+        <div class="chart-wrap"><canvas id="chartGeneral"></canvas></div>
+      </div>
+      <div class="card">
+        <h3 style="margin-bottom:.75rem;font-size:1rem;color:#4a90a4">Technical Terms Quality</h3>
+        <div class="chart-wrap"><canvas id="chartTechnical"></canvas></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Discovery Channels -->
+  <div class="section">
+    <h2 class="section-title">Discovery Channels</h2>
+    <div class="card">
+      <div class="doughnut-container"><canvas id="chartDiscovery"></canvas></div>
+    </div>
+  </div>
+
+  <!-- Coordinator Feedback -->
+  <div class="section">
+    <h2 class="section-title">Coordinator Feedback</h2>
+    <ul class="quote-list">
+      <li>&ldquo;Good to have Mari follow up and get me started with Github&rdquo;<span class="attr">&mdash; Norwegian contributor</span></li>
+      <li>&ldquo;Very friendly and responsive coordinators, personal approach and no time pressure&rdquo;<span class="attr">&mdash; Polish contributor</span></li>
+      <li>&ldquo;I would like to highlight the courtesy and professionalism of community manager @MariJ&rdquo;<span class="attr">&mdash; Spanish contributor</span></li>
+      <li>&ldquo;Mari is an amazing person, very supportive, dedicated and cooperative&rdquo;<span class="attr">&mdash; Serbian contributor</span></li>
+      <li>&ldquo;I'm impressed with the professionalism and dedication of some team members especially @MariJ. She is always helpful and efficient&rdquo;<span class="attr">&mdash; Vietnamese contributor</span></li>
+    </ul>
+  </div>
+
+  <!-- Cultural Impact -->
+  <div class="section">
+    <h2 class="section-title">Cultural Impact</h2>
+    <div class="impact-grid">
+      <div class="impact-card">
+        <div class="country">Vietnam</div>
+        <div class="quote">&ldquo;There are limits of good Bitcoin content in Vietnamese, so PlanB content would be great&rdquo;</div>
+      </div>
+      <div class="impact-card">
+        <div class="country">Kenya</div>
+        <div class="quote">&ldquo;A Swahili Bitcoin course aligns with Kenya's mobile money culture&rdquo;</div>
+      </div>
+      <div class="impact-card">
+        <div class="country">China</div>
+        <div class="quote">&ldquo;This kind of content can debunk misconceptions about Bitcoin in my community&rdquo;</div>
+      </div>
+      <div class="impact-card">
+        <div class="country">El Salvador</div>
+        <div class="quote">&ldquo;More people are becoming interested in learning about Bitcoin. The platform allows them to learn in Spanish&rdquo;</div>
+      </div>
+    </div>
+  </div>
+
+  <footer>MariJ &mdash; Contributor Survey Year One &nbsp;|&nbsp; Contact: marjjhodl@proton.me</footer>
+</div>
+
+<script>
+const orange='#f7931a',teal='#4a90a4',cardBg='#16213e';
+const barColors=['#e74c3c','#e67e22','#4a90a4','#f7931a'];
+const defaultOpts={
+  responsive:true,
+  maintainAspectRatio:true,
+  plugins:{legend:{display:false}},
+  scales:{
+    x:{ticks:{color:'#b8b8c8'},grid:{color:'rgba(255,255,255,.06)'}},
+    y:{ticks:{color:'#aaa',stepSize:2},grid:{color:'rgba(255,255,255,.06)'},beginAtZero:true}
+  }
+};
+
+new Chart(document.getElementById('chartGeneral'),{
+  type:'bar',
+  data:{
+    labels:['1-3','4-5','6-7','8-9'],
+    datasets:[{data:[2,3,10,12],backgroundColor:barColors,borderRadius:6,maxBarThickness:60}]
+  },
+  options:{...defaultOpts,plugins:{...defaultOpts.plugins,title:{display:true,text:'Number of Responses by Rating Group',color:'#ccc',font:{size:12}}}}
+});
+
+new Chart(document.getElementById('chartTechnical'),{
+  type:'bar',
+  data:{
+    labels:['1-3','4-5','6-7','8-9'],
+    datasets:[{data:[3,5,10,8],backgroundColor:barColors,borderRadius:6,maxBarThickness:60}]
+  },
+  options:{...defaultOpts,plugins:{...defaultOpts.plugins,title:{display:true,text:'Number of Responses by Rating Group',color:'#ccc',font:{size:12}}}}
+});
+
+new Chart(document.getElementById('chartDiscovery'),{
+  type:'doughnut',
+  data:{
+    labels:['Friends/Community Referral','Bitcoin Events','Platform/Website','Social Media (X)','Telegram','Other'],
+    datasets:[{data:[15,8,8,5,4,3],backgroundColor:['#f7931a','#4a90a4','#e74c3c','#2ecc71','#9b59b6','#e67e22'],borderWidth:0,hoverOffset:8}]
+  },
+  options:{
+    responsive:true,
+    maintainAspectRatio:true,
+    plugins:{legend:{position:'bottom',labels:{color:'#ccc',padding:14,font:{size:13}}}}
+  }
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Community Video Calls — MariJ Portfolio</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --primary:#f7931a;--secondary:#4a90a4;--bg:#1a1a2e;--card:#16213e;--text:#eaeaea;
+    --radius:1rem;--shadow:0 4px 24px rgba(0,0,0,.35);
+  }
+  body{
+    font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);
+    line-height:1.6;min-height:100vh;
+  }
+  a{color:var(--primary);text-decoration:none;transition:color .2s}
+  a:hover{color:var(--secondary)}
+
+  /* layout */
+  .container{max-width:1200px;margin:0 auto;padding:0 1.25rem 3rem}
+  .back-link{display:inline-block;margin:1.5rem 0;font-size:.95rem;opacity:.85}
+  .back-link:hover{opacity:1}
+
+  /* header */
+  header{text-align:center;padding:2.5rem 1rem 1rem}
+  header h1{font-size:2.4rem;color:var(--primary);margin-bottom:.35rem}
+  header p{font-size:1.05rem;color:#b8b8c8;max-width:600px;margin:0 auto}
+
+  /* stats row */
+  .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1.25rem;margin:2rem 0}
+  .stat-card{
+    background:var(--card);border-radius:var(--radius);padding:1.5rem;text-align:center;
+    box-shadow:var(--shadow);transition:transform .25s,box-shadow .25s;border:1px solid rgba(255,255,255,.15);
+  }
+  .stat-card:hover{transform:translateY(-4px);box-shadow:0 8px 32px rgba(0,0,0,.45)}
+  .stat-card .num{font-size:2.6rem;font-weight:700;color:var(--primary)}
+  .stat-card .label{font-size:.9rem;color:#b8b8c8;margin-top:.25rem}
+
+  /* section */
+  section{margin:2.5rem 0}
+  section h2{font-size:1.6rem;color:var(--primary);margin-bottom:1rem;padding-bottom:.4rem;border-bottom:2px solid rgba(247,147,26,.2)}
+
+  /* chart wrapper */
+  .chart-box{
+    background:var(--card);border-radius:var(--radius);padding:1.5rem;box-shadow:var(--shadow);
+    border:1px solid rgba(255,255,255,.15);
+  }
+  .chart-box canvas{max-height:380px}
+
+  /* table */
+  .table-wrap{overflow-x:auto;border-radius:var(--radius);box-shadow:var(--shadow);border:1px solid rgba(255,255,255,.15)}
+  table{width:100%;border-collapse:collapse;background:var(--card);font-size:.88rem}
+  thead{background:rgba(247,147,26,.12)}
+  th{padding:.85rem .75rem;text-align:left;color:var(--primary);font-weight:600;white-space:nowrap}
+  td{padding:.75rem;border-top:1px solid rgba(255,255,255,.05);vertical-align:top}
+  tr:hover td{background:rgba(74,144,164,.08)}
+  .upcoming{color:var(--secondary);font-style:italic}
+
+  /* speaker cards */
+  .speakers-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1.25rem}
+  .speaker-card{
+    background:var(--card);border-radius:var(--radius);padding:1.4rem;box-shadow:var(--shadow);
+    border-left:4px solid var(--primary);transition:transform .25s,box-shadow .25s;
+    border:1px solid rgba(255,255,255,.15);border-left:4px solid var(--primary);
+  }
+  .speaker-card:hover{transform:translateY(-4px);box-shadow:0 8px 32px rgba(0,0,0,.45)}
+  .speaker-card h3{color:var(--primary);font-size:1.1rem;margin-bottom:.2rem}
+  .speaker-card .role{font-size:.82rem;color:var(--secondary);margin-bottom:.6rem}
+  .speaker-card .topic{font-size:.9rem;opacity:.85}
+
+  /* highlights */
+  .highlights-list{list-style:none;display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1rem}
+  .highlights-list li{
+    background:var(--card);border-radius:var(--radius);padding:1.2rem 1.4rem;
+    box-shadow:var(--shadow);border:1px solid rgba(255,255,255,.15);
+    position:relative;padding-left:2.4rem;
+  }
+  .highlights-list li::before{
+    content:'';position:absolute;left:1rem;top:1.45rem;width:8px;height:8px;
+    border-radius:50%;background:var(--primary);
+  }
+
+  /* platform metrics */
+  .platform-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1.25rem;margin-bottom:1.5rem}
+  .platform-card{
+    background:var(--card);border-radius:var(--radius);padding:1.4rem;box-shadow:var(--shadow);
+    border:1px solid rgba(255,255,255,.15);transition:transform .25s;
+  }
+  .platform-card:hover{transform:translateY(-4px)}
+  .platform-card h3{font-size:1rem;color:var(--secondary);margin-bottom:.35rem}
+  .platform-card .metric{font-size:2rem;font-weight:700;color:var(--primary)}
+  .platform-card .detail{font-size:.85rem;color:#b8b8c8;margin-top:.25rem}
+
+  /* footer */
+  footer{text-align:center;padding:2.5rem 1rem 1.5rem;font-size:.85rem;opacity:.6;border-top:1px solid rgba(255,255,255,.15);margin-top:2rem}
+
+  /* responsive */
+  @media(max-width:640px){
+    header h1{font-size:1.7rem}
+    .stat-card .num{font-size:2rem}
+    table{font-size:.78rem}
+    th,td{padding:.55rem .5rem}
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <a href="index.html" class="back-link">&larr; Back to Dashboard</a>
+
+  <header>
+    <h1>Community Video Calls</h1>
+    <p>Bi-monthly calls organized and hosted by MariJ (Oct 2025 &ndash; Mar 2026)</p>
+  </header>
+
+  <!-- Top Stats -->
+  <div class="stats">
+    <div class="stat-card"><div class="num">11</div><div class="label">Calls Organized</div></div>
+    <div class="stat-card"><div class="num">18</div><div class="label">Peak Attendance</div></div>
+    <div class="stat-card"><div class="num">7</div><div class="label">External Guest Speakers</div></div>
+    <div class="stat-card"><div class="num">2</div><div class="label">Platform Metrics Tracked</div></div>
+  </div>
+
+  <!-- Attendance Chart -->
+  <section>
+    <h2>Attendance Growth</h2>
+    <div class="chart-box">
+      <canvas id="attendanceChart"></canvas>
+    </div>
+  </section>
+
+  <!-- Calls Detail Table -->
+  <section>
+    <h2>Calls Detail</h2>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Date</th><th>Host</th><th>Speaker</th><th>Topic</th><th>Attendance</th><th>Key Highlights</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Oct 8, 2025</td><td>Mari &amp; Paolo</td><td>Asi0</td>
+            <td>Plan ₿ Network: tool developments for Contributors</td><td>~10</td>
+            <td>Sam and Ahn-la asked many questions</td>
+          </tr>
+          <tr>
+            <td>Oct 22</td><td>Mari &amp; Paolo</td><td>Mari</td>
+            <td>New platform and Image translation</td><td>2</td>
+            <td>Deep conversation with Sam and Bart</td>
+          </tr>
+          <tr>
+            <td>Nov 12</td><td>Paolo</td><td>Paolo</td>
+            <td>How to write tutorials</td><td>2</td>
+            <td>Documentation update session</td>
+          </tr>
+          <tr>
+            <td>Nov 26</td><td>Mari &amp; Paolo</td><td>Maxima (Indonesian proofreader)</td>
+            <td>Mastering Interface: Slide Architecture for Bitcoiners</td><td>~10</td>
+            <td>Very praised, connection issues resolved</td>
+          </tr>
+          <tr>
+            <td>Dec 11</td><td>Mari &amp; Paolo</td><td>Alex Brou (CTO Peach Bitcoin)</td>
+            <td>Peach Bitcoin: no-KYC P2P exchange</td><td>17</td>
+            <td>Many positive reactions, questions from 6 people</td>
+          </tr>
+          <tr>
+            <td>Dec 23</td><td>Mari &amp; Paolo</td><td>Martina Granatiero (Head of Legal, Relai)</td>
+            <td>What&rsquo;s going on with Chat control?</td><td>13</td>
+            <td>Lots of interest, counter-attack discussion</td>
+          </tr>
+          <tr>
+            <td>Jan 15, 2026</td><td>Mari</td><td>Mir Liponi (Plan ₿ Network Hub Manager)</td>
+            <td>How to raise your kids in the Bitcoin standard</td><td>18</td>
+            <td>Questions on books, safeguard protocols, homeschooling</td>
+          </tr>
+          <tr>
+            <td>Feb 6</td><td>Mari</td><td>Rogzy (Plan ₿ Network co-founder)</td>
+            <td>Plan B new website pages and future developments</td><td>17</td>
+            <td>Questions on how to add resources</td>
+          </tr>
+          <tr>
+            <td>Feb 26</td><td>Mari</td><td>Marco (Specter Association)</td>
+            <td>Privacy and creating your own hardware wallet</td><td class="upcoming">Upcoming</td>
+            <td class="upcoming">&mdash;</td>
+          </tr>
+          <tr>
+            <td>Mar 11</td><td>Mari</td><td>Paco de la India</td>
+            <td>My two-year journey using only Bitcoin to live</td><td class="upcoming">Upcoming</td>
+            <td class="upcoming">&mdash;</td>
+          </tr>
+          <tr>
+            <td>Mar 25</td><td>Mari</td><td>Damien (Philosophy teacher)</td>
+            <td>Bitcoin Political leaning</td><td class="upcoming">Upcoming</td>
+            <td class="upcoming">&mdash;</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Guest Speakers -->
+  <section>
+    <h2>Guest Speakers Showcase</h2>
+    <div class="speakers-grid">
+      <div class="speaker-card">
+        <h3>Maxima</h3>
+        <div class="role">Indonesian Proofreader &amp; Community Contributor</div>
+        <div class="topic">Mastering Interface: Slide Architecture for Bitcoiners</div>
+      </div>
+      <div class="speaker-card">
+        <h3>Alex Brou</h3>
+        <div class="role">CTO, Peach Bitcoin</div>
+        <div class="topic">Peach Bitcoin: no-KYC P2P exchange</div>
+      </div>
+      <div class="speaker-card">
+        <h3>Martina Granatiero</h3>
+        <div class="role">Head of Legal, Relai</div>
+        <div class="topic">What&rsquo;s going on with Chat control?</div>
+      </div>
+      <div class="speaker-card">
+        <h3>Mir Liponi</h3>
+        <div class="role">Plan ₿ Network Hub Manager</div>
+        <div class="topic">How to raise your kids in the Bitcoin standard</div>
+      </div>
+      <div class="speaker-card">
+        <h3>Rogzy</h3>
+        <div class="role">Plan ₿ Network co-founder</div>
+        <div class="topic">Plan B new website pages and future developments</div>
+      </div>
+      <div class="speaker-card">
+        <h3>Marco</h3>
+        <div class="role">Specter Association</div>
+        <div class="topic">Privacy and creating your own hardware wallet</div>
+      </div>
+      <div class="speaker-card">
+        <h3>Paco de la India</h3>
+        <div class="role">Bitcoin Traveller &amp; Advocate</div>
+        <div class="topic">My two-year journey using only Bitcoin to live</div>
+      </div>
+      <div class="speaker-card">
+        <h3>Damien</h3>
+        <div class="role">Philosophy Teacher</div>
+        <div class="topic">Bitcoin Political leaning</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Platform Growth -->
+  <section>
+    <h2>Platform Growth Tracking</h2>
+    <div class="platform-cards">
+      <div class="platform-card">
+        <h3>Telegram</h3>
+        <div class="metric">468</div>
+        <div class="detail">members (from ~300) &mdash; +56% growth</div>
+      </div>
+      <div class="platform-card">
+        <h3>Discord</h3>
+        <div class="metric">413</div>
+        <div class="detail">community members</div>
+      </div>
+    </div>
+    <div class="chart-box">
+      <canvas id="platformChart"></canvas>
+    </div>
+  </section>
+
+  <!-- Engagement Highlights -->
+  <section>
+    <h2>Engagement Highlights</h2>
+    <ul class="highlights-list">
+      <li>Secured industry-level speakers (CTO of Peach Bitcoin, Head of Legal at Relai)</li>
+      <li>Contributors from the community also presented (Maxima, Indonesian proofreader)</li>
+      <li>Topics ranged from technical (privacy, P2P exchanges) to lifestyle (Bitcoin parenting) to legal (chat control)</li>
+      <li>International attendance from multiple time zones</li>
+    </ul>
+  </section>
+
+</div>
+
+<footer>MariJ &mdash; Community Calls Portfolio | Contact: marjjhodl@proton.me</footer>
+
+<script>
+/* ── Attendance Chart ── */
+(function(){
+  const ctx = document.getElementById('attendanceChart').getContext('2d');
+  const labels = ['Oct 8','Oct 22','Nov 12','Nov 26','Dec 11','Dec 23','Jan 15','Feb 6','Feb 26','Mar 11','Mar 25'];
+  const data   = [10, 2, 2, 10, 17, 13, 18, 17, null, null, null];
+  const colors = labels.map((_,i)=> i < 8 ? '#f7931a' : 'rgba(74,144,164,0.45)');
+  const borders= labels.map((_,i)=> i < 8 ? '#f7931a' : '#4a90a4');
+
+  new Chart(ctx,{
+    type:'bar',
+    data:{
+      labels,
+      datasets:[
+        {
+          label:'Attendance',
+          data: data.map((v,i)=> i<8?v:null),
+          backgroundColor: colors.slice(0,8),
+          borderColor: borders.slice(0,8),
+          borderWidth:1,
+          borderRadius:6
+        },
+        {
+          label:'Scheduled',
+          data: labels.map((_,i)=> i>=8 ? 0 : null),
+          backgroundColor:'rgba(74,144,164,0.25)',
+          borderColor:'#4a90a4',
+          borderWidth:2,
+          borderDash:[6,4],
+          borderRadius:6
+        }
+      ]
+    },
+    options:{
+      responsive:true,
+      plugins:{
+        legend:{labels:{color:'#eaeaea'}},
+        tooltip:{
+          callbacks:{
+            label:function(c){
+              if(c.datasetIndex===1) return 'Scheduled';
+              return 'Attendance: '+c.raw;
+            }
+          }
+        },
+        annotation:{}
+      },
+      scales:{
+        x:{ticks:{color:'#eaeaea'},grid:{color:'rgba(255,255,255,.15)'}},
+        y:{beginAtZero:true,ticks:{color:'#eaeaea'},grid:{color:'rgba(255,255,255,.15)'}}
+      }
+    },
+    plugins:[{
+      /* draw dashed placeholder bars for scheduled calls */
+      afterDraw:function(chart){
+        const meta = chart.getDatasetMeta(1);
+        const ctxC = chart.ctx;
+        meta.data.forEach(function(bar,i){
+          if(i<8) return; /* scheduled calls start at index 8 */
+          const x = bar.x;
+          const width = bar.width || 40;
+          const yBottom = chart.scales.y.getPixelForValue(0);
+          const yTop = chart.scales.y.getPixelForValue(15);
+          ctxC.save();
+          ctxC.setLineDash([6,4]);
+          ctxC.strokeStyle='#4a90a4';
+          ctxC.lineWidth=2;
+          ctxC.fillStyle='rgba(74,144,164,0.12)';
+          ctxC.beginPath();
+          const r=6, left=x-width/2, right=x+width/2;
+          ctxC.moveTo(left+r,yTop);
+          ctxC.lineTo(right-r,yTop);
+          ctxC.quadraticCurveTo(right,yTop,right,yTop+r);
+          ctxC.lineTo(right,yBottom);
+          ctxC.lineTo(left,yBottom);
+          ctxC.lineTo(left,yTop+r);
+          ctxC.quadraticCurveTo(left,yTop,left+r,yTop);
+          ctxC.closePath();
+          ctxC.fill();
+          ctxC.stroke();
+          ctxC.setLineDash([]);
+          /* label */
+          ctxC.fillStyle='#4a90a4';
+          ctxC.font='11px Segoe UI, system-ui, sans-serif';
+          ctxC.textAlign='center';
+          ctxC.fillText('TBD',x,yTop-6);
+          ctxC.restore();
+        });
+      }
+    }]
+  });
+})();
+
+/* ── Platform Growth Chart ── */
+(function(){
+  const ctx = document.getElementById('platformChart').getContext('2d');
+  const months = ['Oct 2025','Nov 2025','Dec 2025','Jan 2026','Feb 2026'];
+
+  new Chart(ctx,{
+    type:'bar',
+    data:{
+      labels: months,
+      datasets:[
+        {
+          label:'Telegram Members',
+          data:[310,340,385,430,468],
+          backgroundColor:'rgba(247,147,26,0.7)',
+          borderColor:'#f7931a',
+          borderWidth:1,
+          borderRadius:4
+        },
+        {
+          label:'Discord Members',
+          data:[45,120,210,320,413],
+          backgroundColor:'rgba(74,144,164,0.7)',
+          borderColor:'#4a90a4',
+          borderWidth:1,
+          borderRadius:4
+        }
+      ]
+    },
+    options:{
+      responsive:true,
+      plugins:{
+        legend:{labels:{color:'#eaeaea'}},
+        title:{display:true,text:'Telegram & Discord Growth (Oct 2025 \u2013 Feb 2026)',color:'#eaeaea',font:{size:14}}
+      },
+      scales:{
+        x:{ticks:{color:'#eaeaea'},grid:{color:'rgba(255,255,255,.15)'}},
+        y:{beginAtZero:true,ticks:{color:'#eaeaea'},grid:{color:'rgba(255,255,255,.15)'}}
+      }
+    }
+  });
+})();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contributor Experience Survey — Year Two | MariJ</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
+    background:#1a1a2e;
+    color:#eaeaea;
+    line-height:1.6;
+    min-height:100vh;
+  }
+  a{color:#f7931a;text-decoration:none}
+  a:hover{text-decoration:underline}
+  .container{max-width:1200px;margin:0 auto;padding:1.5rem}
+  .back-link{display:inline-block;margin-bottom:1.5rem;font-size:.95rem;opacity:.85;transition:opacity .2s}
+  .back-link:hover{opacity:1}
+
+  header{text-align:center;padding:2.5rem 0 1.5rem}
+  header h1{font-size:clamp(1.5rem,4vw,2.4rem);color:#f7931a;margin-bottom:.4rem}
+  header p.subtitle{font-size:1.05rem;color:#4a90a4;margin-bottom:.15rem}
+
+  .stats-row{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(170px,1fr));
+    gap:1rem;
+    margin:2rem 0;
+  }
+  .stat-card{
+    background:#16213e;
+    border-radius:1rem;
+    padding:1.4rem 1rem;
+    text-align:center;
+    transition:transform .25s,box-shadow .25s;
+  }
+  .stat-card:hover{transform:translateY(-4px);box-shadow:0 8px 24px rgba(247,147,26,.15)}
+  .stat-card .num{font-size:2rem;font-weight:700;color:#f7931a}
+  .stat-card .label{font-size:.85rem;color:#b8b8c8;margin-top:.25rem}
+
+  .section{margin:2.5rem 0}
+  .section-title{font-size:1.35rem;color:#f7931a;margin-bottom:1rem;border-left:4px solid #4a90a4;padding-left:.75rem}
+
+  .card{
+    background:#16213e;
+    border-radius:1rem;
+    padding:1.5rem;
+    transition:transform .25s,box-shadow .25s;
+  }
+  .card:hover{transform:translateY(-4px);box-shadow:0 8px 24px rgba(247,147,26,.12)}
+
+  .charts-row{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+    gap:1.5rem;
+  }
+  .chart-wrap{position:relative;width:100%;height:320px}
+  .chart-wrap.tall{height:480px}
+  .chart-wrap.short{height:240px}
+
+  .doughnut-container{max-width:420px;margin:0 auto;position:relative;height:320px}
+  .pie-container{max-width:400px;margin:0 auto;position:relative;height:320px}
+
+  /* quotes */
+  .quote-list{list-style:none;display:flex;flex-direction:column;gap:1rem}
+  .quote-list li{
+    background:#16213e;
+    border-radius:1rem;
+    padding:1.2rem 1.5rem;
+    border-left:4px solid #4a90a4;
+    font-style:italic;
+    transition:transform .25s,box-shadow .25s;
+  }
+  .quote-list li:hover{transform:translateY(-3px);box-shadow:0 6px 20px rgba(74,144,164,.15)}
+  .quote-list li .attr{display:block;margin-top:.5rem;font-style:normal;font-size:.85rem;color:#f7931a}
+
+  /* star rating */
+  .star-row{text-align:center;margin-bottom:1.5rem}
+  .star-row .stars{font-size:2rem;color:#f7931a;letter-spacing:.25rem}
+  .star-row .rating-text{font-size:.9rem;color:#b8b8c8;margin-top:.25rem}
+
+  /* challenges */
+  .challenge-list{list-style:none;display:flex;flex-direction:column;gap:.75rem}
+  .challenge-item{
+    background:#16213e;
+    border-radius:1rem;
+    padding:1rem 1.3rem;
+    display:flex;
+    align-items:center;
+    gap:1rem;
+    transition:transform .25s,box-shadow .25s;
+  }
+  .challenge-item:hover{transform:translateY(-3px);box-shadow:0 6px 20px rgba(74,144,164,.1)}
+  .challenge-item .pct{
+    font-size:1.3rem;font-weight:700;color:#f7931a;min-width:52px;text-align:right;
+  }
+  .challenge-item .bar-bg{
+    flex:1;height:10px;background:rgba(255,255,255,.08);border-radius:5px;overflow:hidden;
+  }
+  .challenge-item .bar-fill{height:100%;border-radius:5px;background:linear-gradient(90deg,#4a90a4,#f7931a);transition:width .6s ease}
+  .challenge-item .ch-label{min-width:180px;font-size:.92rem}
+
+  /* suggestions */
+  .suggestions-group{margin-bottom:1.5rem}
+  .suggestions-group h3{margin-bottom:.75rem;font-size:1.05rem}
+  .badge{
+    display:inline-block;
+    padding:.15rem .6rem;
+    border-radius:.5rem;
+    font-size:.75rem;
+    font-weight:700;
+    text-transform:uppercase;
+    margin-right:.5rem;
+    vertical-align:middle;
+  }
+  .badge-high{background:#e74c3c;color:#fff}
+  .badge-medium{background:#e67e22;color:#fff}
+  .badge-low{background:#2ecc71;color:#fff}
+  .suggestion-list{list-style:none;display:flex;flex-direction:column;gap:.6rem}
+  .suggestion-list li{
+    background:#16213e;
+    border-radius:1rem;
+    padding:.9rem 1.2rem;
+    font-size:.93rem;
+    transition:transform .25s,box-shadow .25s;
+  }
+  .suggestion-list li:hover{transform:translateY(-3px);box-shadow:0 6px 20px rgba(74,144,164,.1)}
+
+  footer{
+    text-align:center;
+    padding:2.5rem 0 1.5rem;
+    margin-top:2rem;
+    border-top:1px solid #2a2a4e;
+    font-size:.85rem;
+    color:#888;
+  }
+
+  @media(max-width:600px){
+    .container{padding:1rem}
+    header h1{font-size:1.4rem}
+    .stats-row{grid-template-columns:repeat(2,1fr)}
+    .challenge-item{flex-wrap:wrap}
+    .challenge-item .ch-label{min-width:100%;order:-1}
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <a href="index.html" class="back-link">&larr; Back to Dashboard</a>
+
+  <header>
+    <h1>Contributor Experience Survey &mdash; Year Two</h1>
+    <p class="subtitle">Survey designed and managed by MariJ</p>
+    <p class="subtitle">Nov &ndash; Dec 2025 &nbsp;|&nbsp; 28 Responses</p>
+  </header>
+
+  <!-- Top Stats -->
+  <div class="stats-row">
+    <div class="stat-card"><div class="num">28</div><div class="label">Respondents</div></div>
+    <div class="stat-card"><div class="num">16</div><div class="label">Native Languages</div></div>
+    <div class="stat-card"><div class="num">2.1/5</div><div class="label">Avg Ease of Learning (1=easiest)</div></div>
+    <div class="stat-card"><div class="num">100%</div><div class="label">Positive Coordinator Feedback</div></div>
+    <div class="stat-card"><div class="num">72%</div><div class="label">Video Call Interest</div></div>
+  </div>
+
+  <!-- Language Distribution -->
+  <div class="section">
+    <h2 class="section-title">Language Distribution</h2>
+    <div class="card">
+      <div class="chart-wrap tall"><canvas id="chartLangs"></canvas></div>
+    </div>
+  </div>
+
+  <!-- Ease of Learning -->
+  <div class="section">
+    <h2 class="section-title">Ease of Learning the Contribution Process</h2>
+    <div class="charts-row">
+      <div class="card">
+        <div class="chart-wrap"><canvas id="chartEase"></canvas></div>
+      </div>
+      <!-- Discovery Channels -->
+      <div class="card">
+        <h3 style="margin-bottom:.75rem;font-size:1rem;color:#4a90a4;text-align:center">Discovery Channels</h3>
+        <div class="doughnut-container"><canvas id="chartDiscovery"></canvas></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Contribution Types -->
+  <div class="section">
+    <h2 class="section-title">Contribution Types</h2>
+    <div class="card">
+      <div class="chart-wrap short"><canvas id="chartContrib"></canvas></div>
+    </div>
+  </div>
+
+  <!-- Video Call Interest -->
+  <div class="section">
+    <h2 class="section-title">Video Call Interest</h2>
+    <div class="card">
+      <div class="pie-container"><canvas id="chartVideo"></canvas></div>
+    </div>
+  </div>
+
+  <!-- Coordinator Feedback -->
+  <div class="section">
+    <h2 class="section-title">Coordinator Feedback</h2>
+    <div class="star-row">
+      <div class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+      <div class="rating-text">5 / 5 &mdash; Average coordinator rating across all respondents</div>
+    </div>
+    <ul class="quote-list">
+      <li>&ldquo;MariJ is very supportive, kind and dedicated. She always responds promptly with enthusiasm&mdash;she's always there for us.&rdquo;<span class="attr">&mdash; Kirundi contributor</span></li>
+      <li>&ldquo;She always teach me, guide me, and correcting me if I'm wrong. I must say thanks to her.&rdquo;<span class="attr">&mdash; Indonesian contributor</span></li>
+      <li>&ldquo;Always available, kind and professional, responds super fast, solves all the problems, dedicated to what she does&rdquo;<span class="attr">&mdash; Polish contributor</span></li>
+      <li>&ldquo;I'd like to thank MariJ for her advice and patience.&rdquo;<span class="attr">&mdash; French (Guadeloupe) contributor</span></li>
+      <li>&ldquo;With MariJ's guidance, I can do anything at GitHub&rdquo;<span class="attr">&mdash; Indonesian contributor</span></li>
+      <li>&ldquo;MariJ is super nice and always helpful!&rdquo;<span class="attr">&mdash; Chinese contributor</span></li>
+      <li>&ldquo;MariJ is great, so lovable with a lot of good energy&rdquo;<span class="attr">&mdash; Italian contributor</span></li>
+      <li>&ldquo;Only interacted with MariJ. Very nice person. Helpful.&rdquo;<span class="attr">&mdash; German contributor</span></li>
+      <li>&ldquo;Love them both &#10084;&#65039;&rdquo;<span class="attr">&mdash; Persian contributor</span></li>
+    </ul>
+  </div>
+
+  <!-- Challenges -->
+  <div class="section">
+    <h2 class="section-title">Challenges Reported</h2>
+    <ul class="challenge-list">
+      <li class="challenge-item">
+        <span class="ch-label">GitHub Learning Curve</span>
+        <span class="bar-bg"><span class="bar-fill" style="width:46%"></span></span>
+        <span class="pct">46%</span>
+      </li>
+      <li class="challenge-item">
+        <span class="ch-label">Branch Synchronization</span>
+        <span class="bar-bg"><span class="bar-fill" style="width:18%"></span></span>
+        <span class="pct">18%</span>
+      </li>
+      <li class="challenge-item">
+        <span class="ch-label">Markdown Editing</span>
+        <span class="bar-bg"><span class="bar-fill" style="width:11%"></span></span>
+        <span class="pct">11%</span>
+      </li>
+      <li class="challenge-item">
+        <span class="ch-label">Translation Policy Clarity</span>
+        <span class="bar-bg"><span class="bar-fill" style="width:11%"></span></span>
+        <span class="pct">11%</span>
+      </li>
+      <li class="challenge-item">
+        <span class="ch-label">Internet / Infrastructure</span>
+        <span class="bar-bg"><span class="bar-fill" style="width:7%"></span></span>
+        <span class="pct">7%</span>
+      </li>
+      <li class="challenge-item">
+        <span class="ch-label">Storage Constraints</span>
+        <span class="bar-bg"><span class="bar-fill" style="width:4%"></span></span>
+        <span class="pct">4%</span>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Suggestions -->
+  <div class="section">
+    <h2 class="section-title">Suggestions &amp; Recommendations</h2>
+
+    <div class="suggestions-group">
+      <h3><span class="badge badge-high">High</span> Priority</h3>
+      <ul class="suggestion-list">
+        <li><span class="badge badge-high">High</span> Quick onboarding checklist</li>
+        <li><span class="badge badge-high">High</span> Record video calls</li>
+        <li><span class="badge badge-high">High</span> Clear translation policies upfront</li>
+        <li><span class="badge badge-high">High</span> Expand marketing / visibility</li>
+      </ul>
+    </div>
+
+    <div class="suggestions-group">
+      <h3><span class="badge badge-medium">Medium</span> Priority</h3>
+      <ul class="suggestion-list">
+        <li><span class="badge badge-medium">Medium</span> Newsletter / digest</li>
+        <li><span class="badge badge-medium">Medium</span> Network with listed communities</li>
+        <li><span class="badge badge-medium">Medium</span> Step-by-step video tutorials</li>
+        <li><span class="badge badge-medium">Medium</span> Improve quiz proofreading workflow</li>
+        <li><span class="badge badge-medium">Medium</span> Clear process timeline docs</li>
+      </ul>
+    </div>
+  </div>
+
+  <footer>MariJ &mdash; Contributor Survey Year Two &nbsp;|&nbsp; Contact: marjjhodl@proton.me</footer>
+</div>
+
+<script>
+const orange='#f7931a',teal='#4a90a4';
+
+/* Language Distribution - horizontal bar */
+new Chart(document.getElementById('chartLangs'),{
+  type:'bar',
+  data:{
+    labels:['Kirundi','Persian','French','Italian','Spanish','Indonesian','German','Vietnamese','Korean','Dutch','Polish','Chinese','Marathi','Serbian','Swahili','Swedish'],
+    datasets:[{
+      data:[5,4,3,3,2,2,1,1,1,1,1,1,1,1,1,1],
+      backgroundColor:orange,
+      borderRadius:6,
+      maxBarThickness:28
+    }]
+  },
+  options:{
+    indexAxis:'y',
+    responsive:true,
+    maintainAspectRatio:false,
+    plugins:{legend:{display:false}},
+    scales:{
+      x:{ticks:{color:'#b8b8c8',stepSize:1},grid:{color:'rgba(255,255,255,.06)'},beginAtZero:true},
+      y:{ticks:{color:'#b8b8c8',font:{size:13}},grid:{display:false}}
+    }
+  }
+});
+
+/* Ease of Learning */
+new Chart(document.getElementById('chartEase'),{
+  type:'bar',
+  data:{
+    labels:['1 - Very Easy','2 - Easy','3 - Moderate','4 - Difficult','5 - Very Difficult'],
+    datasets:[{
+      data:[4,17,6,1,0],
+      backgroundColor:['#2ecc71','#4a90a4','#f7931a','#e67e22','#e74c3c'],
+      borderRadius:6,
+      maxBarThickness:55
+    }]
+  },
+  options:{
+    responsive:true,
+    maintainAspectRatio:false,
+    plugins:{legend:{display:false}},
+    scales:{
+      x:{ticks:{color:'#b8b8c8',font:{size:11}},grid:{color:'rgba(255,255,255,.06)'}},
+      y:{ticks:{color:'#b8b8c8',stepSize:4},grid:{color:'rgba(255,255,255,.06)'},beginAtZero:true}
+    }
+  }
+});
+
+/* Discovery Channels */
+new Chart(document.getElementById('chartDiscovery'),{
+  type:'doughnut',
+  data:{
+    labels:['Friends/Community','Bitcoin Events','Platform/Website','Social Media (X)','Telegram','Web Search'],
+    datasets:[{
+      data:[11,6,5,3,2,1],
+      backgroundColor:['#f7931a','#4a90a4','#e74c3c','#2ecc71','#9b59b6','#e67e22'],
+      borderWidth:0,
+      hoverOffset:8
+    }]
+  },
+  options:{
+    responsive:true,
+    maintainAspectRatio:false,
+    plugins:{legend:{position:'bottom',labels:{color:'#b8b8c8',padding:12,font:{size:12}}}}
+  }
+});
+
+/* Contribution Types */
+new Chart(document.getElementById('chartContrib'),{
+  type:'bar',
+  data:{
+    labels:['Proofreading','Writing Tutorials','Adding Resources','Website Translation'],
+    datasets:[{
+      data:[28,5,2,1],
+      backgroundColor:[orange,teal,'#2ecc71','#9b59b6'],
+      borderRadius:6,
+      maxBarThickness:40
+    }]
+  },
+  options:{
+    indexAxis:'y',
+    responsive:true,
+    maintainAspectRatio:false,
+    plugins:{legend:{display:false}},
+    scales:{
+      x:{ticks:{color:'#b8b8c8',stepSize:5},grid:{color:'rgba(255,255,255,.06)'},beginAtZero:true},
+      y:{ticks:{color:'#b8b8c8',font:{size:13}},grid:{display:false}}
+    }
+  }
+});
+
+/* Video Call Interest */
+new Chart(document.getElementById('chartVideo'),{
+  type:'pie',
+  data:{
+    labels:['Definitely Interested','Schedule Dependent','Would Watch Recordings','Probably Not','No Response'],
+    datasets:[{
+      data:[15,5,3,3,2],
+      backgroundColor:['#f7931a','#4a90a4','#2ecc71','#e67e22','#555'],
+      borderWidth:0,
+      hoverOffset:8
+    }]
+  },
+  options:{
+    responsive:true,
+    maintainAspectRatio:false,
+    plugins:{legend:{position:'bottom',labels:{color:'#b8b8c8',padding:14,font:{size:13}}}}
+  }
+});
+</script>
+</body>
+</html>

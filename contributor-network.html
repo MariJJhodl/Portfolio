@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MariJ — Contributor Network</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary: #f7931a;
+            --secondary: #4a90a4;
+            --bg: #1a1a2e;
+            --card-bg: #16213e;
+            --text: #eaeaea;
+            --text-muted: #b8b8c8;
+            --border: rgba(255,255,255,0.15);
+            --radius: 1rem;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+
+        /* Header */
+        header {
+            text-align: center;
+            padding: 3rem 1.5rem 2rem;
+            background: linear-gradient(135deg, var(--bg) 0%, var(--card-bg) 100%);
+            border-bottom: 2px solid var(--primary);
+        }
+
+        header h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 0.5rem;
+        }
+
+        header h1 span {
+            color: var(--primary);
+        }
+
+        header p.subtitle {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 1rem;
+            color: var(--primary);
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: opacity 0.2s;
+        }
+
+        .back-link:hover {
+            opacity: 0.8;
+        }
+
+        /* Section Titles */
+        .section-title {
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin: 2.5rem 0 1.2rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--primary);
+            display: inline-block;
+        }
+
+        section {
+            padding: 1rem 0 2rem;
+        }
+
+        /* Card base */
+        .card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            padding: 1.5rem;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        }
+
+        /* Top Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            padding: 1.5rem 1rem;
+            text-align: center;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        }
+
+        .stat-card .stat-number {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--primary);
+            display: block;
+            margin-bottom: 0.3rem;
+        }
+
+        .stat-card .stat-label {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            line-height: 1.3;
+        }
+
+        /* Insight cards */
+        .insight-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .insight-card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            padding: 1.2rem 1.5rem;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .insight-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        }
+
+        .insight-card p {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+        .insight-card p strong {
+            color: var(--primary);
+        }
+
+        /* Chart container */
+        .chart-container {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+            position: relative;
+        }
+
+        .chart-container h3 {
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            color: var(--text);
+        }
+
+        .chart-wrapper {
+            position: relative;
+            width: 100%;
+            max-height: 400px;
+        }
+
+        .chart-wrapper canvas {
+            width: 100% !important;
+        }
+
+        .chart-wrapper-tall {
+            position: relative;
+            width: 100%;
+            max-height: 500px;
+        }
+
+        .chart-wrapper-tall canvas {
+            width: 100% !important;
+        }
+
+        .chart-wrapper-doughnut {
+            position: relative;
+            width: 100%;
+            max-width: 450px;
+            margin: 0 auto;
+            max-height: 400px;
+        }
+
+        .chart-wrapper-doughnut canvas {
+            width: 100% !important;
+        }
+
+        /* Contributors Table */
+        .contributors-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        .contributors-table thead th {
+            text-align: left;
+            padding: 0.8rem 1rem;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            border-bottom: 2px solid var(--primary);
+        }
+
+        .contributors-table tbody tr {
+            transition: background 0.2s;
+        }
+
+        .contributors-table tbody tr:hover {
+            background: rgba(247,147,26,0.05);
+        }
+
+        .contributors-table tbody td {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.95rem;
+        }
+
+        .contributors-table tbody td:first-child {
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .contributors-table tbody td:last-child {
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        .rank-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 1.6rem;
+            height: 1.6rem;
+            border-radius: 50%;
+            background: var(--primary);
+            color: #1a1a2e;
+            font-size: 0.75rem;
+            font-weight: 800;
+            margin-right: 0.5rem;
+        }
+
+        .rank-badge.silver {
+            background: #a0a0b0;
+        }
+
+        .rank-badge.bronze {
+            background: #cd7f32;
+        }
+
+        /* Reward Note */
+        .reward-note {
+            background: linear-gradient(135deg, #16213e, rgba(247,147,26,0.08));
+            border: 2px solid var(--primary);
+            border-radius: var(--radius);
+            padding: 2rem;
+            margin-top: 1.5rem;
+            text-align: center;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .reward-note:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(247,147,26,0.15);
+        }
+
+        .reward-note p {
+            font-size: 1.05rem;
+            color: var(--text);
+            line-height: 1.7;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .reward-note .reward-icon {
+            font-size: 1.8rem;
+            margin-bottom: 0.8rem;
+            display: block;
+            color: var(--primary);
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 2rem 1.5rem;
+            margin-top: 2rem;
+            border-top: 1px solid var(--border);
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        footer a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.6rem;
+            }
+
+            header p.subtitle {
+                font-size: 0.95rem;
+            }
+
+            .section-title {
+                font-size: 1.3rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            }
+
+            .stat-card .stat-number {
+                font-size: 1.6rem;
+            }
+
+            .chart-wrapper,
+            .chart-wrapper-tall {
+                max-height: 350px;
+            }
+
+            .contributors-table {
+                font-size: 0.85rem;
+            }
+
+            .contributors-table thead th,
+            .contributors-table tbody td {
+                padding: 0.6rem 0.6rem;
+            }
+
+            .reward-note {
+                padding: 1.5rem;
+            }
+
+            .insight-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .stat-card .stat-number {
+                font-size: 1.4rem;
+            }
+
+            .stat-card .stat-label {
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <a href="index.html" class="back-link">&larr; Back to Dashboard</a>
+            <h1>Contributor <span>Network</span></h1>
+            <p class="subtitle">Global proofreading and translation network coordinated by MariJ (August 2024 &ndash; January 2026)</p>
+        </div>
+    </header>
+
+    <main class="container">
+
+        <!-- Top Stats -->
+        <section>
+            <h2 class="section-title">Overview</h2>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <span class="stat-number">91</span>
+                    <span class="stat-label">Active Contributors</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">630</span>
+                    <span class="stat-label">Total Contributions</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">33</span>
+                    <span class="stat-label">Languages Managed</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">3.8x</span>
+                    <span class="stat-label">Growth (2024 to 2025)</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">100%</span>
+                    <span class="stat-label">Contributions Tracked</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Yearly Growth -->
+        <section>
+            <h2 class="section-title">Yearly Growth</h2>
+            <div class="chart-container">
+                <h3>Contributions per Year</h3>
+                <div class="chart-wrapper">
+                    <canvas id="yearlyChart"></canvas>
+                </div>
+            </div>
+            <div class="insight-grid">
+                <div class="insight-card" style="grid-column: 1 / -1;">
+                    <p>Since MariJ joined in August 2024, contributions grew from <strong>110 in 2024</strong> (5 months) to <strong>419 in 2025</strong> &mdash; a <strong>3.8x increase</strong>, with January 2026 already reaching <strong>101 contributions</strong> in a single month.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Quarterly Trend -->
+        <section>
+            <h2 class="section-title">Quarterly Trend</h2>
+            <div class="chart-container">
+                <h3>Contributions by Quarter</h3>
+                <div class="chart-wrapper">
+                    <canvas id="quarterlyChart"></canvas>
+                </div>
+            </div>
+            <div class="insight-grid">
+                <div class="insight-card" style="grid-column: 1 / -1;">
+                    <p>Steady quarter-over-quarter growth: from <strong>66 contributions in Q3 2024</strong> to <strong>152 in Q4 2025</strong> &mdash; more than doubling in 18 months, with Q1 2026 already at 101.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Top Languages -->
+        <section>
+            <h2 class="section-title">Top Languages</h2>
+            <div class="chart-container">
+                <h3>Contributions per Language (Top 15)</h3>
+                <div class="chart-wrapper-tall">
+                    <canvas id="languagesChart"></canvas>
+                </div>
+            </div>
+            <div class="insight-grid">
+                <div class="insight-card">
+                    <p><strong>Top 3 languages (IT, FR, SW)</strong> account for <strong>33%</strong> of all contributions</p>
+                </div>
+                <div class="insight-card">
+                    <p><strong>African languages (Swahili + Kirundi)</strong> represent <strong>13%</strong> of contributions &mdash; strong presence from East Africa</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contribution Types -->
+        <section>
+            <h2 class="section-title">Contribution Types</h2>
+            <div class="chart-container">
+                <h3>Breakdown by Content Type</h3>
+                <div class="chart-wrapper-doughnut">
+                    <canvas id="typesChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- Top Contributors -->
+        <section>
+            <h2 class="section-title">Top Contributors</h2>
+            <div class="chart-container">
+                <h3>Top 10 Contributors by Volume</h3>
+                <table class="contributors-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Contributor</th>
+                            <th>Language</th>
+                            <th>Contributions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="rank-badge">1</span></td>
+                            <td>yutaro21jp</td>
+                            <td>Japanese</td>
+                            <td>41</td>
+                        </tr>
+                        <tr>
+                            <td><span class="rank-badge silver">2</span></td>
+                            <td>dnabg</td>
+                            <td>Bulgarian</td>
+                            <td>29</td>
+                        </tr>
+                        <tr>
+                            <td><span class="rank-badge bronze">3</span></td>
+                            <td>MilankovicProtocol</td>
+                            <td>Chinese (Simplified)</td>
+                            <td>28</td>
+                        </tr>
+                        <tr>
+                            <td>4</td>
+                            <td>monyangi10</td>
+                            <td>Swahili</td>
+                            <td>27</td>
+                        </tr>
+                        <tr>
+                            <td>5</td>
+                            <td>Sanja22B</td>
+                            <td>Serbian</td>
+                            <td>25</td>
+                        </tr>
+                        <tr>
+                            <td>6</td>
+                            <td>2raj2raj</td>
+                            <td>English</td>
+                            <td>24</td>
+                        </tr>
+                        <tr>
+                            <td>7</td>
+                            <td>Henry-Da0</td>
+                            <td>Vietnamese</td>
+                            <td>23</td>
+                        </tr>
+                        <tr>
+                            <td>8</td>
+                            <td>Tinf0ilHat1</td>
+                            <td>Italian</td>
+                            <td>22</td>
+                        </tr>
+                        <tr>
+                            <td>9</td>
+                            <td>Tinnah924</td>
+                            <td>Swahili</td>
+                            <td>22</td>
+                        </tr>
+                        <tr>
+                            <td>10</td>
+                            <td>ProfScofield21</td>
+                            <td>French</td>
+                            <td>21</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Reward Note -->
+        <section>
+            <h2 class="section-title">Rewards</h2>
+            <div class="reward-note">
+                <span class="reward-icon">&#9889;</span>
+                <p>All contributions tracked in this network were rewarded with <strong>Bitcoin (sats)</strong>. Over <strong>630 individual contributions</strong> were tracked with sat-based payment reconciliation across <strong>33 languages</strong> and <strong>91 contributors</strong> &mdash; ensuring every reviewer is compensated fairly and on time.</p>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <p>MariJ &mdash; Contributor Network Portfolio | Contact: <a href="mailto:marjjhodl@proton.me">marjjhodl@proton.me</a></p>
+    </footer>
+
+    <script>
+        // Shared chart defaults
+        Chart.defaults.color = '#b8b8c8';
+        Chart.defaults.font.family = "'Segoe UI', system-ui, -apple-system, sans-serif";
+
+        const primaryColor = '#f7931a';
+        const secondaryColor = '#4a90a4';
+        const primaryAlpha = 'rgba(247,147,26,0.85)';
+        const secondaryAlpha = 'rgba(74,144,164,0.85)';
+
+        // --- Yearly Growth Chart ---
+        new Chart(document.getElementById('yearlyChart'), {
+            type: 'bar',
+            data: {
+                labels: ['2024 (Aug\u2013Dec)', '2025', '2026 (Jan)'],
+                datasets: [{
+                    label: 'Contributions',
+                    data: [110, 419, 101],
+                    backgroundColor: [primaryAlpha, primaryAlpha, secondaryAlpha],
+                    borderColor: [primaryColor, primaryColor, secondaryColor],
+                    borderWidth: 2,
+                    borderRadius: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: '#16213e',
+                        borderColor: primaryColor,
+                        borderWidth: 1,
+                        titleColor: '#eaeaea',
+                        bodyColor: '#eaeaea',
+                        padding: 12
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: { color: 'rgba(255,255,255,0.05)' },
+                        ticks: { color: '#b8b8c8' }
+                    },
+                    x: {
+                        grid: { display: false },
+                        ticks: { color: '#b8b8c8' }
+                    }
+                }
+            }
+        });
+
+        // --- Quarterly Trend Chart ---
+        const quarterLabels = ['Q3 2024', 'Q4 2024', 'Q1 2025', 'Q2 2025', 'Q3 2025', 'Q4 2025', 'Q1 2026'];
+        const quarterData = [66, 44, 43, 94, 130, 152, 101];
+        const quarterColors = quarterLabels.map(l => l === 'Q1 2026' ? secondaryAlpha : primaryAlpha);
+        const quarterBorders = quarterLabels.map(l => l === 'Q1 2026' ? secondaryColor : primaryColor);
+
+        new Chart(document.getElementById('quarterlyChart'), {
+            type: 'bar',
+            data: {
+                labels: quarterLabels,
+                datasets: [{
+                    label: 'Contributions',
+                    data: quarterData,
+                    backgroundColor: quarterColors,
+                    borderColor: quarterBorders,
+                    borderWidth: 2,
+                    borderRadius: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: '#16213e',
+                        borderColor: primaryColor,
+                        borderWidth: 1,
+                        titleColor: '#eaeaea',
+                        bodyColor: '#eaeaea',
+                        padding: 12,
+                        callbacks: {
+                            afterLabel: function(ctx) {
+                                if (ctx.label === 'Q1 2026') return '(partial quarter)';
+                                else return '';
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: { color: 'rgba(255,255,255,0.05)' },
+                        ticks: { color: '#b8b8c8' }
+                    },
+                    x: {
+                        grid: { display: false },
+                        ticks: { color: '#b8b8c8', maxRotation: 45, minRotation: 0 }
+                    }
+                }
+            }
+        });
+
+        // --- Top Languages Chart ---
+        const langLabels = ['Italian', 'French', 'Swahili', 'English', 'Spanish', 'Japanese', 'Indonesian', 'Vietnamese', 'German', 'Bulgarian', 'Serbian', 'Chinese (Simplified)', 'Kirundi', 'Russian', 'Polish'];
+        const langData = [76, 70, 63, 48, 46, 41, 31, 31, 30, 29, 28, 25, 19, 16, 12];
+
+        new Chart(document.getElementById('languagesChart'), {
+            type: 'bar',
+            data: {
+                labels: langLabels,
+                datasets: [{
+                    label: 'Contributions',
+                    data: langData,
+                    backgroundColor: primaryAlpha,
+                    borderColor: primaryColor,
+                    borderWidth: 2,
+                    borderRadius: 6
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: '#16213e',
+                        borderColor: primaryColor,
+                        borderWidth: 1,
+                        titleColor: '#eaeaea',
+                        bodyColor: '#eaeaea',
+                        padding: 12
+                    }
+                },
+                scales: {
+                    x: {
+                        beginAtZero: true,
+                        grid: { color: 'rgba(255,255,255,0.05)' },
+                        ticks: { color: '#b8b8c8' }
+                    },
+                    y: {
+                        grid: { display: false },
+                        ticks: { color: '#b8b8c8' }
+                    }
+                }
+            }
+        });
+
+        // --- Contribution Types Doughnut Chart ---
+        new Chart(document.getElementById('typesChart'), {
+            type: 'doughnut',
+            data: {
+                labels: ['Courses (50%)', 'Quizzes (22%)', 'Tutorials (15%)', 'Tutorial Sections (7%)', 'Weblate / Website (5%)', 'Glossary (<1%)'],
+                datasets: [{
+                    data: [317, 141, 94, 43, 32, 3],
+                    backgroundColor: [
+                        '#f7931a',
+                        '#4a90a4',
+                        '#e74c3c',
+                        '#2ecc71',
+                        '#9b59b6',
+                        '#f39c12'
+                    ],
+                    borderColor: '#1a1a2e',
+                    borderWidth: 3,
+                    hoverOffset: 8
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                cutout: '55%',
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            color: '#b8b8c8',
+                            padding: 16,
+                            usePointStyle: true,
+                            pointStyleWidth: 12,
+                            font: { size: 13 }
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: '#16213e',
+                        borderColor: primaryColor,
+                        borderWidth: 1,
+                        titleColor: '#eaeaea',
+                        bodyColor: '#eaeaea',
+                        padding: 12,
+                        callbacks: {
+                            label: function(ctx) {
+                                return ctx.label + ': ' + ctx.raw + ' contributions';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+
+</body>
+</html>

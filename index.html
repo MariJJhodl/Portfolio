@@ -1,0 +1,902 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MariJ — Community Management Portfolio</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary: #f7931a;
+            --secondary: #4a90a4;
+            --bg: #1a1a2e;
+            --card-bg: #16213e;
+            --text: #eaeaea;
+            --text-muted: #b8b8c8;
+            --border: rgba(255,255,255,0.15);
+            --radius: 1rem;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+
+        /* Header */
+        header {
+            text-align: center;
+            padding: 3rem 1.5rem 2rem;
+            background: linear-gradient(135deg, var(--bg) 0%, var(--card-bg) 100%);
+            border-bottom: 2px solid var(--primary);
+        }
+
+        header h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 0.5rem;
+        }
+
+        header h1 span {
+            color: var(--primary);
+        }
+
+        header p.subtitle {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        /* Section Titles */
+        .section-title {
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin: 2.5rem 0 0.4rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--primary);
+            display: inline-block;
+        }
+
+        .section-desc {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+            line-height: 1.5;
+        }
+
+        section {
+            padding: 1rem 0 2rem;
+        }
+
+        /* Card base */
+        .card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            padding: 1.5rem;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        }
+
+        /* Top Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            padding: 1.5rem 1rem;
+            text-align: center;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        }
+
+        .stat-card .stat-number {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--primary);
+            display: block;
+            margin-bottom: 0.3rem;
+        }
+
+        .stat-card .stat-label {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            line-height: 1.3;
+        }
+
+        /* Insight cards */
+        .insight-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .insight-card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            padding: 1.2rem 1.5rem;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .insight-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        }
+
+        .insight-card .insight-label {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.3rem;
+        }
+
+        .insight-card .insight-value {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .insight-card .insight-detail {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-top: 0.2rem;
+        }
+
+        /* Chart container */
+        .chart-container {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+            position: relative;
+        }
+
+        .chart-container h3 {
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            color: var(--text);
+        }
+
+        .chart-wrapper {
+            position: relative;
+            width: 100%;
+            max-height: 400px;
+        }
+
+        .chart-wrapper canvas {
+            width: 100% !important;
+        }
+
+        /* Links / Buttons */
+        a.action-link {
+            display: inline-block;
+            margin-top: 1rem;
+            color: var(--primary);
+            font-weight: 600;
+            text-decoration: none;
+            padding: 0.5rem 1.2rem;
+            border: 1px solid var(--primary);
+            border-radius: 0.5rem;
+            transition: background 0.2s, color 0.2s;
+        }
+
+        a.action-link:hover {
+            background: var(--primary);
+            color: #000;
+        }
+
+        /* Quotes */
+        .quote-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1rem;
+            margin-top: 1.2rem;
+        }
+
+        .quote-card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            padding: 1.2rem 1.5rem;
+            font-style: italic;
+            color: var(--text-muted);
+            position: relative;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .quote-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        }
+
+        .quote-card::before {
+            content: "\201C";
+            font-size: 3rem;
+            color: var(--primary);
+            position: absolute;
+            top: -0.2rem;
+            left: 0.8rem;
+            opacity: 0.4;
+            font-style: normal;
+        }
+
+        .quote-card .quote-text {
+            margin-bottom: 0.5rem;
+            padding-top: 0.5rem;
+        }
+
+        .quote-card .quote-attr {
+            font-style: normal;
+            font-size: 0.85rem;
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        /* Guest speakers list */
+        .speaker-list {
+            list-style: none;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.6rem;
+            margin-top: 1rem;
+        }
+
+        .speaker-list li {
+            background: rgba(247,147,26,0.1);
+            border: 1px solid rgba(247,147,26,0.25);
+            border-radius: 2rem;
+            padding: 0.35rem 1rem;
+            font-size: 0.85rem;
+            color: var(--text);
+        }
+
+        .speaker-list li strong {
+            color: var(--primary);
+        }
+
+        /* Survey stats inline */
+        .survey-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .survey-stat {
+            text-align: center;
+            padding: 1rem;
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+        }
+
+        .survey-stat .ss-val {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .survey-stat .ss-label {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        /* Two-col layout */
+        .two-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        /* Reward tracking card */
+        .reward-card {
+            background: linear-gradient(135deg, var(--card-bg), rgba(247,147,26,0.08));
+            border-radius: var(--radius);
+            border: 1px solid rgba(247,147,26,0.25);
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .reward-card h3 {
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 2rem 1.5rem;
+            border-top: 1px solid var(--border);
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-top: 2rem;
+        }
+
+        footer a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Doughnut chart sizing */
+        .doughnut-wrapper {
+            max-width: 450px;
+            margin: 0 auto;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.5rem;
+            }
+
+            .section-title {
+                font-size: 1.3rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .two-col {
+                grid-template-columns: 1fr;
+            }
+
+            .stat-card .stat-number {
+                font-size: 1.5rem;
+            }
+
+            .quote-list {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 0.7rem;
+            }
+
+            .stat-card {
+                padding: 1rem 0.5rem;
+            }
+
+            .insight-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+    <h1><span>MariJ</span> — Community Management Portfolio</h1>
+    <p class="subtitle">Data-driven overview of community growth, event management, and contributor coordination</p>
+</header>
+
+<div class="container">
+
+    <!-- TOP STATS -->
+    <section>
+        <h2 class="section-title">Key Highlights</h2>
+        <p class="section-desc">A snapshot of the key results achieved during my role as Project Coordinator at Plan ₿ Network, from August 2024 to present.</p>
+        <div class="stats-grid">
+            <div class="stat-card">
+                <span class="stat-number">10+</span>
+                <span class="stat-label">Community Calls Organized</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number">20</span>
+                <span class="stat-label">₿-CERT Test Events Managed</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number">560+</span>
+                <span class="stat-label">Event Participants</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number">91</span>
+                <span class="stat-label">Contributors Coordinated</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number">33</span>
+                <span class="stat-label">Languages Managed</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number">630</span>
+                <span class="stat-label">Contributions Tracked</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- COMMUNITY GROWTH -->
+    <section>
+        <h2 class="section-title">Community Growth</h2>
+        <p class="section-desc">Managed and grew the Plan ₿ Network community across Telegram and Discord — creating engagement strategies, moderating discussions, and publishing content to drive member growth.</p>
+
+        <div class="chart-container">
+            <h3>Telegram Contributor Group — Member Growth</h3>
+            <div class="chart-wrapper">
+                <canvas id="telegramChart"></canvas>
+            </div>
+        </div>
+
+        <div class="insight-grid">
+            <div class="insight-card">
+                <div class="insight-label">Telegram</div>
+                <div class="insight-value">+54%</div>
+                <div class="insight-detail">Growth from ~300 to 468 members (Oct 2025 – Feb 2026)</div>
+            </div>
+            <div class="insight-card">
+                <div class="insight-label">Discord</div>
+                <div class="insight-value">413</div>
+                <div class="insight-detail">Community members (built from scratch)</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- EVENT MANAGEMENT -->
+    <section>
+        <h2 class="section-title">Event Management — ₿-CERT Test and Spazio21</h2>
+        <p class="section-desc">Independently coordinated 20 ₿-CERT Test events worldwide — handling logistics, local contacts, promotional materials, and participant tracking across 12 countries.</p>
+
+        <div class="chart-container">
+            <h3>Participants per Country — 20 Events Across 12 Countries</h3>
+            <div class="chart-wrapper">
+                <canvas id="eventsChart"></canvas>
+            </div>
+        </div>
+
+        <div class="insight-grid" style="margin-top:1rem;">
+            <div class="insight-card">
+                <div class="insight-label">Total Events</div>
+                <div class="insight-value">20</div>
+                <div class="insight-detail">Across 12 countries</div>
+            </div>
+            <div class="insight-card">
+                <div class="insight-label">Total Participants</div>
+                <div class="insight-value">560+</div>
+                <div class="insight-detail">₿-CERT Test attendees</div>
+            </div>
+            <div class="insight-card">
+                <div class="insight-label">Top Country</div>
+                <div class="insight-value">Taiwan</div>
+                <div class="insight-detail">207 participants</div>
+            </div>
+        </div>
+
+        <div class="card" style="margin-top:2rem;display:flex;gap:2rem;flex-wrap:wrap;align-items:center;">
+            <div style="flex:1;min-width:250px;">
+                <h3 style="color:var(--primary);font-size:1.2rem;margin-bottom:.3rem;">Spazio21</h3>
+                <p style="color:var(--secondary);font-size:.9rem;margin-bottom:.5rem;">Event Coordination Assistant</p>
+                <p style="color:var(--text-muted);font-size:.9rem;">Bitcoin education event in Italian — workshops for all levels, with 800+ participants. Handled event coordination, created promotional content for X, and managed content for the official website.</p>
+            </div>
+            <div style="display:flex;gap:.8rem;flex-wrap:wrap;">
+                <a href="https://x.com/Spazio21" target="_blank" rel="noopener" class="action-link" style="margin-top:0;">@Spazio21 on X &rarr;</a>
+                <a href="https://spazio21.com/" target="_blank" rel="noopener" class="action-link" style="margin-top:0;">spazio21.com &rarr;</a>
+            </div>
+        </div>
+
+        <a href="bcert-events.html" class="action-link">View Event Organization data &rarr;</a>
+    </section>
+
+    <!-- CONTRIBUTOR NETWORK -->
+    <section>
+        <h2 class="section-title">Contributor Network</h2>
+        <p class="section-desc">Coordinated a global network of 91 proofreaders and translators across 33 languages — managing onboarding, quality control, and sat-based reward tracking for every contribution.</p>
+
+        <div class="two-col">
+            <div class="chart-container" style="margin-top:0;">
+                <h3>Contributions by Language (Aug 2024–Jan 2026)</h3>
+                <div class="doughnut-wrapper">
+                    <canvas id="languageChart"></canvas>
+                </div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:1rem;">
+                <div class="insight-card">
+                    <div class="insight-label">Total Reviewers</div>
+                    <div class="insight-value">91</div>
+                    <div class="insight-detail">Active contributors coordinated</div>
+                </div>
+                <div class="insight-card">
+                    <div class="insight-label">Languages</div>
+                    <div class="insight-value">33</div>
+                    <div class="insight-detail">Translation languages managed</div>
+                </div>
+                <div class="insight-card">
+                    <div class="insight-label">Top Languages</div>
+                    <div class="insight-value" style="font-size:1.1rem;">IT · FR · SW · EN</div>
+                    <div class="insight-detail">Italian (76), French (70), Swahili (63), English (48)</div>
+                </div>
+                <div class="reward-card">
+                    <h3>Reward Tracking</h3>
+                    <p style="color:var(--text-muted);font-size:0.95rem;"><strong style="color:var(--primary);font-size:1.3rem;">630</strong> individual contributions tracked with sat-based payment reconciliation — ensuring every reviewer is compensated fairly and on time.</p>
+                </div>
+            </div>
+        </div>
+
+        <a href="contributor-network.html" class="action-link">View detailed contributor data &rarr;</a>
+    </section>
+
+    <!-- COMMUNITY CALLS -->
+    <section>
+        <h2 class="section-title">Community Calls</h2>
+        <p class="section-desc">Organized and hosted bi-monthly video calls for contributors worldwide — planning the content calendar, securing guest speakers, and growing attendance from 2 to 18 participants.</p>
+
+        <div class="chart-container">
+            <h3>Attendance Over Time</h3>
+            <div class="chart-wrapper">
+                <canvas id="callsChart"></canvas>
+            </div>
+        </div>
+
+        <div class="card" style="margin-top:1.5rem;">
+            <h3 style="margin-bottom:0.8rem;">Notable Guest Speakers</h3>
+            <ul class="speaker-list">
+                <li><strong>Rogzy</strong> — Plan B co-founder</li>
+                <li><strong>Alex Brou</strong> — CTO, Peach Bitcoin</li>
+                <li><strong>Martina Granatiero</strong> — Head of Legal, Relai</li>
+                <li><strong>Mir Liponi</strong> — Hub Manager, Plan ₿ Network</li>
+            </ul>
+        </div>
+
+        <a href="community-calls.html" class="action-link">View detailed call data &rarr;</a>
+    </section>
+
+    <!-- SURVEY RESULTS -->
+    <section>
+        <h2 class="section-title">Survey Results Highlights</h2>
+        <p class="section-desc">Designed and ran two annual contributor experience surveys, collecting 70+ responses from 15+ countries — using the data to improve onboarding, communication, and overall contributor satisfaction.</p>
+
+        <div class="survey-stats">
+            <div class="survey-stat">
+                <div class="ss-val">70+</div>
+                <div class="ss-label">Total Survey Responses</div>
+            </div>
+            <div class="survey-stat">
+                <div class="ss-val">100%</div>
+                <div class="ss-label">Positive Coordinator Feedback</div>
+            </div>
+            <div class="survey-stat">
+                <div class="ss-val">75%</div>
+                <div class="ss-label">Found Onboarding Easy (1–2 / 5)</div>
+            </div>
+            <div class="survey-stat">
+                <div class="ss-val">15+</div>
+                <div class="ss-label">Countries Represented</div>
+            </div>
+        </div>
+
+        <div class="insight-grid" style="margin-top:1rem;">
+            <div class="insight-card">
+                <div class="insight-label">Year 1</div>
+                <div class="insight-value">43</div>
+                <div class="insight-detail">Survey responses collected</div>
+            </div>
+            <div class="insight-card">
+                <div class="insight-label">Year 2</div>
+                <div class="insight-value">28</div>
+                <div class="insight-detail">Survey responses collected</div>
+            </div>
+        </div>
+
+        <h3 style="margin-top:1.5rem;margin-bottom:0.5rem;font-size:1.1rem;">What Contributors Say</h3>
+        <div class="quote-list">
+            <div class="quote-card">
+                <div class="quote-text">"MariJ is very supportive, kind and dedicated"</div>
+                <div class="quote-attr">— Serbian contributor</div>
+            </div>
+            <div class="quote-card">
+                <div class="quote-text">"Always available, kind and professional, responds super fast, solves all the problems"</div>
+                <div class="quote-attr">— Polish contributor</div>
+            </div>
+            <div class="quote-card">
+                <div class="quote-text">"With MariJ's guidance, I can do anything at GitHub"</div>
+                <div class="quote-attr">— Indonesian contributor</div>
+            </div>
+            <div class="quote-card">
+                <div class="quote-text">"I'm impressed with the professionalism and dedication of MariJ. She is always helpful and efficient"</div>
+                <div class="quote-attr">— Vietnamese contributor</div>
+            </div>
+            <div class="quote-card">
+                <div class="quote-text">"I would like to highlight the courtesy and professionalism of community manager MariJ"</div>
+                <div class="quote-attr">— Spanish contributor</div>
+            </div>
+            <div class="quote-card">
+                <div class="quote-text">"MariJ is great, so lovable with a lot of good energy"</div>
+                <div class="quote-attr">— Italian contributor</div>
+            </div>
+        </div>
+
+        <div style="margin-top:1.2rem;display:flex;gap:1rem;flex-wrap:wrap;">
+            <a href="contributor-survey-y1.html" class="action-link">Year 1 Survey &rarr;</a>
+            <a href="contributor-survey-y2.html" class="action-link">Year 2 Survey &rarr;</a>
+        </div>
+    </section>
+
+    <!-- CONTENT CREATION -->
+    <section>
+        <h2 class="section-title">Content Creation</h2>
+        <p class="section-desc">Created original educational content for X under a personal brand, and authored a tutorial published on the Plan B Academy platform.</p>
+
+        <div class="card" style="display:flex;gap:2rem;flex-wrap:wrap;align-items:flex-start;">
+            <div style="flex:1;min-width:280px;">
+                <h3 style="color:var(--primary);font-size:1.3rem;margin-bottom:.3rem;">Praxeology Pills</h3>
+                <p style="color:var(--secondary);font-size:.9rem;margin-bottom:1rem;">Original content series by @MarJJhodl</p>
+                <p style="color:var(--text-muted);font-size:.95rem;line-height:1.7;">
+                    An original content series with unified brand identity, creating educational threads and posts about praxeology and Bitcoin. Currently translating <em>"Praxeology"</em> by @knutsvanholm, turning key concepts into accessible content for a broader audience.
+                    I also authored a tutorial on proofreading guidelines, published on the Plan B Academy platform.
+                </p>
+                <div style="margin-top:1.2rem;display:flex;gap:.8rem;flex-wrap:wrap;">
+                    <a href="https://x.com/MarJJhodl" target="_blank" rel="noopener" class="action-link">View @MarJJhodl on X &rarr;</a>
+                    <a href="https://planb.academy/en/tutorials/contribution/content/proofreading-guidelines-52348db0-8cd0-4658-9de4-0e8c25bea1a0" target="_blank" rel="noopener" class="action-link">View Tutorial on Plan B Academy &rarr;</a>
+                </div>
+            </div>
+            <div style="flex:0 0 auto;display:flex;flex-direction:column;gap:.75rem;min-width:170px;">
+                <div class="insight-card" style="text-align:center;padding:1rem;">
+                    <div class="insight-label">Format</div>
+                    <div class="insight-value" style="font-size:1.1rem;">Content Series</div>
+                </div>
+                <div class="insight-card" style="text-align:center;padding:1rem;">
+                    <div class="insight-label">Platform</div>
+                    <div class="insight-value" style="font-size:1.1rem;">X / Twitter</div>
+                </div>
+                <div class="insight-card" style="text-align:center;padding:1rem;">
+                    <div class="insight-label">Brand</div>
+                    <div class="insight-value" style="font-size:1.1rem;">@MarJJhodl</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</div>
+
+<!-- FOOTER -->
+<footer>
+    <p><strong>MariJ</strong> — Community Management Portfolio | Data collected 2024–2026 | Contact: <a href="mailto:marjjhodl@proton.me">marjjhodl@proton.me</a></p>
+</footer>
+
+<script>
+    // Color palette for charts
+    const PRIMARY = '#f7931a';
+    const SECONDARY = '#4a90a4';
+    const BG = '#16213e';
+    const GRID_COLOR = 'rgba(255,255,255,0.08)';
+    const TICK_COLOR = '#b8b8c8';
+
+    // Common chart options
+    const commonScales = {
+        x: {
+            ticks: { color: TICK_COLOR, font: { size: 11 } },
+            grid: { color: GRID_COLOR }
+        },
+        y: {
+            ticks: { color: TICK_COLOR, font: { size: 11 } },
+            grid: { color: GRID_COLOR },
+            beginAtZero: true
+        }
+    };
+
+    // 1. Telegram Growth Line Chart
+    new Chart(document.getElementById('telegramChart'), {
+        type: 'line',
+        data: {
+            labels: ['Oct 2025', 'Nov 2025', 'Dec 2025', 'Jan 2026', 'Feb 2026'],
+            datasets: [{
+                label: 'Telegram Members',
+                data: [300, 340, 390, 448, 468],
+                borderColor: PRIMARY,
+                backgroundColor: 'rgba(247,147,26,0.15)',
+                fill: true,
+                tension: 0.3,
+                pointBackgroundColor: PRIMARY,
+                pointRadius: 5,
+                pointHoverRadius: 7,
+                borderWidth: 2.5
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+                legend: { labels: { color: TICK_COLOR } }
+            },
+            scales: commonScales
+        }
+    });
+
+    // 2. ₿-CERT Test Events Horizontal Bar Chart
+    new Chart(document.getElementById('eventsChart'), {
+        type: 'bar',
+        data: {
+            labels: ['Taiwan', 'Italy', 'Switzerland', 'Benin', 'France', 'Czech Republic', 'Indonesia', 'Latvia', 'Brazil', 'Sweden', 'India', 'Germany'],
+            datasets: [{
+                label: 'Participants',
+                data: [207, 78, 77, 61, 29, 29, 25, 19, 12, 9, 9, 6],
+                backgroundColor: [
+                    PRIMARY,
+                    SECONDARY,
+                    PRIMARY,
+                    SECONDARY,
+                    PRIMARY,
+                    SECONDARY,
+                    PRIMARY,
+                    SECONDARY,
+                    PRIMARY,
+                    SECONDARY,
+                    PRIMARY,
+                    SECONDARY
+                ],
+                borderRadius: 6,
+                borderSkipped: false
+            }]
+        },
+        options: {
+            indexAxis: 'y',
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+                legend: { display: false }
+            },
+            scales: {
+                x: {
+                    ticks: { color: TICK_COLOR, font: { size: 11 } },
+                    grid: { color: GRID_COLOR },
+                    beginAtZero: true,
+                    title: { display: true, text: 'Participants', color: TICK_COLOR }
+                },
+                y: {
+                    ticks: { color: TICK_COLOR, font: { size: 12 } },
+                    grid: { color: GRID_COLOR }
+                }
+            }
+        }
+    });
+
+    // 3. Language Doughnut Chart — contributions by language, Aug 2024–Jan 2026
+    (function() {
+        const langs = [
+            { label: 'Italian', val: 76 },
+            { label: 'French', val: 70 },
+            { label: 'Swahili', val: 63 },
+            { label: 'English', val: 48 },
+            { label: 'Spanish', val: 46 },
+            { label: 'Japanese', val: 41 },
+            { label: 'Indonesian', val: 31 },
+            { label: 'Vietnamese', val: 31 },
+            { label: 'German', val: 30 },
+            { label: 'Bulgarian', val: 29 },
+            { label: 'Serbian', val: 28 },
+            { label: 'Chinese (Simplified)', val: 25 },
+            { label: 'Kirundi', val: 19 },
+        ];
+        // Others: Russian(16), Polish(12), + 18 more languages
+        const othersTotal = 92;
+        const labels = langs.map(l => l.label);
+        labels.push('Others (20 langs)');
+        const values = langs.map(l => l.val);
+        values.push(othersTotal);
+
+        const colors = [
+            '#f7931a','#e8850f','#d97706','#ca6902',
+            '#4a90a4','#5ba3b5','#6cb6c6','#7dc9d7',
+            '#3a7d90','#2d6a7b','#1f5c6b','#17505e',
+            '#0f4451','#555577','#888899'
+        ];
+
+        new Chart(document.getElementById('languageChart'), {
+            type: 'doughnut',
+            data: {
+                labels: labels,
+                datasets: [{
+                    data: values,
+                    backgroundColor: colors,
+                    borderColor: BG,
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            color: TICK_COLOR,
+                            font: { size: 11 },
+                            padding: 10,
+                            usePointStyle: true,
+                            pointStyleWidth: 10
+                        }
+                    }
+                },
+                cutout: '55%'
+            }
+        });
+    })();
+
+    // 4. Community Calls Bar Chart
+    new Chart(document.getElementById('callsChart'), {
+        type: 'bar',
+        data: {
+            labels: ['Oct 8', 'Oct 22', 'Nov 12', 'Nov 26', 'Dec 11', 'Dec 23', 'Jan 15', 'Feb 6'],
+            datasets: [{
+                label: 'Attendees',
+                data: [10, 2, 2, 10, 17, 13, 18, 17],
+                backgroundColor: function(ctx) {
+                    const val = ctx.raw;
+                    return val >= 15 ? PRIMARY : SECONDARY;
+                },
+                borderRadius: 6,
+                borderSkipped: false
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    callbacks: {
+                        title: function(items) {
+                            const dates = ['Oct 8, 2025','Oct 22, 2025','Nov 12, 2025','Nov 26, 2025','Dec 11, 2025','Dec 23, 2025','Jan 15, 2026','Feb 6, 2026'];
+                            return dates[items[0].dataIndex];
+                        }
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    ticks: { color: TICK_COLOR, font: { size: 11 } },
+                    grid: { color: GRID_COLOR }
+                },
+                y: {
+                    ticks: { color: TICK_COLOR, font: { size: 11 }, stepSize: 5 },
+                    grid: { color: GRID_COLOR },
+                    beginAtZero: true,
+                    title: { display: true, text: 'Attendees', color: TICK_COLOR }
+                }
+            }
+        }
+    });
+</script>
+
+</body>
+</html>
