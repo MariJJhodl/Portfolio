@@ -8,12 +8,12 @@
     <style>
         :root {
             --primary: #f7931a;
-            --secondary: #4a90a4;
-            --bg: #1a1a2e;
-            --card-bg: #16213e;
-            --text: #eaeaea;
-            --text-muted: #b8b8c8;
-            --border: rgba(255,255,255,0.15);
+            --secondary: #2d7a8e;
+            --bg: #fdf8f2;
+            --card-bg: #ffffff;
+            --text: #1c1c2e;
+            --text-muted: #44445e;
+            --border: rgba(0,0,0,0.09);
             --radius: 1rem;
         }
 
@@ -40,7 +40,7 @@
         header {
             text-align: center;
             padding: 3rem 1.5rem 2rem;
-            background: linear-gradient(135deg, var(--bg) 0%, var(--card-bg) 100%);
+            background: linear-gradient(135deg, #fdf8f2 0%, #fff3e0 100%);
             border-bottom: 2px solid var(--primary);
         }
 
@@ -100,7 +100,7 @@
 
         .card:hover {
             transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+            box-shadow: 0 8px 25px rgba(247,147,26,0.12);
         }
 
         /* Top Stats Grid */
@@ -122,7 +122,7 @@
 
         .stat-card:hover {
             transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+            box-shadow: 0 8px 25px rgba(247,147,26,0.12);
         }
 
         .stat-card .stat-number {
@@ -157,7 +157,7 @@
 
         .insight-card:hover {
             transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+            box-shadow: 0 8px 25px rgba(247,147,26,0.12);
         }
 
         .insight-card p {
@@ -267,7 +267,7 @@
             height: 1.6rem;
             border-radius: 50%;
             background: var(--primary);
-            color: #1a1a2e;
+            color: #ffffff;
             font-size: 0.75rem;
             font-weight: 800;
             margin-right: 0.5rem;
@@ -283,7 +283,7 @@
 
         /* Reward Note */
         .reward-note {
-            background: linear-gradient(135deg, #16213e, rgba(247,147,26,0.08));
+            background: linear-gradient(135deg, #fff8f0, rgba(247,147,26,0.06));
             border: 2px solid var(--primary);
             border-radius: var(--radius);
             padding: 2rem;
@@ -591,7 +591,7 @@
 
     <script>
         // Shared chart defaults
-        Chart.defaults.color = '#b8b8c8';
+        Chart.defaults.color = '#44445e';
         Chart.defaults.font.family = "'Segoe UI', system-ui, -apple-system, sans-serif";
 
         const primaryColor = '#f7931a';
@@ -619,23 +619,23 @@
                 plugins: {
                     legend: { display: false },
                     tooltip: {
-                        backgroundColor: '#16213e',
+                        backgroundColor: '#ffffff',
                         borderColor: primaryColor,
                         borderWidth: 1,
-                        titleColor: '#eaeaea',
-                        bodyColor: '#eaeaea',
+                        titleColor: '#1c1c2e',
+                        bodyColor: '#1c1c2e',
                         padding: 12
                     }
                 },
                 scales: {
                     y: {
                         beginAtZero: true,
-                        grid: { color: 'rgba(255,255,255,0.05)' },
-                        ticks: { color: '#b8b8c8' }
+                        grid: { color: 'rgba(0,0,0,0.06)' },
+                        ticks: { color: '#44445e' }
                     },
                     x: {
                         grid: { display: false },
-                        ticks: { color: '#b8b8c8' }
+                        ticks: { color: '#44445e' }
                     }
                 }
             }
@@ -666,11 +666,11 @@
                 plugins: {
                     legend: { display: false },
                     tooltip: {
-                        backgroundColor: '#16213e',
+                        backgroundColor: '#ffffff',
                         borderColor: primaryColor,
                         borderWidth: 1,
-                        titleColor: '#eaeaea',
-                        bodyColor: '#eaeaea',
+                        titleColor: '#1c1c2e',
+                        bodyColor: '#1c1c2e',
                         padding: 12,
                         callbacks: {
                             afterLabel: function(ctx) {
@@ -683,12 +683,12 @@
                 scales: {
                     y: {
                         beginAtZero: true,
-                        grid: { color: 'rgba(255,255,255,0.05)' },
-                        ticks: { color: '#b8b8c8' }
+                        grid: { color: 'rgba(0,0,0,0.06)' },
+                        ticks: { color: '#44445e' }
                     },
                     x: {
                         grid: { display: false },
-                        ticks: { color: '#b8b8c8', maxRotation: 45, minRotation: 0 }
+                        ticks: { color: '#44445e', maxRotation: 45, minRotation: 0 }
                     }
                 }
             }
@@ -718,23 +718,23 @@
                 plugins: {
                     legend: { display: false },
                     tooltip: {
-                        backgroundColor: '#16213e',
+                        backgroundColor: '#ffffff',
                         borderColor: primaryColor,
                         borderWidth: 1,
-                        titleColor: '#eaeaea',
-                        bodyColor: '#eaeaea',
+                        titleColor: '#1c1c2e',
+                        bodyColor: '#1c1c2e',
                         padding: 12
                     }
                 },
                 scales: {
                     x: {
                         beginAtZero: true,
-                        grid: { color: 'rgba(255,255,255,0.05)' },
-                        ticks: { color: '#b8b8c8' }
+                        grid: { color: 'rgba(0,0,0,0.06)' },
+                        ticks: { color: '#44445e' }
                     },
                     y: {
                         grid: { display: false },
-                        ticks: { color: '#b8b8c8' }
+                        ticks: { color: '#44445e' }
                     }
                 }
             }
@@ -755,7 +755,7 @@
                         '#9b59b6',
                         '#f39c12'
                     ],
-                    borderColor: '#1a1a2e',
+                    borderColor: '#fdf8f2',
                     borderWidth: 3,
                     hoverOffset: 8
                 }]
@@ -768,7 +768,7 @@
                     legend: {
                         position: 'bottom',
                         labels: {
-                            color: '#b8b8c8',
+                            color: '#44445e',
                             padding: 16,
                             usePointStyle: true,
                             pointStyleWidth: 12,
@@ -776,11 +776,11 @@
                         }
                     },
                     tooltip: {
-                        backgroundColor: '#16213e',
+                        backgroundColor: '#ffffff',
                         borderColor: primaryColor,
                         borderWidth: 1,
-                        titleColor: '#eaeaea',
-                        bodyColor: '#eaeaea',
+                        titleColor: '#1c1c2e',
+                        bodyColor: '#1c1c2e',
                         padding: 12,
                         callbacks: {
                             label: function(ctx) {

@@ -8,8 +8,8 @@
 <style>
   *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
   :root{
-    --primary:#f7931a;--secondary:#4a90a4;--bg:#1a1a2e;--card:#16213e;--text:#eaeaea;
-    --radius:1rem;--shadow:0 4px 24px rgba(0,0,0,.35);
+    --primary:#f7931a;--secondary:#2d7a8e;--bg:#fdf8f2;--card:#ffffff;--text:#1c1c2e;
+    --radius:1rem;--shadow:0 4px 16px rgba(247,147,26,0.10);
   }
   body{
     font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);
@@ -26,17 +26,17 @@
   /* header */
   header{text-align:center;padding:2.5rem 1rem 1rem}
   header h1{font-size:2.4rem;color:var(--primary);margin-bottom:.35rem}
-  header p{font-size:1.05rem;color:#b8b8c8;max-width:600px;margin:0 auto}
+  header p{font-size:1.05rem;color:#44445e;max-width:600px;margin:0 auto}
 
   /* stats row */
   .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1.25rem;margin:2rem 0}
   .stat-card{
     background:var(--card);border-radius:var(--radius);padding:1.5rem;text-align:center;
-    box-shadow:var(--shadow);transition:transform .25s,box-shadow .25s;border:1px solid rgba(255,255,255,.15);
+    box-shadow:var(--shadow);transition:transform .25s,box-shadow .25s;border:1px solid rgba(0,0,0,0.09);
   }
-  .stat-card:hover{transform:translateY(-4px);box-shadow:0 8px 32px rgba(0,0,0,.45)}
+  .stat-card:hover{transform:translateY(-4px);box-shadow:0 8px 32px rgba(247,147,26,0.12)}
   .stat-card .num{font-size:2.6rem;font-weight:700;color:var(--primary)}
-  .stat-card .label{font-size:.9rem;color:#b8b8c8;margin-top:.25rem}
+  .stat-card .label{font-size:.9rem;color:#44445e;margin-top:.25rem}
 
   /* section */
   section{margin:2.5rem 0}
@@ -45,16 +45,16 @@
   /* chart wrapper */
   .chart-box{
     background:var(--card);border-radius:var(--radius);padding:1.5rem;box-shadow:var(--shadow);
-    border:1px solid rgba(255,255,255,.15);
+    border:1px solid rgba(0,0,0,0.09);
   }
   .chart-box canvas{max-height:380px}
 
   /* table */
-  .table-wrap{overflow-x:auto;border-radius:var(--radius);box-shadow:var(--shadow);border:1px solid rgba(255,255,255,.15)}
+  .table-wrap{overflow-x:auto;border-radius:var(--radius);box-shadow:var(--shadow);border:1px solid rgba(0,0,0,0.09)}
   table{width:100%;border-collapse:collapse;background:var(--card);font-size:.88rem}
   thead{background:rgba(247,147,26,.12)}
   th{padding:.85rem .75rem;text-align:left;color:var(--primary);font-weight:600;white-space:nowrap}
-  td{padding:.75rem;border-top:1px solid rgba(255,255,255,.05);vertical-align:top}
+  td{padding:.75rem;border-top:1px solid rgba(0,0,0,0.07);vertical-align:top}
   tr:hover td{background:rgba(74,144,164,.08)}
   .upcoming{color:var(--secondary);font-style:italic}
 
@@ -63,9 +63,9 @@
   .speaker-card{
     background:var(--card);border-radius:var(--radius);padding:1.4rem;box-shadow:var(--shadow);
     border-left:4px solid var(--primary);transition:transform .25s,box-shadow .25s;
-    border:1px solid rgba(255,255,255,.15);border-left:4px solid var(--primary);
+    border:1px solid rgba(0,0,0,0.09);border-left:4px solid var(--primary);
   }
-  .speaker-card:hover{transform:translateY(-4px);box-shadow:0 8px 32px rgba(0,0,0,.45)}
+  .speaker-card:hover{transform:translateY(-4px);box-shadow:0 8px 32px rgba(247,147,26,0.12)}
   .speaker-card h3{color:var(--primary);font-size:1.1rem;margin-bottom:.2rem}
   .speaker-card .role{font-size:.82rem;color:var(--secondary);margin-bottom:.6rem}
   .speaker-card .topic{font-size:.9rem;opacity:.85}
@@ -74,7 +74,7 @@
   .highlights-list{list-style:none;display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1rem}
   .highlights-list li{
     background:var(--card);border-radius:var(--radius);padding:1.2rem 1.4rem;
-    box-shadow:var(--shadow);border:1px solid rgba(255,255,255,.15);
+    box-shadow:var(--shadow);border:1px solid rgba(0,0,0,0.09);
     position:relative;padding-left:2.4rem;
   }
   .highlights-list li::before{
@@ -86,15 +86,15 @@
   .platform-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1.25rem;margin-bottom:1.5rem}
   .platform-card{
     background:var(--card);border-radius:var(--radius);padding:1.4rem;box-shadow:var(--shadow);
-    border:1px solid rgba(255,255,255,.15);transition:transform .25s;
+    border:1px solid rgba(0,0,0,0.09);transition:transform .25s;
   }
   .platform-card:hover{transform:translateY(-4px)}
   .platform-card h3{font-size:1rem;color:var(--secondary);margin-bottom:.35rem}
   .platform-card .metric{font-size:2rem;font-weight:700;color:var(--primary)}
-  .platform-card .detail{font-size:.85rem;color:#b8b8c8;margin-top:.25rem}
+  .platform-card .detail{font-size:.85rem;color:#44445e;margin-top:.25rem}
 
   /* footer */
-  footer{text-align:center;padding:2.5rem 1rem 1.5rem;font-size:.85rem;opacity:.6;border-top:1px solid rgba(255,255,255,.15);margin-top:2rem}
+  footer{text-align:center;padding:2.5rem 1rem 1.5rem;font-size:.85rem;color:#44445e;border-top:1px solid rgba(0,0,0,0.09);margin-top:2rem}
 
   /* responsive */
   @media(max-width:640px){
@@ -321,7 +321,7 @@
     options:{
       responsive:true,
       plugins:{
-        legend:{labels:{color:'#eaeaea'}},
+        legend:{labels:{color:'#1c1c2e'}},
         tooltip:{
           callbacks:{
             label:function(c){
@@ -333,8 +333,8 @@
         annotation:{}
       },
       scales:{
-        x:{ticks:{color:'#eaeaea'},grid:{color:'rgba(255,255,255,.15)'}},
-        y:{beginAtZero:true,ticks:{color:'#eaeaea'},grid:{color:'rgba(255,255,255,.15)'}}
+        x:{ticks:{color:'#1c1c2e'},grid:{color:'rgba(0,0,0,0.06)'}},
+        y:{beginAtZero:true,ticks:{color:'#1c1c2e'},grid:{color:'rgba(0,0,0,0.06)'}}
       }
     },
     plugins:[{
@@ -409,12 +409,12 @@
     options:{
       responsive:true,
       plugins:{
-        legend:{labels:{color:'#eaeaea'}},
-        title:{display:true,text:'Telegram & Discord Growth (Oct 2025 \u2013 Feb 2026)',color:'#eaeaea',font:{size:14}}
+        legend:{labels:{color:'#1c1c2e'}},
+        title:{display:true,text:'Telegram & Discord Growth (Oct 2025 \u2013 Feb 2026)',color:'#1c1c2e',font:{size:14}}
       },
       scales:{
-        x:{ticks:{color:'#eaeaea'},grid:{color:'rgba(255,255,255,.15)'}},
-        y:{beginAtZero:true,ticks:{color:'#eaeaea'},grid:{color:'rgba(255,255,255,.15)'}}
+        x:{ticks:{color:'#1c1c2e'},grid:{color:'rgba(0,0,0,0.06)'}},
+        y:{beginAtZero:true,ticks:{color:'#1c1c2e'},grid:{color:'rgba(0,0,0,0.06)'}}
       }
     }
   });

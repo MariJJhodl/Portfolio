@@ -9,8 +9,8 @@
   *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
   body{
     font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
-    background:#1a1a2e;
-    color:#eaeaea;
+    background:#fdf8f2;
+    color:#1c1c2e;
     line-height:1.6;
     min-height:100vh;
   }
@@ -22,7 +22,7 @@
 
   header{text-align:center;padding:2.5rem 0 1.5rem}
   header h1{font-size:clamp(1.5rem,4vw,2.4rem);color:#f7931a;margin-bottom:.4rem}
-  header p.subtitle{font-size:1.05rem;color:#4a90a4;margin-bottom:.15rem}
+  header p.subtitle{font-size:1.05rem;color:#2d7a8e;margin-bottom:.15rem}
 
   /* stat row */
   .stats-row{
@@ -32,7 +32,7 @@
     margin:2rem 0;
   }
   .stat-card{
-    background:#16213e;
+    background:#ffffff;
     border-radius:1rem;
     padding:1.4rem 1rem;
     text-align:center;
@@ -40,15 +40,15 @@
   }
   .stat-card:hover{transform:translateY(-4px);box-shadow:0 8px 24px rgba(247,147,26,.15)}
   .stat-card .num{font-size:2rem;font-weight:700;color:#f7931a}
-  .stat-card .label{font-size:.85rem;color:#b8b8c8;margin-top:.25rem}
+  .stat-card .label{font-size:.85rem;color:#44445e;margin-top:.25rem}
 
   /* section */
   .section{margin:2.5rem 0}
-  .section-title{font-size:1.35rem;color:#f7931a;margin-bottom:1rem;border-left:4px solid #4a90a4;padding-left:.75rem}
+  .section-title{font-size:1.35rem;color:#f7931a;margin-bottom:1rem;border-left:4px solid #2d7a8e;padding-left:.75rem}
 
   /* cards grid */
   .card{
-    background:#16213e;
+    background:#ffffff;
     border-radius:1rem;
     padding:1.5rem;
     transition:transform .25s,box-shadow .25s;
@@ -68,10 +68,10 @@
   /* quotes */
   .quote-list{list-style:none;display:flex;flex-direction:column;gap:1rem}
   .quote-list li{
-    background:#16213e;
+    background:#ffffff;
     border-radius:1rem;
     padding:1.2rem 1.5rem;
-    border-left:4px solid #4a90a4;
+    border-left:4px solid #2d7a8e;
     font-style:italic;
     transition:transform .25s,box-shadow .25s;
   }
@@ -85,22 +85,22 @@
     gap:1rem;
   }
   .impact-card{
-    background:#16213e;
+    background:#ffffff;
     border-radius:1rem;
     padding:1.3rem;
     transition:transform .25s,box-shadow .25s;
   }
   .impact-card:hover{transform:translateY(-4px);box-shadow:0 8px 24px rgba(247,147,26,.12)}
-  .impact-card .country{font-weight:700;color:#4a90a4;margin-bottom:.4rem;font-size:1.05rem}
-  .impact-card .quote{font-style:italic;font-size:.93rem;color:#ccc}
+  .impact-card .country{font-weight:700;color:#2d7a8e;margin-bottom:.4rem;font-size:1.05rem}
+  .impact-card .quote{font-style:italic;font-size:.93rem;color:#44445e}
 
   footer{
     text-align:center;
     padding:2.5rem 0 1.5rem;
     margin-top:2rem;
-    border-top:1px solid #2a2a4e;
+    border-top:1px solid rgba(0,0,0,0.09);
     font-size:.85rem;
-    color:#888;
+    color:#44445e;
   }
 
   @media(max-width:600px){
@@ -135,11 +135,11 @@
     <h2 class="section-title">Translation Quality Ratings</h2>
     <div class="charts-row">
       <div class="card">
-        <h3 style="margin-bottom:.75rem;font-size:1rem;color:#4a90a4">General Translation Quality</h3>
+        <h3 style="margin-bottom:.75rem;font-size:1rem;color:#2d7a8e">General Translation Quality</h3>
         <div class="chart-wrap"><canvas id="chartGeneral"></canvas></div>
       </div>
       <div class="card">
-        <h3 style="margin-bottom:.75rem;font-size:1rem;color:#4a90a4">Technical Terms Quality</h3>
+        <h3 style="margin-bottom:.75rem;font-size:1rem;color:#2d7a8e">Technical Terms Quality</h3>
         <div class="chart-wrap"><canvas id="chartTechnical"></canvas></div>
       </div>
     </div>
@@ -192,15 +192,15 @@
 </div>
 
 <script>
-const orange='#f7931a',teal='#4a90a4',cardBg='#16213e';
+const orange='#f7931a',teal='#2d7a8e',cardBg='#ffffff';
 const barColors=['#e74c3c','#e67e22','#4a90a4','#f7931a'];
 const defaultOpts={
   responsive:true,
   maintainAspectRatio:true,
   plugins:{legend:{display:false}},
   scales:{
-    x:{ticks:{color:'#b8b8c8'},grid:{color:'rgba(255,255,255,.06)'}},
-    y:{ticks:{color:'#aaa',stepSize:2},grid:{color:'rgba(255,255,255,.06)'},beginAtZero:true}
+    x:{ticks:{color:'#44445e'},grid:{color:'rgba(0,0,0,0.06)'}},
+    y:{ticks:{color:'#aaa',stepSize:2},grid:{color:'rgba(0,0,0,0.06)'},beginAtZero:true}
   }
 };
 
@@ -210,7 +210,7 @@ new Chart(document.getElementById('chartGeneral'),{
     labels:['1-3','4-5','6-7','8-9'],
     datasets:[{data:[2,3,10,12],backgroundColor:barColors,borderRadius:6,maxBarThickness:60}]
   },
-  options:{...defaultOpts,plugins:{...defaultOpts.plugins,title:{display:true,text:'Number of Responses by Rating Group',color:'#ccc',font:{size:12}}}}
+  options:{...defaultOpts,plugins:{...defaultOpts.plugins,title:{display:true,text:'Number of Responses by Rating Group',color:'#44445e',font:{size:12}}}}
 });
 
 new Chart(document.getElementById('chartTechnical'),{
@@ -219,7 +219,7 @@ new Chart(document.getElementById('chartTechnical'),{
     labels:['1-3','4-5','6-7','8-9'],
     datasets:[{data:[3,5,10,8],backgroundColor:barColors,borderRadius:6,maxBarThickness:60}]
   },
-  options:{...defaultOpts,plugins:{...defaultOpts.plugins,title:{display:true,text:'Number of Responses by Rating Group',color:'#ccc',font:{size:12}}}}
+  options:{...defaultOpts,plugins:{...defaultOpts.plugins,title:{display:true,text:'Number of Responses by Rating Group',color:'#44445e',font:{size:12}}}}
 });
 
 new Chart(document.getElementById('chartDiscovery'),{
@@ -231,7 +231,7 @@ new Chart(document.getElementById('chartDiscovery'),{
   options:{
     responsive:true,
     maintainAspectRatio:true,
-    plugins:{legend:{position:'bottom',labels:{color:'#ccc',padding:14,font:{size:13}}}}
+    plugins:{legend:{position:'bottom',labels:{color:'#44445e',padding:14,font:{size:13}}}}
   }
 });
 </script>
