@@ -1,0 +1,1247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Praxeology Pills — @MarJJhodl</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #f7931a;
+            --secondary: #2d7a8e;
+            --bg: #fdf8f2;
+            --card-bg: #ffffff;
+            --text: #1c1c2e;
+            --text-muted: #44445e;
+            --border: rgba(0,0,0,0.09);
+            --radius: 1rem;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', 'Noto Sans', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        .container { max-width: 900px; margin: 0 auto; padding: 0 1.5rem; }
+
+        header {
+            text-align: center;
+            padding: 3rem 1.5rem 2rem;
+            background: linear-gradient(135deg, #fdf8f2 0%, #fff3e0 100%);
+            border-bottom: 2px solid var(--primary);
+        }
+
+        header h1 { font-size: 2.2rem; font-weight: 700; color: var(--text); margin-bottom: 0.5rem; }
+        header h1 span { color: var(--primary); }
+        header p.subtitle { font-size: 1rem; color: var(--text-muted); max-width: 650px; margin: 0.5rem auto 0; line-height: 1.8; }
+
+        nav {
+            background: #ffffff;
+            border-bottom: 1px solid rgba(247,147,26,0.25);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+
+        nav .nav-inner {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.2rem;
+            align-items: center;
+        }
+
+        nav a {
+            color: var(--text-muted);
+            text-decoration: none;
+            padding: 0.7rem 0.9rem;
+            font-size: 0.85rem;
+            transition: color 0.2s;
+        }
+
+        nav a:hover { color: var(--primary); }
+        nav a.back { font-weight: 600; color: var(--primary); }
+
+        .section-title {
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin: 2.5rem 0 0.4rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--primary);
+            display: inline-block;
+        }
+
+        .section-desc {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        /* Pill card */
+        .pill-card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            margin-bottom: 2rem;
+            overflow: hidden;
+            transition: box-shadow 0.2s ease;
+        }
+
+        .pill-card:hover {
+            box-shadow: 0 8px 25px rgba(247,147,26,0.12);
+        }
+
+        .pill-header {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--border);
+            background: rgba(247,147,26,0.04);
+        }
+
+        .pill-badge {
+            background: var(--primary);
+            color: #fff;
+            font-weight: 800;
+            font-size: 0.85rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 2rem;
+            white-space: nowrap;
+        }
+
+        .pill-topic {
+            font-weight: 700;
+            font-size: 1rem;
+            color: var(--text);
+        }
+
+        .pill-body {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0;
+        }
+
+        .pill-tweet {
+            padding: 1.5rem;
+            border-right: 1px solid var(--border);
+            font-size: 0.95rem;
+            line-height: 1.7;
+            color: var(--text);
+            white-space: pre-wrap;
+        }
+
+        .pill-tweet .hashtags {
+            display: block;
+            margin-top: 0.8rem;
+            color: var(--secondary);
+            font-size: 0.85rem;
+        }
+
+        .pill-image {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            background: #fafafa;
+        }
+
+        .pill-image img {
+            width: 100%;
+            max-width: 320px;
+            border-radius: 0.5rem;
+            display: block;
+        }
+
+        /* Explanation */
+        .pill-explanation {
+            padding: 1.2rem 1.5rem;
+            background: linear-gradient(135deg, #fff8f0, rgba(247,147,26,0.04));
+            border-top: 1px solid rgba(247,147,26,0.2);
+        }
+
+        .pill-explanation h4 {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.07em;
+            color: var(--primary);
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .pill-explanation p {
+            font-size: 0.93rem;
+            color: var(--text-muted);
+            line-height: 1.7;
+        }
+
+        .pill-footer {
+            padding: 0.8rem 1.5rem;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        a.action-link {
+            display: inline-block;
+            color: var(--primary);
+            font-weight: 600;
+            text-decoration: none;
+            padding: 0.4rem 1rem;
+            border: 1px solid var(--primary);
+            border-radius: 0.5rem;
+            font-size: 0.85rem;
+            transition: background 0.2s, color 0.2s;
+        }
+
+        a.action-link:hover { background: var(--primary); color: #fff; }
+
+        /* Intro / Wrap special card */
+        .pill-card.special .pill-header { background: rgba(45,122,142,0.07); }
+        .pill-card.special .pill-badge { background: var(--secondary); }
+
+        footer {
+            text-align: center;
+            padding: 2rem 1.5rem;
+            border-top: 1px solid var(--border);
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-top: 2rem;
+        }
+
+        footer a { color: var(--primary); text-decoration: none; }
+        footer a:hover { text-decoration: underline; }
+
+        /* Source books */
+        .sources-card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .sources-card h3 { color: var(--primary); margin-bottom: 0.8rem; }
+        .sources-card ul { list-style: none; }
+        .sources-card ul li { color: var(--text-muted); font-size: 0.95rem; padding: 0.2rem 0; }
+        .sources-card ul li::before { content: "→ "; color: var(--primary); font-weight: 700; }
+
+        @media (max-width: 640px) {
+            .pill-body { grid-template-columns: 1fr; }
+            .pill-tweet { border-right: none; border-bottom: 1px solid var(--border); }
+            header h1 { font-size: 1.5rem; }
+        }
+
+        /* Lightbox */
+        .pill-image img {
+            -webkit-user-drag: none;
+            user-drag: none;
+            pointer-events: none;
+        }
+
+        /* Transparent overlay captures clicks for lightbox, blocks right-click on img */
+        .pill-image {
+            position: relative;
+        }
+
+        .pill-image::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+            cursor: zoom-in;
+        }
+
+        .lightbox-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.85);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+        }
+
+        .lightbox-overlay.active {
+            display: flex;
+        }
+
+        .lightbox-overlay img {
+            max-width: 90vw;
+            max-height: 90vh;
+            border-radius: 0.75rem;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            object-fit: contain;
+        }
+
+        .lightbox-close {
+            position: fixed;
+            top: 1.2rem;
+            right: 1.5rem;
+            color: #fff;
+            font-size: 2rem;
+            cursor: pointer;
+            line-height: 1;
+            opacity: 0.8;
+            transition: opacity 0.2s;
+            background: none;
+            border: none;
+            font-family: inherit;
+        }
+
+        .lightbox-close:hover { opacity: 1; }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1><span>Praxeology Pills</span></h1>
+    <p class="subtitle">One concept a day. Austrian economics meets Bitcoin.<br>A 30-day original series by <strong>@MarJJhodl</strong>,<br>inspired by Knut Svanholm's <em>Praxeology — The Invisible Hand that Feeds You</em>.</p>
+</header>
+
+<nav>
+    <div class="nav-inner">
+        <a href="index.html" class="back">← Portfolio</a>
+        <a href="#intro">Intro</a>
+        <a href="#pill-1">#1</a>
+        <a href="#pill-5">#5</a>
+        <a href="#pill-10">#10</a>
+        <a href="#pill-15">#15</a>
+        <a href="#pill-20">#20</a>
+        <a href="#pill-25">#25</a>
+        <a href="#pill-30">#30</a>
+        <a href="#wrap">Wrap</a>
+    </div>
+</nav>
+
+<div class="container">
+
+    <section style="padding: 2rem 0 0;">
+        <h2 class="section-title">The Series</h2>
+        <p class="section-desc">
+            Starting February 12, 2026, I published one praxeology concept per day for 30 consecutive days — connecting Mises' <em>Human Action</em> to Bitcoin through short, accessible posts with original visual cards.<br><br>
+            Pill #1 reached 2,245 views organically — roughly 23× my follower count at the time. Below is the full series, with the original tweet text, visual card, and a brief explanation of the concept.
+        </p>
+
+        <div class="sources-card">
+            <h3>Sources</h3>
+            <ul>
+                <li>Ludwig von Mises — <em>Human Action: A Treatise on Economics</em> (1949)</li>
+                <li>Knut Svanholm — <em>Praxeology: The Invisible Hand that Feeds You</em> (2023, 2nd ed. 2025)</li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- INTRO -->
+    <div class="pill-card special" id="intro">
+        <div class="pill-header">
+            <span class="pill-badge">Intro</span>
+            <span class="pill-topic">Introduction to the series</span>
+        </div>
+        <div class="pill-body">
+            <div class="pill-tweet">Economics is not about numbers. It's about choices.
+
+Praxeology is the study of why humans act — and it's the philosophical backbone of Bitcoin.
+
+Mises figured this out in 1949. Satoshi applied it in 2009.
+
+Starting a series of praxeology pills. One concept at a time.<span class="hashtags">#praxeology</span></div>
+            <div class="pill-image">
+                <img src="pills/Introduction.jpg" alt="Praxeology Pills Introduction">
+            </div>
+        </div>
+        <div class="pill-explanation">
+            <h4>The concept explained</h4>
+            <p>Praxeology — from the Greek <em>praxis</em> (action) — is the science of human action, developed by Ludwig von Mises. Unlike mainstream economics, which tries to model behaviour statistically, praxeology starts from a single axiom: humans act purposefully to move from a less satisfactory to a more satisfactory state. Everything else follows by deduction. Bitcoin is arguably the first monetary system built on the same logic: rule-based, predictable, and indifferent to political pressure.</p>
+        </div>
+        <div class="pill-footer">
+            <a href="https://x.com/MarJJhodl" target="_blank" rel="noopener" class="action-link">View on X →</a>
+        </div>
+    </div>
+
+    <!-- PILL 1 -->
+    <div class="pill-card" id="pill-1">
+        <div class="pill-header">
+            <span class="pill-badge">#1</span>
+            <span class="pill-topic">Human Action</span>
+        </div>
+        <div class="pill-body">
+            <div class="pill-tweet">You never act without a reason.
+
+Even "doing nothing" is a choice. Mises called this the axiom of human action: every decision aims to remove uneasiness and reach a better state of being.
+
+That's why you buy bitcoin.<span class="hashtags">#praxeology #pill</span></div>
+            <div class="pill-image">
+                <img src="pills/pill1.jpg" alt="Pill #1 - Human Action">
+            </div>
+        </div>
+        <div class="pill-explanation">
+            <h4>The concept explained</h4>
+            <p>The axiom of human action is the foundation of all praxeology: every human being, always and everywhere, acts with intention. Action is purposeful behaviour aimed at removing some felt uneasiness. It doesn't matter if the goal is grand or trivial — buying coffee, saving money, staying in bed — it is still an act guided by a preference. This is not psychology; it is logic. And because Bitcoin requires a deliberate choice to hold, it is one of the clearest examples of the axiom in action.</p>
+        </div>
+        <div class="pill-footer">
+            <a href="https://x.com/MarJJhodl" target="_blank" rel="noopener" class="action-link">View on X →</a>
+        </div>
+    </div>
+
+    <!-- PILL 2 -->
+    <div class="pill-card" id="pill-2">
+        <div class="pill-header">
+            <span class="pill-badge">#2</span>
+            <span class="pill-topic">Subjective Value</span>
+        </div>
+        <div class="pill-body">
+            <div class="pill-tweet">A bottle of water is worth nothing at home. Everything in the desert.
+
+Value isn't in the object. It's in the person who makes a choice.
+
+Bitcoin price is a stack of subjective valuations.
+Mises proved it in 1949. The market proves it every day.<span class="hashtags">#praxeology #pill</span></div>
+            <div class="pill-image">
+                <img src="pills/pill2.jpg" alt="Pill #2 - Subjective Value">
+            </div>
+        </div>
+        <div class="pill-explanation">
+            <h4>The concept explained</h4>
+            <p>Before Mises, economists tried to ground value in objective qualities — labour hours, raw material cost, utility. The subjective theory of value overturned this: value exists in the mind of the person making a choice, not in the object being chosen. The same bitcoin is worth very little to someone who doesn't understand it and everything to someone who does. Price is not a measure of intrinsic worth — it is the meeting point of two subjective valuations at a given moment.</p>
+        </div>
+        <div class="pill-footer">
+            <a href="https://x.com/MarJJhodl" target="_blank" rel="noopener" class="action-link">View on X →</a>
+        </div>
+    </div>
+
+    <!-- PILL 3 -->
+    <div class="pill-card" id="pill-3">
+        <div class="pill-header">
+            <span class="pill-badge">#3</span>
+            <span class="pill-topic">Time Preference</span>
+        </div>
+        <div class="pill-body">
+            <div class="pill-tweet">Would you rather have an egg today or a chicken tomorrow?
+
+Your answer reveals your time preference.
+
+Low time preference means long-term thinking. Saving. Building.
+
+Fiat punishes savers. Bitcoin rewards them. Mises explained why that matters.<span class="hashtags">#praxeology #pill</span></div>
+            <div class="pill-image">
+                <img src="pills/pill3.jpg" alt="Pill #3 - Time Preference">
+            </div>
+        </div>
+        <div class="pill-explanation">
+            <h4>The concept explained</h4>
+            <p>Time preference is the degree to which you value present goods over future goods. It is universal — all humans prefer to have something now rather than later, all else equal. The question is by how much. High time preference leads to spending, short-termism, and debt. Low time preference leads to saving, investing, and building. Fiat money with its built-in inflation is a tax on low time preference — it punishes those who wait. Bitcoin, with its fixed supply and predictable issuance, systematically rewards patience.</p>
+        </div>
+        <div class="pill-footer">
+            <a href="https://x.com/MarJJhodl" target="_blank" rel="noopener" class="action-link">View on X →</a>
+        </div>
+    </div>
+
+    <!-- PILL 4 -->
+    <div class="pill-card" id="pill-4">
+        <div class="pill-header">
+            <span class="pill-badge">#4</span>
+            <span class="pill-topic">Marginal Utility</span>
+        </div>
+        <div class="pill-body">
+            <div class="pill-tweet">You don't value "water." You value the next glass of water.
+
+Your first glass keeps you alive. Your tenth fills a swimming pool. Same water. Different value.
+
+Mises called it marginal utility: every unit is judged on its own, based on how urgently you need it.
+
+Stack sats the same way. Each one serves a different purpose on your scale.<span class="hashtags">#praxeology #pill</span></div>
+            <div class="pill-image">
+                <img src="pills/pill4.jpg" alt="Pill #4 - Marginal Utility">
+            </div>
+        </div>
+        <div class="pill-explanation">
+            <h4>The concept explained</h4>
+            <p>You never value a good in the abstract — you value the next unit of it, given your current situation. This is the law of marginal utility. The first unit satisfies your most urgent need; each subsequent unit satisfies a progressively less urgent one. This is why prices fall as supply increases: more units available means each unit serves a lower-ranked end. It also explains the classic "diamond-water paradox" — water is more useful in total, but diamonds are scarcer, so each additional unit of diamond satisfies a higher-ranked preference than additional water.</p>
+        </div>
+        <div class="pill-footer">
+            <a href="https://x.com/MarJJhodl" target="_blank" rel="noopener" class="action-link">View on X →</a>
+        </div>
+    </div>
+
+    <!-- PILL 5 -->
+    <div class="pill-card" id="pill-5">
+        <div class="pill-header">
+            <span class="pill-badge">#5</span>
+            <span class="pill-topic">Spontaneous Order</span>
+        </div>
+        <div class="pill-body">
+            <div class="pill-tweet">No one designed English: it was born from individuals voluntarily communicating with each other.
+
+Likewise, order doesn't require a planner. It emerges from millions of individual choices.
+
+Mises called it spontaneous order.
+
+Bitcoin has no board or headquarters. Yet it creates a block every 10 minutes.<span class="hashtags">#praxeology</span></div>
+            <div class="pill-image">
+                <img src="pills/pill5.jpg" alt="Pill #5 - Spontaneous Order">
+            </div>
+        </div>
+        <div class="pill-explanation">
+            <h4>The concept explained</h4>
+            <p>Complex, functional systems can emerge without any central designer. Language, common law, markets, prices — none were invented by a committee. They evolved from the voluntary interactions of individuals pursuing their own ends. Friedrich Hayek called this "spontaneous order." The belief that order requires a planner is one of the most persistent errors in political thinking. Bitcoin's protocol is the most technically precise example of spontaneous order in modern history: global, consistent, leaderless, and self-correcting.</p>
+        </div>
+        <div class="pill-footer">
+            <a href="https://x.com/MarJJhodl" target="_blank" rel="noopener" class="action-link">View on X →</a>
+        </div>
+    </div>
+
+    <!-- PILL 6 -->
+    <div class="pill-card" id="pill-6">
+        <div class="pill-header">
+            <span class="pill-badge">#6</span>
+            <span class="pill-topic">Economic Calculation</span>
+        </div>
+        <div class="pill-body">
+            <div class="pill-tweet">How does a central planner decide how many shoes to produce?
+
+He can't. Without free prices, there's no way to know what people actually need.
+
+Mises wrote this in 1920. The Soviet Union proved him right for 70 years.
+
+Central banks face the same problem with money. Bitcoin fixes this: the price of everything, distorted by nothing.<span class="hashtags">#praxeology</span></div>
+            <div class="pill-image">
+                <img src="pills/pill6.jpg" alt="Pill #6 - Economic Calculation">
+            </div>
+        </div>
+        <div class="pill-explanation">
+            <h4>The concept explained</h4>
+            <p>In 1920, Mises published his "Economic Calculation in the Socialist Commonwealth" — a paper that proved, logically, that central planning must fail. Without private property and free prices, there is no mechanism to calculate whether resources are being used efficiently. Prices in a free market carry aggregated information about scarcity, preference, and opportunity cost that no committee can replicate or replace. The Soviet experiment ran for 70 years before collapsing under the weight of this impossibility. Central banking applies the same flawed logic to money itself.</p>
+        </div>
+        <div class="pill-footer">
+            <a href="https://x.com/MarJJhodl" target="_blank" rel="noopener" class="action-link">View on X →</a>
+        </div>
+    </div>
+
+    <!-- PILL 7 -->
+    <div class="pill-card" id="pill-7">
+        <div class="pill-header">
+            <span class="pill-badge">#7</span>
+            <span class="pill-topic">Cantillon Effect</span>
+        </div>
+        <div class="pill-body">
+            <div class="pill-tweet">New money doesn't reach everyone at the same time.
+
+Those closest to the printer spend it first — at yesterday's prices. Everyone else pays more tomorrow.
+
+Richard Cantillon described this in 1730. Your rent check confirms it every month.
+
+Bitcoin's supply is fixed. No printer. No line. No privilege.<span class="hashtags">#praxeology #pill</span></div>
+            <div class="pill-image">
+                <img src="pills/pill7.jpg" alt="Pill #7 - Cantillon Effect">
+            </div>
+        </div>
+        <div class="pill-explanation">
+            <h4>The concept explained</h4>
+            <p>When new money is created, it enters the economy at a specific point — usually through banks and governments — before prices have adjusted. Those who receive it first can spend at the old, lower prices. By the time the new money trickles down to everyone else, prices have already risen. This is the Cantillon Effect, described by Richard Cantillon nearly 300 years ago. It is a structural redistribution of wealth from savers and wage earners to those with access to new money. Bitcoin's fixed supply eliminates this mechanism entirely.</p>
+        </div>
+        <div class="pill-footer">
+            <a href="https://x.com/MarJJhodl" target="_blank" rel="noopener" class="action-link">View on X →</a>
+        </div>
+    </div>
+
+    <!-- PILL 8 -->
+    <div class="pill-card" id="pill-8">
+        <div class="pill-header">
+            <span class="pill-badge">#8</span>
+            <span class="pill-topic">Voluntary Exchange</span>
+        </div>
+        <div class="pill-body">
+            <div class="pill-tweet">Every free exchange advantages both sides: helping the others means gaining value for yourself.
+
+No need for a third party to approve it.
+
+Praxeology in code: Bitcoin finally allows voluntary exchange without permission.<span class="hashtags">#praxeology #pill</span></div>
+            <div class="pill-image">
+                <img src="pills/pill8.jpg" alt="Pill #8 - Voluntary Exchange">
+            </div>
+        </div>
+        <div class="pill-explanation">
+            <h4>The concept explained</h4>
+            <p>A voluntary exchange only happens when both parties expect to gain from it. If either side expected to lose, they would simply not agree. This means every free trade, by definition, creates value — not just transfers it. This is the core insight of catallactics: the free market is not a zero-sum competition but a positive-sum engine of mutual benefit. Bitcoin's permissionless settlement layer is the first monetary system in history to make voluntary exchange truly unstoppable.</p>
+        </div>
+        <div class="pill-footer">
+            <a href="https://x.com/MarJJhodl" target="_blank" rel="noopener" class="action-link">View on X →</a>
+        </div>
+    </div>
+
+    <!-- PILL 9 -->
+    <div class="pill-card" id="pill-9">
+        <div class="pill-header">
+            <span class="pill-badge">#9</span>
+            <span class="pill-topic">Inflation</span>
+        </div>
+        <div class="pill-body">
+            <div class="pill-tweet">Rising prices are not the cause of inflation, but its symptom.
+
+Inflation is the increase of the money supply. You pay more because the money printer decides your fate.
+
+Bitcoin grows at a known, decreasing rate: it's the sound solution in a free market.<span class="hashtags">#praxeology #pill</span></div>
+            <div class="pill-image">
+                <img src="pills/pill9.jpg" alt="Pill #9 - Inflation">
+            </div>
+        </div>
+        <div class="pill-explanation">
+            <h4>The concept explained</h4>
+            <p>The word "inflation" has been deliberately confused. In classical economics, inflation means an increase in the money supply. Rising consumer prices are the downstream consequence, not the phenomenon itself. When governments and central banks expand the money supply, each existing unit loses purchasing power — this is a hidden tax on every holder of the currency. Bitcoin's issuance schedule is written into the protocol: the supply grows at a predetermined, decreasing rate until it reaches 21 million, permanently. No one can change this by decree.</p>
+        </div>
+        <div class="pill-footer">
+            <a href="https://x.com/MarJJhodl" target="_blank" rel="noopener" class="action-link">View on X →</a>
+        </div>
+    </div>
+
+    <!-- PILL 10 -->
+    <div class="pill-card" id="pill-10">
+        <div class="pill-header">
+            <span class="pill-badge">#10</span>
+            <span class="pill-topic">Ideas Win Over Force</span>
+        </div>
+        <div class="pill-body">
+            <div class="pill-tweet">Tyrants have armies. Ideas have time. And time always wins.
+
+"In the long run, even the most despotic governments are no match for ideas."
+
+Bitcoin cannot be banned: it's an idea and a movement.<span class="hashtags">#praxeology #pill</span></div>
+            <div class="pill-image">
+                <img src="pills/pill10.jpg" alt="Pill #10 - Ideas Win">
+            </div>
+        </div>
+        <div class="pill-explanation">
+            <h4>The concept explained</h4>
+            <p>Mises argued that the ultimate source of political power is not force but ideas. Governments depend on the consent — or at least the passive acceptance — of the governed. When an idea becomes widely enough understood and believed, no army can suppress it indefinitely. Censorship buys time; it cannot change truth. Bitcoin is, at its core, a mathematical idea that anyone can verify independently. You cannot ban mathematics. Countries that try to ban Bitcoin end up exporting capital and talent instead.</p>
+        </div>
+        <div class="pill-footer">
+            <a href="https://x.com/MarJJhodl" target="_blank" rel="noopener" class="action-link">View on X →</a>
+        </div>
+    </div>
+
+    <!-- PILL 11 -->
+    <div class="pill-card" id="pill-11">
+        <div class="pill-header">
+            <span class="pill-badge">#11</span>
+            <span class="pill-topic">Money as Medium of Exchange</span>
+        </div>
+        <div class="pill-body">
+            <div class="pill-tweet">I want to buy your apples, but you don't want my eggs in exchange.
+
+It's the problem of "double-coincidence of wants."
+
+Barter cannot sustain an economy.
+We need to use money as a common medium of exchange.
+
+Bitcoin restores the function.<span class="hashtags">#praxeology #pill</span></div>
+            <div class="pill-image">
+                <img src="pills/pill11.jpg" alt="Pill #11 - Money as Medium of Exchange">
+            </div>
+        </div>
+        <div class="pill-explanation">
+            <h4>The concept explained</h4>
+            <p>Barter requires that both parties want exactly what the other has, at the same moment. At any scale, this is impossible. Money solves this by acting as a universally acceptable intermediate good — you trade your labour for money, and money for whatever you actually need. This is the primary function of money. Fiat currencies perform this function while also serving as tools of monetary policy and capital control. Bitcoin performs the exchange function purely, without the additional political layer.</p>
+        </div>
+        <div class="pill-footer">
+            <a href="https://x.com/MarJJhodl" target="_blank" rel="noopener" class="action-link">View on X →</a>
+        </div>
+    </div>
+
+    <!-- PILL 12 -->
+    <div class="pill-card" id="pill-12">
+        <div class="pill-header">
+            <span class="pill-badge">#12</span>
+            <span class="pill-topic">Labour</span>
+        </div>
+        <div class="pill-body">
+            <div class="pill-tweet">You could be playing video games right now. Instead you're working.
+
+You're trading your scarcest resources, time and energy, because the reward is worth more than what you give up.
+
+In praxeology, it's called "labour": the intentional application of human effort in production.
+
+Bitcoin ensures that reward cannot be inflated away.<span class="hashtags">#praxeology #pill</span></div>
+            <div class="pill-image">
+                <img src="pills/pill12.jpg" alt="Pill #12 - Labour">
+            </div>
+        </div>
+        <div class="pill-explanation">
+            <h4>The concept explained</h4>
+            <p>In praxeology, labour is not just physical effort — it is the purposeful application of time and energy toward a goal. You work because the expected outcome ranks higher on your value scale than the leisure you give up. Labour is always a trade-off: you sacrifice time that could have been spent otherwise. This makes labour inherently costly, which is why it must be compensated. When the money you earn slowly loses its purchasing power, the exchange becomes unfair — you gave real time; you got inflated paper in return.</p>
+        </div>
+        <div class="pill-footer">
+            <a href="https://x.com/MarJJhodl" target="_blank" rel="noopener" class="action-link">View on X →</a>
+        </div>
+    </div>
+
+    <!-- PILL 13 -->
+    <div class="pill-card" id="pill-13">
+        <div class="pill-header">
+            <span class="pill-badge">#13</span>
+            <span class="pill-topic">Disutility of Labour</span>
+        </div>
+        <div class="pill-body">
+            <div class="pill-tweet">Your first hour of work feels fine. Your eighth feels like a rock.
+
+It's not weakness, it's the disutility of labor. Every additional unit of labor costs more than the last, because the more you work, the more leisure you sacrifice.
+
+Bitcoin makes every hour worth more.<span class="hashtags">#praxeology #pill</span></div>
+            <div class="pill-image">
+                <img src="pills/pill13.jpg" alt="Pill #13 - Disutility of Labour">
+            </div>
+        </div>
+        <div class="pill-explanation">
+            <h4>The concept explained</h4>
+            <p>Labour has a cost beyond the hours spent: it is unpleasant in itself. Mises called this the disutility of labour. Each additional hour of work is harder than the last — not only because of fatigue, but because you are sacrificing increasingly valuable leisure time. This is why wages must rise to attract workers to longer hours, and why people stop working when the marginal reward no longer justifies the marginal sacrifice. Sound money that holds its value means you need to work fewer hours to achieve the same financial security.</p>
+        </div>
+        <div class="pill-footer">
+            <a href="https://x.com/MarJJhodl" target="_blank" rel="noopener" class="action-link">View on X →</a>
+        </div>
+    </div>
+
+    <!-- PILL 14 -->
+    <div class="pill-card" id="pill-14">
+        <div class="pill-header">
+            <span class="pill-badge">#14</span>
+            <span class="pill-topic">Leisure</span>
+        </div>
+        <div class="pill-body">
+            <div class="pill-tweet">Want to finally do your dream trip? You will need to pay for it, and that's why you work.
+
+Every human action aims at something — and that something is leisure.
+
+The direct enjoyment of life, free from the disutility of labor.
+
+Bitcoin protects what you're actually working for.<span class="hashtags">#praxeology #pill</span></div>
+            <div class="pill-image">
+                <img src="pills/pill14.jpg" alt="Pill #14 - Leisure">
+            </div>
+        </div>
+        <div class="pill-explanation">
+            <h4>The concept explained</h4>
+            <p>In praxeology, leisure is not idleness — it is the direct enjoyment of life that all productive activity ultimately aims at. You don't work to work. You work to live. Leisure is the final consumer good: the trip, the time with family, the creative project pursued for its own sake. All labour, all saving, all investment is a means to this end. Inflation erodes the purchasing power of what you save — which means it quietly steals hours of your life that you already spent working.</p>
+        </div>
+        <div class="pill-footer">
+            <a href="https://x.com/MarJJhodl" target="_blank" rel="noopener" class="action-link">View on X →</a>
+        </div>
+    </div>
+
+    <!-- PILL 15 -->
+    <div class="pill-card" id="pill-15">
+        <div class="pill-header">
+            <span class="pill-badge">#15</span>
+            <span class="pill-topic">Capital</span>
+        </div>
+        <div class="pill-body">
+            <div class="pill-tweet">Catch fish by hand all day, or spend a week building a net and catch more.
+
+The net is a capital good. You store your effort in a tool to scale production.
+
+In praxeology, capital IS time.
+
+In Bitcoin, every sat you hold is time you chose not to spend.<span class="hashtags">#praxeology #pill</span></div>
+            <div class="pill-image">
+                <img src="pills/pill15.jpg" alt="Pill #15 - Capital">
+            </div>
+        </div>
+        <div class="pill-explanation">
+            <h4>The concept explained</h4>
+            <p>Capital is the result of choosing not to consume everything you produce. Instead of eating all the fish today, you invest time in building a net — a capital good — that multiplies your future productivity. Capital is therefore stored time and stored labour. The more capital an economy accumulates, the more productive it becomes, and the higher the standard of living for everyone. Inflation destroys capital formation by punishing saving. Bitcoin is the hardest form of capital preservation ever created: a store of time that no one can silently drain.</p>
+        </div>
+        <div class="pill-footer">
+            <a href="https://x.com/MarJJhodl" target="_blank" rel="noopener" class="action-link">View on X →</a>
+        </div>
+    </div>
+
+    <!-- PILL 16 -->
+    <div class="pill-card" id="pill-16">
+        <div class="pill-header">
+            <span class="pill-badge">#16</span>
+            <span class="pill-topic">Division of Labour</span>
+        </div>
+        <div class="pill-body">
+            <div class="pill-tweet">You can't do everything. Neither can I. That's the point.
+
+So you specialize in what you do best, and buy the rest. Total output grows for everyone, even for unskilled people.
+
+Bitcoin removes barriers to entry — more participants, more output in the market.<span class="hashtags">#praxeology #pill</span></div>
+            <div class="pill-image">
+                <img src="pills/pill16.jpg" alt="Pill #16 - Division of Labour">
+            </div>
+        </div>
+        <div class="pill-explanation">
+            <h4>The concept explained</h4>
+            <p>The division of labour is one of the most powerful forces in human civilisation. When individuals specialise in what they do best and trade the surplus, total production increases dramatically — even if one person is worse at everything than another (comparative advantage). A subsistence farmer who tries to do everything produces little. A specialist who trades produces far more. The more participants in a trading network, the more specialisation is possible, and the higher the living standard for all. Bitcoin's borderless, permissionless payment layer expands this network to every human on earth.</p>
+        </div>
+        <div class="pill-footer">
+            <a href="https://x.com/MarJJhodl" target="_blank" rel="noopener" class="action-link">View on X →</a>
+        </div>
+    </div>
+
+    <!-- PILL 17 -->
+    <div class="pill-card" id="pill-17">
+        <div class="pill-header">
+            <span class="pill-badge">#17</span>
+            <span class="pill-topic">Capitalism</span>
+        </div>
+        <div class="pill-body">
+            <div class="pill-tweet">Own a phone? A savings account?
+You're already a capitalist.
+
+Capitalism is the social order that emerges when people use their own resources freely, without coercion.
+
+Bitcoin is capitalism in its purest form — no coercion, no interference.<span class="hashtags">#praxeology #pill</span></div>
+            <div class="pill-image">
+                <img src="pills/pill17.jpg" alt="Pill #17 - Capitalism">
+            </div>
+        </div>
+        <div class="pill-explanation">
+            <h4>The concept explained</h4>
+            <p>Capitalism, in the praxeological sense, is not a political ideology or a system imposed from above. It is the natural outcome of individuals owning property and acting freely. When people can direct their own resources — time, savings, tools — without coercion, they tend to invest, specialise, and trade. The result is growing wealth and rising living standards. What most people call "capitalism" today is a heavily regulated, state-distorted system with little resemblance to free markets. Bitcoin introduces a layer of the economy where the rules are enforced by mathematics, not politics.</p>
+        </div>
+        <div class="pill-footer">
+            <a href="https://x.com/MarJJhodl" target="_blank" rel="noopener" class="action-link">View on X →</a>
+        </div>
+    </div>
+
+    <!-- PILL 18 -->
+    <div class="pill-card" id="pill-18">
+        <div class="pill-header">
+            <span class="pill-badge">#18</span>
+            <span class="pill-topic">Exchangeable and Non-Exchangeable Gains</span>
+        </div>
+        <div class="pill-body">
+            <div class="pill-tweet">You pay €200 for a concert of your favorite band. Irrational? No, it's still a gain.
+
+Profit always includes gains you can't put on a spreadsheet. Models that ignore non-exchangeable value break.
+
+Bitcoin is one honest signal. Your values are the rest.<span class="hashtags">#praxeology #pill</span></div>
+            <div class="pill-image">
+                <img src="pills/pill18.jpg" alt="Pill #18 - Exchangeable and Non-Exchangeable Gains">
+            </div>
+        </div>
+        <div class="pill-explanation">
+            <h4>The concept explained</h4>
+            <p>Not all value can be measured in money. Praxeology distinguishes between exchangeable gains — things that can be traded and priced — and non-exchangeable gains: meaning, relationships, experience, beauty. Both are real. Both motivate action. Economic models that only track monetary profit systematically misunderstand human behaviour. The person who takes a lower-paying job for more time with their family is not making an irrational choice — they are valuing something that doesn't show up on a balance sheet. Bitcoin provides an honest monetary signal; what you do with your life is beyond the ledger.</p>
+        </div>
+        <div class="pill-footer">
+            <a href="https://x.com/MarJJhodl" target="_blank" rel="noopener" class="action-link">View on X →</a>
+        </div>
+    </div>
+
+    <!-- PILL 19 -->
+    <div class="pill-card" id="pill-19">
+        <div class="pill-header">
+            <span class="pill-badge">#19</span>
+            <span class="pill-topic">Catallactic Competition</span>
+        </div>
+        <div class="pill-body">
+            <div class="pill-tweet">A lion doesn't negotiate with the gazelle. It's biological competition — zero-sum, violent, brutal.
+
+In the free market, you win only if you serve others better. That's catallactic competition — positive-sum, peaceful, civilized.
+
+In Bitcoin, miners compete peacefully: the best work wins without coercion.<span class="hashtags">#praxeology #pill</span></div>
+            <div class="pill-image">
+                <img src="pills/pill19.jpg" alt="Pill #19 - Catallactic Competition">
+            </div>
+        </div>
+        <div class="pill-explanation">
+            <h4>The concept explained</h4>
+            <p>Catallactics is the branch of praxeology that studies the market order. Its defining insight is that market competition is fundamentally different from biological competition. In biology, competition is zero-sum: resources taken by one are unavailable to others. In the market, you win by serving others better — by offering a product, a price, or a service that your competitors cannot match. The customer gains, you gain, your competitor is incentivised to improve. Everyone benefits. Bitcoin mining is a perfect analogy: miners compete fiercely, but the winner provides a service to the entire network.</p>
+        </div>
+        <div class="pill-footer">
+            <a href="https://x.com/MarJJhodl" target="_blank" rel="noopener" class="action-link">View on X →</a>
+        </div>
+    </div>
+
+    <!-- PILL 20 -->
+    <div class="pill-card" id="pill-20">
+        <div class="pill-header">
+            <span class="pill-badge">#20</span>
+            <span class="pill-topic">Positive-Sum Game</span>
+        </div>
+        <div class="pill-body">
+            <div class="pill-tweet">In a soccer match, someone must lose.
+
+In the free market, both buyer and seller walk away with a good deal. No loser, only a positive-sum transaction.
+
+Catallactic competition doesn't produce losers — it produces cooperation.
+
+Bitcoin is a playing field open to every contender.<span class="hashtags">#praxeology #pill</span></div>
+            <div class="pill-image">
+                <img src="pills/pill20.jpg" alt="Pill #20 - Positive-Sum Game">
+            </div>
+        </div>
+        <div class="pill-explanation">
+            <h4>The concept explained</h4>
+            <p>Most people unconsciously apply a zero-sum mental model to economics: if someone gains, someone must lose. This is true in redistribution, but not in voluntary exchange. When two people trade freely, both walk away with something they value more than what they gave. Wealth is created, not merely shuffled. This positive-sum nature of markets is the reason why trading nations grow richer together, while warring nations impoverish each other. Bitcoin operates on the same logic: participation in the network creates value for all participants, not at the expense of any.</p>
+        </div>
+        <div class="pill-footer">
+            <a href="https://x.com/MarJJhodl" target="_blank" rel="noopener" class="action-link">View on X →</a>
+        </div>
+    </div>
+
+    <!-- PILL 21 -->
+    <div class="pill-card" id="pill-21">
+        <div class="pill-header">
+            <span class="pill-badge">#21</span>
+            <span class="pill-topic">Freedom and Property</span>
+        </div>
+        <div class="pill-body">
+            <div class="pill-tweet">A bird in a cage is fed every day, but it is not free. It would be free if it could come and go as it pleases.
+
+When property can be confiscated, freedom shrinks with it. Freedom and property are inseparable.
+
+Without one, the other is incomplete.
+
+Your keys, your coins. Your property, your freedom.<span class="hashtags">#praxeology #pill</span></div>
+            <div class="pill-image">
+                <img src="pills/pill21.jpg" alt="Pill #21 - Freedom and Property">
+            </div>
+        </div>
+        <div class="pill-explanation">
+            <h4>The concept explained</h4>
+            <p>Property rights are not a feature of capitalism — they are the foundation of human freedom. Without the ability to own and control the products of your labour, your choices are ultimately subject to someone else's approval. A government that can confiscate your savings, freeze your account, or inflate away your earnings owns a share of your life that you never agreed to give. Bitcoin's self-custody model makes property rights enforceable at the individual level for the first time in monetary history: not your keys, not your coins is not a slogan — it is a law of cryptography.</p>
+        </div>
+        <div class="pill-footer">
+            <a href="https://x.com/MarJJhodl" target="_blank" rel="noopener" class="action-link">View on X →</a>
+        </div>
+    </div>
+
+    <!-- PILL 22 -->
+    <div class="pill-card" id="pill-22">
+        <div class="pill-header">
+            <span class="pill-badge">#22</span>
+            <span class="pill-topic">Freedom and Responsibility</span>
+        </div>
+        <div class="pill-body">
+            <div class="pill-tweet">A child breaks a vase and blames the cat. An adult understands that freedom means also taking responsibility.
+
+Every choice you make in the free market is yours — the reward and the risk. No bailout, no safety net, no one else to blame.
+
+Bitcoin has no customer support. That's the point.<span class="hashtags">#praxeology #pill</span></div>
+            <div class="pill-image">
+                <img src="pills/pill22.jpg" alt="Pill #22 - Freedom and Responsibility">
+            </div>
+        </div>
+        <div class="pill-explanation">
+            <h4>The concept explained</h4>
+            <p>Freedom and responsibility are two sides of the same coin. A system that protects you from the consequences of your choices also strips you of the incentive to make better ones. Bailouts, subsidies, and safety nets are not neutral — they transfer the cost of bad decisions from those who made them to those who didn't. The result is a systematic reduction in accountability and, over time, in the quality of decisions made. Bitcoin's design — irreversible transactions, no chargebacks, self-custody — is not a flaw. It is the purest expression of individual accountability in a monetary system.</p>
+        </div>
+        <div class="pill-footer">
+            <a href="https://x.com/MarJJhodl" target="_blank" rel="noopener" class="action-link">View on X →</a>
+        </div>
+    </div>
+
+    <!-- PILL 23 -->
+    <div class="pill-card" id="pill-23">
+        <div class="pill-header">
+            <span class="pill-badge">#23</span>
+            <span class="pill-topic">Profit and Loss as Signals</span>
+        </div>
+        <div class="pill-body">
+            <div class="pill-tweet">A restaurant full every night is not luck. It's a signal.
+
+Profit means you served people well. Loss means you wasted resources. Together they tell the market where to go next.
+
+Distort them and the whole system breaks.
+
+Bitcoin's signal cannot be faked.<span class="hashtags">#praxeology #pill</span></div>
+            <div class="pill-image">
+                <img src="pills/pill23.jpg" alt="Pill #23 - Profit and Loss as Signals">
+            </div>
+        </div>
+        <div class="pill-explanation">
+            <h4>The concept explained</h4>
+            <p>Profit and loss are not moral judgements — they are information. Profit signals that resources were used to create more value than they consumed, and that production should expand. Loss signals the opposite: resources were wasted, and production should contract or redirect. Together, they guide capital toward its highest-valued uses without any central authority needing to intervene. When governments subsidise failing industries or bail out banks, they sever this feedback loop. The economy continues allocating resources — but toward political priorities, not human needs. Bitcoin's price is a signal that no one controls.</p>
+        </div>
+        <div class="pill-footer">
+            <a href="https://x.com/MarJJhodl" target="_blank" rel="noopener" class="action-link">View on X →</a>
+        </div>
+    </div>
+
+    <!-- PILL 24 -->
+    <div class="pill-card" id="pill-24">
+        <div class="pill-header">
+            <span class="pill-badge">#24</span>
+            <span class="pill-topic">Capital Accumulation and Living Standards</span>
+        </div>
+        <div class="pill-body">
+            <div class="pill-tweet">A smartphone today is cheaper and more powerful than a supercomputer from the 1980s.
+
+That's capital accumulation — entrepreneurs reinvesting profit to produce more, better, cheaper goods for everyone.
+
+The more capital accumulates, the lower the cost of living for all.
+
+Bitcoin protects that capital.<span class="hashtags">#praxeology #pill</span></div>
+            <div class="pill-image">
+                <img src="pills/pill24.jpg" alt="Pill #24 - Capital Accumulation and Living Standards">
+            </div>
+        </div>
+        <div class="pill-explanation">
+            <h4>The concept explained</h4>
+            <p>The dramatic rise in living standards over the past two centuries is not a mystery — it is the result of capital accumulation compounding over time. Entrepreneurs who earn profit and reinvest it create better tools, more efficient processes, and cheaper products. Each generation inherits a larger capital stock than the last and can therefore produce more with less effort. This is why the average person today lives better in material terms than kings did 200 years ago. Inflation is a tax on this process: it discourages saving, penalises reinvestment, and consumes the capital stock that future generations would otherwise inherit.</p>
+        </div>
+        <div class="pill-footer">
+            <a href="https://x.com/MarJJhodl" target="_blank" rel="noopener" class="action-link">View on X →</a>
+        </div>
+    </div>
+
+    <!-- PILL 25 -->
+    <div class="pill-card" id="pill-25">
+        <div class="pill-header">
+            <span class="pill-badge">#25</span>
+            <span class="pill-topic">Technology Needs Capital</span>
+        </div>
+        <div class="pill-body">
+            <div class="pill-tweet">You can watch a YouTube tutorial on how to build a house. That doesn't mean you can build one.
+
+Knowledge needs capital. You still need the bricks, the tools, the time.
+
+Capital is what turns knowledge into reality.
+
+Bitcoin does not dilute that capital.<span class="hashtags">#praxeology #pill</span></div>
+            <div class="pill-image">
+                <img src="pills/pill25.jpg" alt="Pill #25 - Technology Needs Capital">
+            </div>
+        </div>
+        <div class="pill-explanation">
+            <h4>The concept explained</h4>
+            <p>A common illusion of the information age is that knowledge alone creates progress. It doesn't. Knowledge is a necessary but not sufficient condition for innovation. Every technology — from a new drug to a new factory — requires capital: the accumulated savings and tools that make physical production possible. The idea for a solar panel is useless without the materials to build it, the equipment to manufacture it, and the labour to install it. All of this requires capital formed by prior saving and investment. Monetary expansion creates the illusion of capital; it does not create the real thing.</p>
+        </div>
+        <div class="pill-footer">
+            <a href="https://x.com/MarJJhodl" target="_blank" rel="noopener" class="action-link">View on X →</a>
+        </div>
+    </div>
+
+    <!-- PILL 26 -->
+    <div class="pill-card" id="pill-26">
+        <div class="pill-header">
+            <span class="pill-badge">#26</span>
+            <span class="pill-topic">Appraisement</span>
+        </div>
+        <div class="pill-body">
+            <div class="pill-tweet">Every entrepreneur is a time traveler. They can't know what the market will pay tomorrow. They anticipate it — betting scarce capital on their best guess of future prices.
+
+In praxeology this is called appraisement.
+
+Get it right and you profit. Get it wrong and you lose.
+
+Bitcoin makes that bet more honest.<span class="hashtags">#praxeology #pill</span></div>
+            <div class="pill-image">
+                <img src="pills/pill26.jpg" alt="Pill #26 - Appraisement">
+            </div>
+        </div>
+        <div class="pill-explanation">
+            <h4>The concept explained</h4>
+            <p>Appraisement is the entrepreneur's act of estimating future market prices in order to make production decisions today. Every business decision is a bet on the future: you buy inputs at today's prices hoping to sell outputs at tomorrow's prices. Get the estimate right and you profit — meaning you correctly anticipated what people would value. Get it wrong and you lose — meaning you misread demand and wasted resources. This process of entrepreneurial appraisement, multiplied across millions of actors, is what guides production to meet human needs. Monetary manipulation distorts the price signals on which these estimates rely, systematically misdirecting capital.</p>
+        </div>
+        <div class="pill-footer">
+            <a href="https://x.com/MarJJhodl" target="_blank" rel="noopener" class="action-link">View on X →</a>
+        </div>
+    </div>
+
+    <!-- PILL 27 -->
+    <div class="pill-card" id="pill-27">
+        <div class="pill-header">
+            <span class="pill-badge">#27</span>
+            <span class="pill-topic">Regression Theorem</span>
+        </div>
+        <div class="pill-body">
+            <div class="pill-tweet">Nobody woke up one day and decided gold was valuable. It already was.
+
+Money must have non-monetary value before it becomes money. Gold was jewelry before it was currency. This is Mises' Regression Theorem.
+
+Money is not invented. It's discovered.
+
+Bitcoin had a community before it had a price.<span class="hashtags">#praxeology #pill</span></div>
+            <div class="pill-image">
+                <img src="pills/pill27.jpg" alt="Pill #27 - Regression Theorem">
+            </div>
+        </div>
+        <div class="pill-explanation">
+            <h4>The concept explained</h4>
+            <p>Mises' Regression Theorem answers a fundamental question: how does money acquire its value in the first place? His answer: every money traces its value back to a time when it was valued for non-monetary reasons. Gold was a decorative metal before it became a currency. Shell beads had ceremonial value before they became tokens of exchange. A government cannot simply decree something valuable — acceptance must grow organically from prior usefulness. This is why fiat currencies only work when they inherit credibility from a gold-backed predecessor. Bitcoin's origin — a whitepaper, a codebase, a community of cypherpunks — was non-monetary before the first price was ever quoted.</p>
+        </div>
+        <div class="pill-footer">
+            <a href="https://x.com/MarJJhodl" target="_blank" rel="noopener" class="action-link">View on X →</a>
+        </div>
+    </div>
+
+    <!-- PILL 28 -->
+    <div class="pill-card" id="pill-28">
+        <div class="pill-header">
+            <span class="pill-badge">#28</span>
+            <span class="pill-topic">Interest as the Price of Time</span>
+        </div>
+        <div class="pill-body">
+            <div class="pill-tweet">You lend €100 today and get back €105 next year. That €5 isn't greed. It's the price of time.
+
+You value €105 in the future more than €100 today, and the borrower values the opposite.
+
+Interest is not a tax on money. It's the market's measure of time.
+
+Bitcoin has no central bank to manipulate that price.<span class="hashtags">#praxeology #pill</span></div>
+            <div class="pill-image">
+                <img src="pills/pill28.jpg" alt="Pill #28 - Interest as the Price of Time">
+            </div>
+        </div>
+        <div class="pill-explanation">
+            <h4>The concept explained</h4>
+            <p>Interest is not a financial invention or a form of exploitation — it is the market expression of time preference. All humans prefer present goods to future goods, all else equal. Interest is the premium that compensates lenders for giving up present purchasing power. When central banks artificially lower interest rates, they distort this signal: they make it appear that society has saved more than it has, encouraging investment in projects that cannot be completed without real capital. This is the Austrian theory of the business cycle — a boom built on a false signal, followed by an inevitable bust. Bitcoin's protocol has no mechanism for interest rate manipulation.</p>
+        </div>
+        <div class="pill-footer">
+            <a href="https://x.com/MarJJhodl" target="_blank" rel="noopener" class="action-link">View on X →</a>
+        </div>
+    </div>
+
+    <!-- PILL 29 -->
+    <div class="pill-card" id="pill-29">
+        <div class="pill-header">
+            <span class="pill-badge">#29</span>
+            <span class="pill-topic">The Non-Aggression Principle</span>
+        </div>
+        <div class="pill-body">
+            <div class="pill-tweet">You can disagree with your neighbor. You can compete with them. You can ignore them.
+
+What you should not do is attack them.
+
+That single rule — the Non-Aggression Principle — is the foundation of all peaceful coexistence.
+
+Bitcoin cannot violate it. No one can make it.<span class="hashtags">#praxeology #pill</span></div>
+            <div class="pill-image">
+                <img src="pills/pill29.jpg" alt="Pill #29 - Non-Aggression Principle">
+            </div>
+        </div>
+        <div class="pill-explanation">
+            <h4>The concept explained</h4>
+            <p>The Non-Aggression Principle (NAP) states that it is illegitimate to initiate force against another person or their property. You may compete, criticise, ignore, or walk away — but you may not coerce. This single rule, applied consistently, is the ethical foundation of the free market and of all peaceful social cooperation. Taxation is a coercive transfer; inflation is a coercive transfer hidden behind monetary mechanics. Bitcoin cannot be used to coerce: no one can be forced to accept it, and no one can prevent others from holding it. Participation is always voluntary.</p>
+        </div>
+        <div class="pill-footer">
+            <a href="https://x.com/MarJJhodl" target="_blank" rel="noopener" class="action-link">View on X →</a>
+        </div>
+    </div>
+
+    <!-- PILL 30 -->
+    <div class="pill-card" id="pill-30">
+        <div class="pill-header">
+            <span class="pill-badge">#30</span>
+            <span class="pill-topic">The Three Foundations of Natural Law</span>
+        </div>
+        <div class="pill-body">
+            <div class="pill-tweet">Three facts no one can deny:
+
+You own your body.
+
+External goods are scarce.
+
+Cooperating is the only way to achieve civilization.
+
+They are the base of natural law.
+
+Bitcoin is built on all three.<span class="hashtags">#praxeology #pill</span></div>
+            <div class="pill-image">
+                <img src="pills/pill30.jpg" alt="Pill #30 - Three Foundations of Natural Law">
+            </div>
+        </div>
+        <div class="pill-explanation">
+            <h4>The concept explained</h4>
+            <p>Natural law does not depend on legislation or tradition — it is derived from facts about human existence that no one can coherently deny. First: you own your body and your labour, because the alternative — that someone else owns you — destroys the very concept of voluntary action. Second: external goods are scarce, which means rules about ownership and use are necessary to avoid conflict. Third: cooperation is the only path to civilisation; isolated individuals cannot achieve what voluntary trade enables. Bitcoin is the first monetary network that encodes all three: self-sovereign custody, provably scarce supply, and global voluntary exchange.</p>
+        </div>
+        <div class="pill-footer">
+            <a href="https://x.com/MarJJhodl" target="_blank" rel="noopener" class="action-link">View on X →</a>
+        </div>
+    </div>
+
+    <!-- WRAP -->
+    <div class="pill-card special" id="wrap">
+        <div class="pill-header">
+            <span class="pill-badge">Wrap</span>
+            <span class="pill-topic">That's a wrap.</span>
+        </div>
+        <div class="pill-body">
+            <div class="pill-tweet">That's a wrap.
+
+A whole month of pills, to make Mises' Human Action accessible to everyone.
+
+The series was inspired by @knutsvanholm's 'Praxeology' → Italian version coming soon.<span class="hashtags">#praxeology #pill</span></div>
+            <div class="pill-image">
+                <img src="pills/wrap.jpg" alt="Praxeology Pills - Wrap">
+            </div>
+        </div>
+        <div class="pill-explanation">
+            <h4>What comes next</h4>
+            <p>The Italian translation of Knut Svanholm's <em>Praxeology — The Invisible Hand that Feeds You</em> is in progress. If 30 pills got you curious, the book is the next step — a full journey through Austrian economics, written for the Bitcoin era. Follow <strong>@MarJJhodl</strong> on X for updates on the translation and future series.</p>
+        </div>
+        <div class="pill-footer">
+            <a href="https://x.com/MarJJhodl" target="_blank" rel="noopener" class="action-link">Follow @MarJJhodl →</a>
+        </div>
+    </div>
+
+</div>
+
+<footer>
+    <p><strong>MariJ</strong> — Praxeology Pills | Original series Feb–Mar 2026 | <a href="index.html">← Back to Portfolio</a> | <a href="mailto:marjjhodl@proton.me">marjjhodl@proton.me</a></p>
+</footer>
+
+<!-- Lightbox -->
+<div class="lightbox-overlay" id="lightbox">
+    <button class="lightbox-close" id="lightbox-close">&times;</button>
+    <img src="" alt="" id="lightbox-img">
+</div>
+
+<script>
+    const overlay = document.getElementById('lightbox');
+    const lbImg = document.getElementById('lightbox-img');
+    const lbClose = document.getElementById('lightbox-close');
+
+    // Click on the ::after overlay pseudo-element (covers the img)
+    document.querySelectorAll('.pill-image').forEach(function(container) {
+        container.addEventListener('click', function() {
+            var img = this.querySelector('img');
+            lbImg.src = img.src;
+            lbImg.alt = img.alt;
+            overlay.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        });
+    });
+
+    // Block right-click on images everywhere on the page
+    document.addEventListener('contextmenu', function(e) {
+        if (e.target.tagName === 'IMG') {
+            e.preventDefault();
+            return false;
+        }
+    });
+
+    // Block drag on lightbox image
+    lbImg.addEventListener('dragstart', function(e) { e.preventDefault(); });
+    lbImg.setAttribute('draggable', 'false');
+
+    function closeLightbox() {
+        overlay.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+
+    lbClose.addEventListener('click', closeLightbox);
+    overlay.addEventListener('click', function(e) {
+        if (e.target === overlay) closeLightbox();
+    });
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') closeLightbox();
+    });
+</script>
+
+</body>
+</html>
