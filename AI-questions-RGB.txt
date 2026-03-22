@@ -2,6 +2,7 @@
   AI VISIBILITY AUDIT — RAW DATA
   RGB Protocol Association
   Tested: March 2026 | Platforms: 5 | Questions: 12
+  Research by: MariJ — Community Specialist & Technical Marketing candidate
 ==============================================================
 
 --------------------------------------------------------------
