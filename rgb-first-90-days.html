@@ -586,6 +586,36 @@
             <li class="pos">rgb.info and rgb.tech share the same technical SEO weaknesses, but rgb.info can leapfrog by fixing these first</li>
         </ul>
     </div>
+
+    <h3 style="margin-top:1.5rem;margin-bottom:0.75rem;">PageSpeed Audit — rgb.info (Mobile, March 2026)</h3>
+    <p style="font-size:0.87rem;color:var(--text-muted);margin-bottom:1rem;">Independent audit run on <code>rgb.info</code> via Google PageSpeed Insights to verify the technical issues above. The results confirm them directly.</p>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:0.75rem;margin-bottom:1rem;">
+        <div class="card" style="text-align:center;padding:1rem 0.75rem;">
+            <div style="font-size:1.8rem;font-weight:800;color:var(--orange);">84</div>
+            <div style="font-size:0.72rem;color:var(--text-muted);margin-top:0.2rem;">Performance</div>
+        </div>
+        <div class="card" style="text-align:center;padding:1rem 0.75rem;">
+            <div style="font-size:1.8rem;font-weight:800;color:var(--orange);">87</div>
+            <div style="font-size:0.72rem;color:var(--text-muted);margin-top:0.2rem;">Accessibility</div>
+        </div>
+        <div class="card" style="text-align:center;padding:1rem 0.75rem;">
+            <div style="font-size:1.8rem;font-weight:800;color:var(--teal);">100</div>
+            <div style="font-size:0.72rem;color:var(--text-muted);margin-top:0.2rem;">Best Practices</div>
+        </div>
+        <div class="card" style="text-align:center;padding:1rem 0.75rem;">
+            <div style="font-size:1.8rem;font-weight:800;color:var(--orange);">92</div>
+            <div style="font-size:0.72rem;color:var(--text-muted);margin-top:0.2rem;">SEO</div>
+        </div>
+    </div>
+    <div class="card">
+        <ul class="flist">
+            <li class="neg"><strong>SEO 92:</strong> primary reason is a missing meta description — confirmed by the audit. Easiest fix available, highest SEO impact per hour of work.</li>
+            <li class="neg"><strong>Performance 84:</strong> render-blocking resources causing 3,460ms delay. The site runs on WordPress with multiple plugins loading unused CSS (161 KiB) and JavaScript (364 KiB).</li>
+            <li class="neg"><strong>CLS 0.143:</strong> layout shift above the acceptable threshold (0.1). Affects both user experience and Core Web Vitals ranking signal.</li>
+            <li class="neg"><strong>TBT 70ms:</strong> 3 long tasks blocking the main thread. Caused by WordPress plugin overhead.</li>
+            <li class="pos"><strong>Best Practices 100:</strong> security and code quality are solid — a strong foundation to build on.</li>
+        </ul>
+    </div>
 </section>
 
 <!-- ── 05 THE PLAN ── -->
