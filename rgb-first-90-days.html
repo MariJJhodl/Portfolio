@@ -241,6 +241,8 @@
             margin: 0.15rem 0;
         }
         .ts-item:last-child .ts-line { display: none; }
+        a.ts-item { text-decoration: none; cursor: pointer; border-radius: var(--radius-sm); transition: opacity 0.15s; }
+        a.ts-item:hover { opacity: 0.75; }
         .ts-content { padding-bottom: 1.1rem; }
         .ts-label {
             font-family: 'JetBrains Mono', monospace;
@@ -681,42 +683,42 @@
 
     <!-- VISUAL SUMMARY -->
     <div class="tracks-summary">
-        <div class="ts-item">
+        <a class="ts-item" href="#track-00">
             <div class="ts-spine"><div class="ts-dot bg-blue"></div><div class="ts-line"></div></div>
             <div class="ts-content"><div class="ts-label c-blue">00 · Foundation</div><div class="ts-sub">AI Crawler Access</div></div>
-        </div>
-        <div class="ts-item">
+        </a>
+        <a class="ts-item" href="#track-01">
             <div class="ts-spine"><div class="ts-dot bg-red"></div><div class="ts-line"></div></div>
             <div class="ts-content"><div class="ts-label c-red">01 · Highest impact</div><div class="ts-sub">Counter the Fork Narrative</div></div>
-        </div>
-        <div class="ts-item">
+        </a>
+        <a class="ts-item" href="#track-02">
             <div class="ts-spine"><div class="ts-dot bg-red"></div><div class="ts-line"></div></div>
             <div class="ts-content"><div class="ts-label c-red">02 · Highest impact</div><div class="ts-sub">Own Stack Overflow</div></div>
-        </div>
-        <div class="ts-item">
+        </a>
+        <a class="ts-item" href="#track-03">
             <div class="ts-spine"><div class="ts-dot bg-red"></div><div class="ts-line"></div></div>
             <div class="ts-content"><div class="ts-label c-red">03 · Highest impact</div><div class="ts-sub">Chinese Market</div></div>
-        </div>
-        <div class="ts-item">
+        </a>
+        <a class="ts-item" href="#track-04">
             <div class="ts-spine"><div class="ts-dot bg-orange"></div><div class="ts-line"></div></div>
             <div class="ts-content"><div class="ts-label c-orange">04 · High impact</div><div class="ts-sub">AMAs on Record</div></div>
-        </div>
-        <div class="ts-item">
+        </a>
+        <a class="ts-item" href="#track-05">
             <div class="ts-spine"><div class="ts-dot bg-orange"></div><div class="ts-line"></div></div>
             <div class="ts-content"><div class="ts-label c-orange">05 · High impact</div><div class="ts-sub">Update Existing Content</div></div>
-        </div>
-        <div class="ts-item">
+        </a>
+        <a class="ts-item" href="#track-06">
             <div class="ts-spine"><div class="ts-dot bg-yellow"></div><div class="ts-line"></div></div>
             <div class="ts-content"><div class="ts-label c-yellow">06 · Medium impact</div><div class="ts-sub">Educator Pipeline</div></div>
-        </div>
-        <div class="ts-item">
+        </a>
+        <a class="ts-item" href="#track-07">
             <div class="ts-spine"><div class="ts-dot bg-teal"></div><div class="ts-line"></div></div>
             <div class="ts-content"><div class="ts-label c-teal">07 · Slow burn</div><div class="ts-sub">Media Outreach</div></div>
-        </div>
+        </a>
     </div>
 
     <!-- T00 -->
-    <div class="card track">
+    <div class="card track" id="track-00">
         <div class="track-header">
             <span class="track-num">00</span>
             <span class="badge b-foundation">Foundation</span>
@@ -737,7 +739,7 @@
     </div>
 
     <!-- T01 -->
-    <div class="card track">
+    <div class="card track" id="track-01">
         <div class="track-header">
             <span class="track-num">01</span>
             <span class="badge b-highest">Highest impact</span>
@@ -759,7 +761,7 @@
     </div>
 
     <!-- T02 -->
-    <div class="card track">
+    <div class="card track" id="track-02">
         <div class="track-header">
             <span class="track-num">02</span>
             <span class="badge b-highest">Highest impact</span>
@@ -776,7 +778,7 @@
     </div>
 
     <!-- T03 -->
-    <div class="card track">
+    <div class="card track" id="track-03">
         <div class="track-header">
             <span class="track-num">03</span>
             <span class="badge b-highest">Highest impact</span>
@@ -797,7 +799,7 @@
     </div>
 
     <!-- T04 -->
-    <div class="card track">
+    <div class="card track" id="track-04">
         <div class="track-header">
             <span class="track-num">04</span>
             <span class="badge b-high">High impact</span>
@@ -814,7 +816,7 @@
     </div>
 
     <!-- T05 -->
-    <div class="card track">
+    <div class="card track" id="track-05">
         <div class="track-header">
             <span class="track-num">05</span>
             <span class="badge b-high">High impact</span>
@@ -835,7 +837,7 @@
     </div>
 
     <!-- T06 -->
-    <div class="card track">
+    <div class="card track" id="track-06">
         <div class="track-header">
             <span class="track-num">06</span>
             <span class="badge b-medium">Medium impact</span>
@@ -852,7 +854,7 @@
     </div>
 
     <!-- T07 -->
-    <div class="card track">
+    <div class="card track" id="track-07">
         <div class="track-header">
             <span class="track-num">07</span>
             <span class="badge b-slow">Slow burn</span>
