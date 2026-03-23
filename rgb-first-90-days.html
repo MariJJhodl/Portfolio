@@ -207,6 +207,62 @@
         .b-medium     { background:var(--yellow-dim); color:var(--yellow); border:1px solid rgba(255,209,102,0.25); }
         .b-slow       { background:var(--teal-dim);   color:var(--teal);   border:1px solid rgba(0,212,170,0.25); }
 
+        /* TRACKS VISUAL SUMMARY — timeline */
+        .tracks-summary {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+            margin-bottom: 2.5rem;
+            padding-left: 0.5rem;
+        }
+        .ts-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            position: relative;
+        }
+        .ts-spine {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex-shrink: 0;
+            width: 1.6rem;
+        }
+        .ts-dot {
+            width: 0.65rem; height: 0.65rem;
+            border-radius: 50%;
+            margin-top: 0.3rem;
+            flex-shrink: 0;
+        }
+        .ts-line {
+            width: 2px; flex: 1;
+            min-height: 1.4rem;
+            background: var(--border);
+            margin: 0.15rem 0;
+        }
+        .ts-item:last-child .ts-line { display: none; }
+        .ts-content { padding-bottom: 1.1rem; }
+        .ts-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.72rem; font-weight: 600;
+            letter-spacing: 0.04em;
+            line-height: 1.2;
+        }
+        .ts-sub {
+            font-size: 0.78rem; color: var(--text-muted);
+            margin-top: 0.1rem;
+        }
+        .c-blue   { color: var(--blue); }
+        .c-red    { color: var(--red); }
+        .c-orange { color: var(--orange); }
+        .c-yellow { color: var(--yellow); }
+        .c-teal   { color: var(--teal); }
+        .bg-blue   { background: var(--blue); }
+        .bg-red    { background: var(--red); }
+        .bg-orange { background: var(--orange); }
+        .bg-yellow { background: var(--yellow); }
+        .bg-teal   { background: var(--teal); }
+
         /* TRACKS */
         .track { margin-bottom:0.75rem; }
         .track-header { display:flex; align-items:flex-start; gap:0.65rem; margin-bottom:0.65rem; flex-wrap:wrap; }
@@ -415,7 +471,7 @@
         <div class="banner-icon">🎯</div>
         <div>
             <h3>Biggest quick wins: not linking to either site</h3>
-            <p>Bitcoin Magazine (10+ RGB articles) · Atlas21 (7+ articles) · Tether USDT press release · CoinTelegraph launch article · The Block stablecoin article. If 3–4 of these add a link to rgb.info, domain authority jumps immediately.</p>
+            <p>Bitcoin Magazine (10+ RGB articles) · Atlas21 (7+ articles) · Tether USDT press release · The Block stablecoin article. If 3–4 of these add a link to rgb.info, domain authority jumps immediately.</p>
         </div>
     </div>
 </section>
@@ -623,6 +679,42 @@
     <div class="section-label">05 — Plan</div>
     <h2>Seven Tracks, Ordered by Impact</h2>
 
+    <!-- VISUAL SUMMARY -->
+    <div class="tracks-summary">
+        <div class="ts-item">
+            <div class="ts-spine"><div class="ts-dot bg-blue"></div><div class="ts-line"></div></div>
+            <div class="ts-content"><div class="ts-label c-blue">00 · Foundation</div><div class="ts-sub">AI Crawler Access</div></div>
+        </div>
+        <div class="ts-item">
+            <div class="ts-spine"><div class="ts-dot bg-red"></div><div class="ts-line"></div></div>
+            <div class="ts-content"><div class="ts-label c-red">01 · Highest impact</div><div class="ts-sub">Counter the Fork Narrative</div></div>
+        </div>
+        <div class="ts-item">
+            <div class="ts-spine"><div class="ts-dot bg-red"></div><div class="ts-line"></div></div>
+            <div class="ts-content"><div class="ts-label c-red">02 · Highest impact</div><div class="ts-sub">Own Stack Overflow</div></div>
+        </div>
+        <div class="ts-item">
+            <div class="ts-spine"><div class="ts-dot bg-red"></div><div class="ts-line"></div></div>
+            <div class="ts-content"><div class="ts-label c-red">03 · Highest impact</div><div class="ts-sub">Chinese Market</div></div>
+        </div>
+        <div class="ts-item">
+            <div class="ts-spine"><div class="ts-dot bg-orange"></div><div class="ts-line"></div></div>
+            <div class="ts-content"><div class="ts-label c-orange">04 · High impact</div><div class="ts-sub">AMAs on Record</div></div>
+        </div>
+        <div class="ts-item">
+            <div class="ts-spine"><div class="ts-dot bg-orange"></div><div class="ts-line"></div></div>
+            <div class="ts-content"><div class="ts-label c-orange">05 · High impact</div><div class="ts-sub">Update Existing Content</div></div>
+        </div>
+        <div class="ts-item">
+            <div class="ts-spine"><div class="ts-dot bg-yellow"></div><div class="ts-line"></div></div>
+            <div class="ts-content"><div class="ts-label c-yellow">06 · Medium impact</div><div class="ts-sub">Educator Pipeline</div></div>
+        </div>
+        <div class="ts-item">
+            <div class="ts-spine"><div class="ts-dot bg-teal"></div><div class="ts-line"></div></div>
+            <div class="ts-content"><div class="ts-label c-teal">07 · Slow burn</div><div class="ts-sub">Media Outreach</div></div>
+        </div>
+    </div>
+
     <!-- T00 -->
     <div class="card track">
         <div class="track-header">
@@ -657,7 +749,7 @@
                 <li>Publish factual response on rgb.info/blog: "Why we shipped v0.11.1: the audited, production-ready choice"</li>
                 <li>Include: independent audit results, Tether's choice, BitMask mainnet, ecosystem companies</li>
                 <li>Tone: confident and factual, not aggressive toward Orlovsky</li>
-                <li>Pitch article to Bitcoin Magazine, Atlas21, Stephan Livera: each citation trains AI toward balance</li>
+                <li>Pitch article to Atlas21, Unchained, Stephan Livera: each citation trains AI toward balance</li>
                 <li>Goal: 3+ major outlet citations within 30 days</li>
                 <li>Create dedicated "USDT on RGB" landing page to claim the stablecoin narrative</li>
                 <li>Create "State of the RGB Ecosystem" page listing all wallets, DEXes, builders on v0.11.1</li>
@@ -736,7 +828,7 @@
                 <li>Tether USDT-on-RGB press release: no link to rgb.info: coordinate with Tether comms</li>
                 <li>CoinTelegraph launch article and The Block stablecoin article: same approach</li>
                 <li>DIBA/BitMask blog: links to rgb.tech: coordinate with Gideon Nweze (Association member)</li>
-                <li>Stephan Livera SLP439 show notes: links rgbfaq.com: request update to rgb.info</li>
+                <li>Stephan Livera SLP439 show notes: links rgbfaq.com, not rgb.info: request update · SLP692 already cites rgb.info ✓</li>
                 <li>Encourage builders to link to rgb.info in their GitHub READMEs and websites</li>
             </ul>
         </div>
@@ -769,7 +861,7 @@
         <div class="track-body">
             <ul class="alist">
                 <li>Lead with what shocks: BitMask mainnet, Tether's USDT commitment. Adoption, not protocol theory</li>
-                <li>English outlets: Bitcoin Magazine, The Block, CoinDesk, CoinTelegraph, Decrypt</li>
+                <li>English outlets: The Block, Bitcoin Optech, Atlas21, Unchained, Protos</li>
                 <li>Chinese outlets: Jinse, BlockBeats, PANews, Foresight News, BTCStudy</li>
                 <li>Weekly developer update thread on X; monthly "state of RGB" post</li>
                 <li>Every story links back to rgb.info as the canonical protocol source</li>
@@ -790,7 +882,7 @@
                 <li>rgb.info submitted to Bing + Google, sitemap live, IndexNow on</li>
                 <li>Technical SEO fixed: titles, meta, schema, page speed</li>
                 <li>Fork counter-narrative published on rgb.info</li>
-                <li>Response pitched to Bitcoin Magazine and Atlas21</li>
+                <li>Response pitched to Atlas21 and Unchained</li>
                 <li>Stack Overflow: first 5 RGB answers citing rgb.info</li>
                 <li>Chinese content audit complete; BTCStudy outreach initiated</li>
                 <li>"RGB vs RGB++" Chinese explainer drafted</li>
