@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Part 2 — Claude Code &amp; RGB: MariJ × RGB Protocol Association</title>
+    <meta name="description" content="Can an AI coding tool like Claude Code issue an RGB token, program in Contractum and Rust, and be made RGB-aware by the Association? A live test and strategic plan.">
+    <meta name="author" content="MariJ">
+    <meta property="og:title" content="Part 2 — Claude Code &amp; RGB: MariJ × RGB Protocol Association">
+    <meta property="og:description" content="Can an AI coding tool like Claude Code issue an RGB token, program in Contractum and Rust, and be made RGB-aware by the Association? A live test and strategic plan.">
+    <meta property="og:type" content="article">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg:         #0d0d14;
+            --surface:    #13131f;
+            --surface2:   #1a1a2e;
+            --border:     rgba(255,255,255,0.07);
+            --blue:       #4d9fff;
+            --blue-dim:   rgba(77,159,255,0.12);
+            --teal:       #00d4aa;
+            --teal-dim:   rgba(0,212,170,0.12);
+            --orange:     #ff8c42;
+            --orange-dim: rgba(255,140,66,0.12);
+            --red:        #ff5b5b;
+            --red-dim:    rgba(255,91,91,0.12);
+            --yellow:     #ffd166;
+            --yellow-dim: rgba(255,209,102,0.12);
+            --text:       #e8e8f0;
+            --text-muted: #8888aa;
+            --text-dim:   #9898bb;
+            --radius:     0.75rem;
+            --radius-sm:  0.4rem;
+        }
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.65;
+            font-size: 15px;
+        }
+        .container { max-width:920px; margin:0 auto; padding:0 1.5rem; }
+
+        /* NAV */
+        .toc {
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            padding: 0.6rem 1.5rem;
+            position: sticky; top: 0; z-index: 10;
+            display: flex; gap: 1.5rem; overflow-x: auto;
+            scrollbar-width: none;
+        }
+        .toc::-webkit-scrollbar { display:none; }
+        .toc a {
+            font-size: 0.75rem; font-weight: 500;
+            color: var(--text-dim); text-decoration: none;
+            white-space: nowrap; letter-spacing: 0.04em;
+            transition: color 0.15s;
+        }
+        .toc a:hover { color: var(--blue); }
+
+        /* HEADER */
+        header {
+            border-bottom: 1px solid var(--border);
+            padding: 4rem 1.5rem 3rem;
+            text-align: center;
+            background: linear-gradient(180deg,#0d0d20 0%,var(--bg) 100%);
+            position: relative; overflow: hidden;
+        }
+        header::before {
+            content:''; position:absolute; top:-80px; left:50%;
+            transform:translateX(-50%);
+            width:700px; height:320px;
+            background:radial-gradient(ellipse,rgba(77,159,255,0.09) 0%,transparent 70%);
+            pointer-events:none;
+        }
+        .tag {
+            display:inline-block;
+            font-family:'JetBrains Mono',monospace;
+            font-size:0.7rem; font-weight:500;
+            letter-spacing:0.12em; text-transform:uppercase;
+            color:var(--blue); background:var(--blue-dim);
+            border:1px solid rgba(77,159,255,0.2);
+            padding:0.3rem 0.8rem; border-radius:2rem;
+            margin-bottom:1.5rem;
+        }
+        header h1 {
+            font-size:clamp(1.9rem,4.5vw,3rem);
+            font-weight:800; letter-spacing:-0.03em;
+            color:#fff; margin-bottom:0.75rem; line-height:1.15;
+        }
+        header h1 span { color:var(--blue); }
+        header .subtitle {
+            font-size:1rem; color:var(--text-muted);
+            max-width:600px; margin:0 auto 1rem;
+        }
+        .meta { font-size:0.85rem; color:var(--text-dim); }
+        .meta strong { color:var(--text); }
+        .meta a { color:var(--blue); text-decoration:none; }
+
+        /* SECTIONS */
+        section { padding:3rem 0 0.5rem; }
+        .section-label {
+            font-family:'JetBrains Mono',monospace;
+            font-size:0.78rem; font-weight:600;
+            letter-spacing:0.12em; text-transform:uppercase;
+            color:var(--blue); margin-bottom:0.4rem;
+        }
+        h2 {
+            font-size:1.45rem; font-weight:700;
+            letter-spacing:-0.02em; color:#fff;
+            margin-bottom:1.25rem;
+            padding-bottom:0.7rem;
+            border-bottom:1px solid var(--border);
+        }
+        h3 { font-size:0.95rem; font-weight:600; color:#fff; margin-bottom:0.35rem; }
+        p  { color:var(--text); margin-bottom:0.75rem; }
+        .lead { color:var(--text-muted); font-size:0.92rem; margin-bottom:1.25rem; }
+
+        /* CODE */
+        code {
+            font-family:'JetBrains Mono',monospace;
+            font-size:0.8rem; color:var(--blue);
+            background:var(--blue-dim); padding:0.1rem 0.4rem;
+            border-radius:var(--radius-sm);
+        }
+        pre {
+            font-family:'JetBrains Mono',monospace;
+            font-size:0.78rem; color:var(--teal);
+            background:var(--surface2); border:1px solid var(--border);
+            border-radius:var(--radius); padding:1rem 1.25rem;
+            margin:0.75rem 0; overflow-x:auto; line-height:1.7;
+        }
+
+        /* CARDS */
+        .card {
+            background:var(--surface); border:1px solid var(--border);
+            border-radius:var(--radius); padding:1.25rem 1.5rem;
+        }
+        .grid-2 { display:grid; grid-template-columns:repeat(2,1fr); gap:1rem; }
+        @media(max-width:600px){ .grid-2{ grid-template-columns:1fr; } }
+
+        /* CAPABILITY CARDS */
+        .cap-grid {
+            display:grid; grid-template-columns:repeat(2,1fr); gap:1rem;
+            margin-bottom:2rem;
+        }
+        @media(max-width:600px){ .cap-grid{ grid-template-columns:1fr; } }
+        .cap-card {
+            background:var(--surface); border:1px solid var(--border);
+            border-radius:var(--radius); padding:1.25rem 1.5rem;
+            border-top:3px solid var(--teal);
+        }
+        .cap-num {
+            font-family:'JetBrains Mono',monospace;
+            font-size:0.65rem; color:var(--teal);
+            letter-spacing:0.1em; font-weight:500; margin-bottom:0.4rem;
+        }
+        .cap-card h3 { color:var(--teal); margin-bottom:0.5rem; }
+        .cap-card p  { font-size:0.84rem; color:var(--text-muted); margin:0; }
+
+        /* Q BLOCK */
+        .q-block {
+            background:var(--surface2); border-left:3px solid var(--blue);
+            border-radius:0 var(--radius) var(--radius) 0;
+            padding:1rem 1.4rem; margin-bottom:0.75rem;
+        }
+        .q-label {
+            font-family:'JetBrains Mono',monospace;
+            font-size:0.65rem; color:var(--blue);
+            letter-spacing:0.1em; font-weight:600; margin-bottom:0.3rem;
+        }
+        .q-block p { font-size:0.92rem; color:var(--text); margin:0; font-style:italic; }
+
+        /* ANSWER SECTIONS */
+        .answer-block {
+            background:var(--surface); border:1px solid var(--border);
+            border-radius:var(--radius); padding:1.5rem;
+            margin-bottom:1.5rem;
+        }
+        .answer-tag {
+            font-family:'JetBrains Mono',monospace;
+            font-size:0.65rem; color:var(--text-dim);
+            letter-spacing:0.1em; font-weight:500; margin-bottom:0.75rem;
+        }
+        .answer-block h3 {
+            font-size:1.05rem; color:#fff;
+            margin-bottom:0.75rem; font-weight:700;
+        }
+
+        /* CAPABILITY ROWS */
+        .cap-row {
+            display:grid; grid-template-columns:6.5rem 1fr;
+            gap:0.5rem 1rem; margin-bottom:0.85rem; align-items:start;
+        }
+        .cap-lang {
+            font-family:'JetBrains Mono',monospace;
+            font-size:0.8rem; font-weight:600;
+            padding:0.25rem 0.6rem; border-radius:var(--radius-sm);
+            text-align:center; margin-top:0.1rem;
+        }
+        .lang-rust    { background:var(--orange-dim); color:var(--orange); border:1px solid rgba(255,140,66,0.25); }
+        .lang-contract{ background:var(--blue-dim);   color:var(--blue);   border:1px solid rgba(77,159,255,0.25); }
+        .lang-csv     { background:var(--teal-dim);   color:var(--teal);   border:1px solid rgba(0,212,170,0.25); }
+        .cap-row p { font-size:0.84rem; color:var(--text-muted); margin:0; }
+
+        /* REQUIREMENTS TABLE */
+        .req-table { width:100%; border-collapse:collapse; margin:1rem 0; font-size:0.83rem; }
+        .req-table th {
+            text-align:left; padding:0.5rem 0.85rem;
+            background:var(--surface2); color:var(--text-muted);
+            font-weight:600; font-size:0.72rem; letter-spacing:0.05em;
+            text-transform:uppercase; border-bottom:1px solid var(--border);
+        }
+        .req-table td {
+            padding:0.6rem 0.85rem;
+            border-bottom:1px solid var(--border); vertical-align:top;
+        }
+        .req-table tr:last-child td { border-bottom:none; }
+        .req-table tr:hover td { background:rgba(255,255,255,0.02); }
+        .req-table td:first-child {
+            font-family:'JetBrains Mono',monospace;
+            font-size:0.8rem; color:#fff; font-weight:500;
+        }
+
+        /* STEPS */
+        .step-list { list-style:none; margin:0.5rem 0 1rem; }
+        .step-list li {
+            display:grid; grid-template-columns:1.8rem 1fr;
+            gap:0.5rem; padding:0.45rem 0;
+            border-bottom:1px solid var(--border); align-items:start;
+            font-size:0.85rem;
+        }
+        .step-list li:last-child { border-bottom:none; }
+        .step-n {
+            font-family:'JetBrains Mono',monospace;
+            font-size:0.72rem; color:var(--blue); font-weight:600;
+            margin-top:0.05rem;
+        }
+        .step-list li span { color:var(--text); }
+        .step-list li .note { font-size:0.78rem; color:var(--text-muted); margin-top:0.2rem; }
+
+        /* SOURCES */
+        .source-group { margin-bottom:1.25rem; }
+        .source-group-label {
+            font-family:'JetBrains Mono',monospace;
+            font-size:0.7rem; color:var(--text-dim);
+            letter-spacing:0.08em; text-transform:uppercase;
+            font-weight:600; margin-bottom:0.5rem;
+        }
+        .source-item {
+            display:grid; grid-template-columns:14rem 1fr;
+            gap:0.5rem 1rem; padding:0.5rem 0;
+            border-bottom:1px solid var(--border);
+            font-size:0.84rem; align-items:baseline;
+        }
+        .source-item:last-child { border-bottom:none; }
+        .source-url {
+            font-family:'JetBrains Mono',monospace;
+            font-size:0.78rem; color:var(--blue); font-weight:500;
+        }
+        .source-desc { color:var(--text-muted); }
+        @media(max-width:600px){
+            .source-item { grid-template-columns:1fr; gap:0.15rem; }
+        }
+
+        /* LEVER CARDS */
+        .lever-card {
+            background:var(--surface); border:1px solid var(--border);
+            border-radius:var(--radius); padding:1.4rem 1.5rem;
+            margin-bottom:1rem; position:relative; overflow:hidden;
+        }
+        .lever-card::before {
+            content:''; position:absolute; top:0; left:0; bottom:0; width:3px;
+        }
+        .lever-1::before { background:var(--teal); }
+        .lever-2::before { background:var(--blue); }
+        .lever-3::before { background:var(--yellow); }
+        .lever-4::before { background:var(--orange); }
+        .lever-header {
+            display:flex; align-items:center; gap:0.75rem;
+            margin-bottom:0.75rem; flex-wrap:wrap;
+        }
+        .lever-num {
+            font-family:'JetBrains Mono',monospace;
+            font-size:0.68rem; color:var(--text-dim);
+            font-weight:600; letter-spacing:0.08em;
+        }
+        .lever-card h3 { font-size:1rem; color:#fff; }
+        .lever-body { font-size:0.84rem; color:var(--text-muted); }
+        .lever-body p { margin-bottom:0.5rem; }
+        .lever-body p:last-child { margin-bottom:0; }
+        .lever-meta {
+            display:flex; gap:0.5rem; margin-top:0.85rem; flex-wrap:wrap;
+        }
+        .lm-item {
+            font-size:0.75rem; padding:0.2rem 0.65rem;
+            border-radius:2rem; font-family:'JetBrains Mono',monospace;
+            font-weight:500; letter-spacing:0.04em;
+        }
+        .lm-who    { background:var(--surface2); color:var(--text-dim); border:1px solid var(--border); }
+        .lm-time   { background:var(--blue-dim); color:var(--blue);     border:1px solid rgba(77,159,255,0.2); }
+        .lm-impact-high   { background:var(--teal-dim);   color:var(--teal);   border:1px solid rgba(0,212,170,0.2); }
+        .lm-impact-medium { background:var(--yellow-dim); color:var(--yellow); border:1px solid rgba(255,209,102,0.2); }
+        .lm-impact-top    { background:var(--orange-dim); color:var(--orange); border:1px solid rgba(255,140,66,0.2); }
+
+        /* PRIORITY TABLE */
+        .priority-table { width:100%; border-collapse:collapse; font-size:0.83rem; margin-top:1rem; }
+        .priority-table th {
+            text-align:left; padding:0.5rem 0.85rem;
+            background:var(--surface2); color:var(--text-muted);
+            font-weight:600; font-size:0.72rem; letter-spacing:0.05em;
+            text-transform:uppercase; border-bottom:1px solid var(--border);
+        }
+        .priority-table td {
+            padding:0.65rem 0.85rem; border-bottom:1px solid var(--border);
+            vertical-align:middle;
+        }
+        .priority-table tr:last-child td { border-bottom:none; }
+        .priority-table tr:hover td { background:rgba(255,255,255,0.02); }
+        .priority-table td:first-child { color:#fff; font-weight:500; }
+
+        /* BADGE */
+        .badge {
+            display:inline-block;
+            font-family:'JetBrains Mono',monospace;
+            font-size:0.62rem; font-weight:600;
+            letter-spacing:0.1em; text-transform:uppercase;
+            padding:0.18rem 0.5rem; border-radius:2rem;
+        }
+        .b-week1  { background:var(--teal-dim);   color:var(--teal);   border:1px solid rgba(0,212,170,0.25); }
+        .b-month1 { background:var(--blue-dim);   color:var(--blue);   border:1px solid rgba(77,159,255,0.25); }
+        .b-month2 { background:var(--orange-dim); color:var(--orange); border:1px solid rgba(255,140,66,0.25); }
+        .b-you    { background:var(--surface2); color:var(--text-dim); border:1px solid var(--border); }
+        .b-dev    { background:var(--yellow-dim); color:var(--yellow); border:1px solid rgba(255,209,102,0.25); }
+
+        /* MCP EXPLAINER BOX */
+        .mcp-box {
+            background:var(--surface); border:1px solid rgba(77,159,255,0.2);
+            border-radius:var(--radius); padding:1.75rem;
+            position:relative; overflow:hidden; margin-top:1rem;
+        }
+        .mcp-box::before {
+            content:''; position:absolute; top:0; left:0; right:0; height:2px;
+            background:linear-gradient(90deg,var(--blue),var(--teal));
+        }
+        .mcp-box h3 { font-size:1rem; color:#fff; margin-bottom:0.75rem; }
+        .mcp-box p { font-size:0.88rem; color:var(--text-muted); margin-bottom:0.65rem; }
+        .mcp-box p:last-child { margin-bottom:0; }
+        .mcp-box strong { color:var(--text); }
+
+        /* FLIST */
+        .flist { list-style:none; margin:0.5rem 0; }
+        .flist li { font-size:0.85rem; padding:0.2rem 0 0.2rem 1.2rem; position:relative; color:var(--text); }
+        .flist li::before { content:'–'; position:absolute; left:0; color:var(--text-dim); }
+        .flist li.pos::before { content:'✓'; color:var(--teal); }
+        .flist li.neg::before { content:'✗'; color:var(--red); }
+
+        /* BACK LINK */
+        .back-link {
+            display:inline-flex; align-items:center; gap:0.4rem;
+            font-size:0.8rem; color:var(--text-dim);
+            text-decoration:none; margin-bottom:2rem;
+            transition:color 0.15s;
+        }
+        .back-link:hover { color:var(--blue); }
+
+        /* FOOTER */
+        footer {
+            border-top:1px solid var(--border);
+            padding:2rem 1.5rem; text-align:center;
+            color:var(--text-dim); font-size:0.8rem; margin-top:3rem;
+        }
+        footer a { color:var(--blue); text-decoration:none; }
+        footer a:hover { text-decoration:underline; }
+
+        @media(max-width:600px){
+            .cap-grid{ grid-template-columns:1fr; }
+            .cap-row { grid-template-columns:1fr; }
+            .cap-lang { display:inline-block; margin-bottom:0.25rem; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="toc">
+    <a href="#summary">What's Possible</a>
+    <a href="#questions">Questions</a>
+    <a href="#q1">Capabilities</a>
+    <a href="#q2">Non-Programmer Guide</a>
+    <a href="#q3">Sources</a>
+    <a href="#q4">Making Claude RGB-Aware</a>
+    <a href="#priority">Priority Table</a>
+    <span style="margin-left:auto; display:flex; gap:0.5rem; align-items:center; flex-shrink:0; padding-left:1.5rem; border-left:1px solid rgba(255,255,255,0.1);">
+        <a href="rgb-first-90-days.html" style="font-family:'JetBrains Mono',monospace; font-size:0.72rem; font-weight:600; color:var(--text-dim); background:transparent; border:1px solid var(--border); padding:0.15rem 0.55rem; border-radius:2rem; text-decoration:none; white-space:nowrap; transition:color 0.15s;" onmouseover="this.style.color='var(--blue)'" onmouseout="this.style.color='var(--text-dim)'">← Part 1</a>
+        <span style="font-family:'JetBrains Mono',monospace; font-size:0.72rem; font-weight:600; color:var(--blue); background:var(--blue-dim); border:1px solid rgba(77,159,255,0.25); padding:0.15rem 0.55rem; border-radius:2rem;">Part 2</span>
+    </span>
+</nav>
+
+<!-- HEADER -->
+<header>
+    <div class="container">
+        <div class="tag">RGB Protocol Association · Part 2 · April 2026</div>
+        <h1>Can <span>Claude Code</span> Build on RGB?</h1>
+        <p class="subtitle">A live test: issuing a token, guiding a non-programmer, and making AI tools permanently RGB-aware.</p>
+        <p class="meta">
+            Prepared by <strong>MariJ</strong> &nbsp;·&nbsp;
+            Community Specialist &amp; Technical Marketing candidate &nbsp;·&nbsp;
+            <a href="rgb-first-90-days.html">← Part 1: 90-Day SEO &amp; AI Plan</a>
+        </p>
+    </div>
+</header>
+
+<main>
+<div class="container">
+
+<!-- ── INDEX ── -->
+<section id="index" style="padding-top:2.5rem; padding-bottom:0;">
+    <div class="card" style="border:1px solid rgba(77,159,255,0.2); background:var(--surface);">
+        <div class="section-label" style="margin-bottom:0.75rem;">Page Index</div>
+        <ol style="list-style:none; margin:0; padding:0;">
+            <li style="border-bottom:1px solid var(--border);">
+                <a href="#summary" style="display:flex; justify-content:space-between; align-items:baseline; padding:0.6rem 0; text-decoration:none; color:var(--text); font-size:0.88rem; transition:color 0.15s;" onmouseover="this.style.color='var(--blue)'" onmouseout="this.style.color='var(--text)'">
+                    <span><span style="font-family:'JetBrains Mono',monospace; font-size:0.72rem; color:var(--blue); margin-right:0.75rem;">01</span>What Can Be Achieved</span>
+                    <span style="color:var(--text-dim); font-size:0.75rem;">↓</span>
+                </a>
+            </li>
+            <li style="border-bottom:1px solid var(--border);">
+                <a href="#questions" style="display:flex; justify-content:space-between; align-items:baseline; padding:0.6rem 0; text-decoration:none; color:var(--text); font-size:0.88rem; transition:color 0.15s;" onmouseover="this.style.color='var(--blue)'" onmouseout="this.style.color='var(--text)'">
+                    <span><span style="font-family:'JetBrains Mono',monospace; font-size:0.72rem; color:var(--blue); margin-right:0.75rem;">02</span>Questions Asked to Claude Code</span>
+                    <span style="color:var(--text-dim); font-size:0.75rem;">↓</span>
+                </a>
+            </li>
+            <li style="border-bottom:1px solid var(--border);">
+                <a href="#q1" style="display:flex; justify-content:space-between; align-items:baseline; padding:0.6rem 0; text-decoration:none; color:var(--text); font-size:0.88rem; transition:color 0.15s;" onmouseover="this.style.color='var(--blue)'" onmouseout="this.style.color='var(--text)'">
+                    <span><span style="font-family:'JetBrains Mono',monospace; font-size:0.72rem; color:var(--blue); margin-right:0.75rem;">03</span>Capabilities &amp; Requirements <span style="color:var(--text-dim); font-size:0.78rem; margin-left:0.5rem;">— Rust, Contractum, client-side validation</span></span>
+                    <span style="color:var(--text-dim); font-size:0.75rem;">↓</span>
+                </a>
+            </li>
+            <li style="border-bottom:1px solid var(--border);">
+                <a href="#q2" style="display:flex; justify-content:space-between; align-items:baseline; padding:0.6rem 0; text-decoration:none; color:var(--text); font-size:0.88rem; transition:color 0.15s;" onmouseover="this.style.color='var(--blue)'" onmouseout="this.style.color='var(--text)'">
+                    <span><span style="font-family:'JetBrains Mono',monospace; font-size:0.72rem; color:var(--blue); margin-right:0.75rem;">04</span>Guiding a Non-Programmer Through Issuance <span style="color:var(--text-dim); font-size:0.78rem; margin-left:0.5rem;">— step by step</span></span>
+                    <span style="color:var(--text-dim); font-size:0.75rem;">↓</span>
+                </a>
+            </li>
+            <li style="border-bottom:1px solid var(--border);">
+                <a href="#q3" style="display:flex; justify-content:space-between; align-items:baseline; padding:0.6rem 0; text-decoration:none; color:var(--text); font-size:0.88rem; transition:color 0.15s;" onmouseover="this.style.color='var(--blue)'" onmouseout="this.style.color='var(--text)'">
+                    <span><span style="font-family:'JetBrains Mono',monospace; font-size:0.72rem; color:var(--blue); margin-right:0.75rem;">05</span>Sources Used <span style="color:var(--text-dim); font-size:0.78rem; margin-left:0.5rem;">— primary, secondary, what Claude ignores</span></span>
+                    <span style="color:var(--text-dim); font-size:0.75rem;">↓</span>
+                </a>
+            </li>
+            <li style="border-bottom:1px solid var(--border);">
+                <a href="#q4" style="display:flex; justify-content:space-between; align-items:baseline; padding:0.6rem 0; text-decoration:none; color:var(--text); font-size:0.88rem; transition:color 0.15s;" onmouseover="this.style.color='var(--blue)'" onmouseout="this.style.color='var(--text)'">
+                    <span><span style="font-family:'JetBrains Mono',monospace; font-size:0.72rem; color:var(--blue); margin-right:0.75rem;">06</span>Making Claude Code RGB-Aware <span style="color:var(--text-dim); font-size:0.78rem; margin-left:0.5rem;">— four levers for the Association</span></span>
+                    <span style="color:var(--text-dim); font-size:0.75rem;">↓</span>
+                </a>
+            </li>
+            <li>
+                <a href="#priority" style="display:flex; justify-content:space-between; align-items:baseline; padding:0.6rem 0; text-decoration:none; color:var(--text); font-size:0.88rem; transition:color 0.15s;" onmouseover="this.style.color='var(--blue)'" onmouseout="this.style.color='var(--text)'">
+                    <span><span style="font-family:'JetBrains Mono',monospace; font-size:0.72rem; color:var(--blue); margin-right:0.75rem;">07</span>Priority Table <span style="color:var(--text-dim); font-size:0.78rem; margin-left:0.5rem;">— who does what, and when</span></span>
+                    <span style="color:var(--text-dim); font-size:0.75rem;">↓</span>
+                </a>
+            </li>
+        </ol>
+    </div>
+</section>
+
+<!-- ── 01 WHAT'S POSSIBLE ── -->
+<section id="summary">
+    <div class="section-label">01 — Executive Summary</div>
+    <h2>What Can Be Achieved</h2>
+    <p class="lead">Four things Claude Code can do for RGB today — before any engineering work by the Association.</p>
+
+    <div class="cap-grid">
+        <div class="cap-card">
+            <div class="cap-num">CAPABILITY 01</div>
+            <h3>Issue an RGB Token End-to-End</h3>
+            <p>Generate a contract, anchor it to a Bitcoin UTXO, and save the consignment file on the user's computer for client-side validation. The full issuance flow — from zero to a working RGB20 token — executable from a single conversation.</p>
+        </div>
+        <div class="cap-card">
+            <div class="cap-num">CAPABILITY 02</div>
+            <h3>Program in Rust and Contractum</h3>
+            <p>RGB's entire toolchain is Rust. Claude programs in Rust natively. It also writes and debugs Contractum — RGB's custom smart contract language — using live compiler feedback and fetching current specs directly from rgb.tech during the task.</p>
+        </div>
+        <div class="cap-card">
+            <div class="cap-num">CAPABILITY 03</div>
+            <h3>Guide a Non-Programmer Through Issuance</h3>
+            <p>The user answers three questions: name, ticker, supply. Claude handles every install, every command, every config file — and explains each step in plain language. No code knowledge required from the user.</p>
+        </div>
+        <div class="cap-card">
+            <div class="cap-num">CAPABILITY 04</div>
+            <h3>Be Made RGB-Aware by the Association</h3>
+            <p>Two actions — publishing a <code>CLAUDE.md</code> in the RGB-WG repos and an <code>llms.txt</code> on rgb.info — are enough to correct every AI coding tool for every developer who touches RGB. Both are content tasks: no engineering required.</p>
+        </div>
+    </div>
+
+    <div class="mcp-box">
+        <h3>The Highest-Impact Action: an MCP Server for RGB</h3>
+        <p>MCP (Model Context Protocol) is Anthropic's open standard for connecting AI tools to live data sources. Think of Claude as a very smart consultant who studied a lot of books. An MCP server is giving that consultant a direct line to your company's internal library — so instead of working from memory, they look things up live every time.</p>
+        <p>Without an MCP server, Claude answers RGB questions from training data that may be months old and mostly cites rgb.tech. <strong>With an MCP server pointing to rgb.info</strong>, every developer using Claude Code gets the Association's documentation — automatically, without anyone doing anything extra. The correction happens at the source, not one Stack Overflow answer at a time.</p>
+        <p>Building the server requires a developer. Specifying what it serves, writing the documentation it exposes, and coordinating maintenance — that is the Association's content role.</p>
+    </div>
+</section>
+
+<!-- ── 02 QUESTIONS ── -->
+<section id="questions">
+    <div class="section-label">02 — The Test</div>
+    <h2>Questions Asked to Claude Code</h2>
+    <p class="lead">Four questions asked live during an interview task. All answers below are Claude's actual responses, summarised and structured.</p>
+
+    <div class="q-block">
+        <div class="q-label">Q1</div>
+        <p>Is it possible to generate a token on RGB, issue it on the blockchain, and save the information on the person's computer for client-side validation? What would Claude need in order to do it? Can Claude program in Contractum and Rust? If not, how can it learn?</p>
+    </div>
+    <div class="q-block">
+        <div class="q-label">Q2</div>
+        <p>Suppose I'm not a programmer and I ask you to issue a token. How would you guide me?</p>
+    </div>
+    <div class="q-block">
+        <div class="q-label">Q3</div>
+        <p>I just want to know that it's possible. What sources would you use to get the information to do this task?</p>
+    </div>
+    <div class="q-block">
+        <div class="q-label">Q4</div>
+        <p>If I want an AI coding tool like Claude Code to actually program in RGB and use the documentation for v0.11, what would I need to do as an employee of the RGB Association?</p>
+    </div>
+</section>
+
+<!-- ── 03 Q1 ── -->
+<section id="q1">
+    <div class="section-label">03 — Answer to Q1</div>
+    <h2>Capabilities &amp; Requirements</h2>
+
+    <div class="answer-block">
+        <div class="answer-tag">RUST</div>
+        <h3>Fully capable</h3>
+        <p class="lead">RGB's toolchain — rgb-core, rgb-lib, rgb-std — is written in Rust. Claude reads, writes, and debugs it natively, including all SDK calls needed for issuance.</p>
+        <ul class="flist">
+            <li class="pos">Define a contract (RGB20 fungible token schema)</li>
+            <li class="pos">Build a genesis (the issuance transaction)</li>
+            <li class="pos">Anchor it to a Bitcoin UTXO via single-use seals</li>
+            <li class="pos">Produce and save the consignment file for client-side validation</li>
+        </ul>
+    </div>
+
+    <div class="answer-block">
+        <div class="answer-tag">CONTRACTUM</div>
+        <h3>Capable with live feedback</h3>
+        <p class="lead">Contractum is RGB's custom smart contract language. Claude knows the syntax and semantics and can write contracts — fixing errors iteratively from compiler output.</p>
+        <ul class="flist">
+            <li class="pos">Write Contractum contract source files</li>
+            <li class="pos">Debug from compiler error output</li>
+            <li class="pos">Fetch current specs live from rgb.tech/program and GitHub during the task</li>
+            <li class="neg">Cannot run the compiler remotely — it must be installed locally</li>
+        </ul>
+    </div>
+
+    <div class="answer-block">
+        <div class="answer-tag">CLIENT-SIDE VALIDATION DATA</div>
+        <h3>Standard operation</h3>
+        <p>Claude writes the logic to serialize and save stash and consignment files to disk. This is Rust file I/O — nothing exotic. The result is a portable proof of ownership stored locally, with no server dependency.</p>
+    </div>
+
+    <h3 style="margin-top:1.5rem; margin-bottom:0.75rem;">What needs to be installed on the machine</h3>
+    <table class="req-table">
+        <thead>
+            <tr>
+                <th>Tool</th>
+                <th>Why it's needed</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>rgb CLI</td>
+                <td style="color:var(--text-muted)">Installed via <code>cargo install rgb</code> — the main issuance interface</td>
+            </tr>
+            <tr>
+                <td>Bitcoin node</td>
+                <td style="color:var(--text-muted)">Regtest is enough — no real BTC required for testing</td>
+            </tr>
+            <tr>
+                <td>Funded UTXO</td>
+                <td style="color:var(--text-muted)">The genesis seal must close a real UTXO (fake coins work on regtest)</td>
+            </tr>
+            <tr>
+                <td>rgb-lib crates</td>
+                <td style="color:var(--text-muted)">Added to <code>Cargo.toml</code> — provides the higher-level Rust SDK</td>
+            </tr>
+            <tr>
+                <td>Contractum compiler</td>
+                <td style="color:var(--text-muted)">Only needed when writing <code>.contract</code> source files directly; Rust macros work without it</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div style="margin-top:1.25rem; background:var(--surface2); border:1px solid var(--border); border-radius:var(--radius); padding:1rem 1.25rem;">
+        <div class="answer-tag" style="margin-bottom:0.5rem;">HOW CLAUDE LEARNS CURRENT CONTRACTUM SYNTAX</div>
+        <p style="font-size:0.84rem; color:var(--text-muted); margin:0;">Claude does not rely on training data for fast-moving specs. It uses live web fetching to read <code>rgb.tech/program</code> and the Contractum GitHub spec during the task. It can also read any spec file dropped into the project folder. Three mechanisms work in combination: live doc fetching, local file reads, and iterative compiler error fixing.</p>
+    </div>
+</section>
+
+<!-- ── 04 Q2 ── -->
+<section id="q2">
+    <div class="section-label">04 — Answer to Q2</div>
+    <h2>Guiding a Non-Programmer Through Issuance</h2>
+    <p class="lead">The user answers three questions and approves the installs. Claude does everything else — and explains each step in plain language.</p>
+
+    <ol class="step-list">
+        <li>
+            <span class="step-n">01</span>
+            <div>
+                <span><strong>Install Rust.</strong> One command, run directly in the conversation so Claude sees the output and handles any errors before proceeding.</span>
+                <div class="note"><code>curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh</code></div>
+            </div>
+        </li>
+        <li>
+            <span class="step-n">02</span>
+            <div>
+                <span><strong>Install the RGB CLI.</strong> <code>cargo install rgb-contracts --all-features</code> — takes a few minutes. Claude explains what is compiling and why.</span>
+            </div>
+        </li>
+        <li>
+            <span class="step-n">03</span>
+            <div>
+                <span><strong>Install Bitcoin Core in regtest mode.</strong> No real money involved. Claude writes the config file automatically — the user never edits it manually.</span>
+            </div>
+        </li>
+        <li>
+            <span class="step-n">04</span>
+            <div>
+                <span><strong>Start the local fake Bitcoin network.</strong> Claude runs four commands: start the node, create a wallet, get an address, mine 101 blocks to it. In plain English: "I'm creating a fake Bitcoin network on your computer so we have something to anchor your token to."</span>
+            </div>
+        </li>
+        <li>
+            <span class="step-n">05</span>
+            <div>
+                <span><strong>Three questions, then issuance.</strong> What do you want to call your token? What ticker? How many? Claude runs the issuance command and returns a contract ID and a consignment file.</span>
+            </div>
+        </li>
+    </ol>
+
+    <h3 style="margin-top:1.25rem; margin-bottom:0.5rem;">What the user ends up with</h3>
+    <pre>~/.rgb/
+  contracts/
+    rgb1abc...xyz.yaml     ← your token definition
+  stash/
+    consignment-MYT.rgb    ← your client-side proof of ownership</pre>
+
+    <p style="font-size:0.84rem; color:var(--text-muted); margin-top:0.5rem;">Claude explains what each file is, what to back up, and what to do next — for example, transferring to Iris or BitMask on testnet.</p>
+
+    <div style="margin-top:1rem; background:var(--surface2); border:1px solid var(--border); border-radius:var(--radius); padding:1rem 1.25rem;">
+        <div class="answer-tag" style="margin-bottom:0.5rem;">HONEST LIMITS</div>
+        <ul class="flist">
+            <li>First run takes 20–40 minutes (Rust compiling)</li>
+            <li>Linux or Mac preferred — Windows requires extra steps</li>
+            <li>Mainnet requires a small amount of real BTC to anchor the token</li>
+        </ul>
+    </div>
+</section>
+
+<!-- ── 05 Q3 ── -->
+<section id="q3">
+    <div class="section-label">05 — Answer to Q3</div>
+    <h2>Sources Used</h2>
+    <p class="lead">Claude fetches documentation live during the task — not from training data. This matters for RGB because the protocol evolves fast and version differences are consequential.</p>
+
+    <div class="source-group">
+        <div class="source-group-label">Primary — fetched live</div>
+        <div class="source-item">
+            <span class="source-url">rgb.tech/docs</span>
+            <span class="source-desc">CLI reference and command syntax</span>
+        </div>
+        <div class="source-item">
+            <span class="source-url">rgb.tech/program</span>
+            <span class="source-desc">How to write contracts in Contractum</span>
+        </div>
+        <div class="source-item">
+            <span class="source-url">rgb.tech/install</span>
+            <span class="source-desc">Installation instructions for the CLI and node</span>
+        </div>
+        <div class="source-item">
+            <span class="source-url">github.com/RGB-WG/rgb</span>
+            <span class="source-desc">The CLI tool itself — README has usage examples</span>
+        </div>
+        <div class="source-item">
+            <span class="source-url">github.com/RGB-WG/rgb-schemata</span>
+            <span class="source-desc">Standard contract schemas including RGB20</span>
+        </div>
+        <div class="source-item">
+            <span class="source-url">github.com/RGB-WG/rgb-lib</span>
+            <span class="source-desc">Higher-level Rust abstractions for issuance and transfer</span>
+        </div>
+        <div class="source-item">
+            <span class="source-url">docs.rgb.info</span>
+            <span class="source-desc">The Association's user-facing documentation portal</span>
+        </div>
+    </div>
+
+    <div class="source-group">
+        <div class="source-group-label">Secondary</div>
+        <div class="source-item">
+            <span class="source-url">blackpaper.rgb.tech</span>
+            <span class="source-desc">Technical spec — client-side validation mechanics, single-use seals</span>
+        </div>
+        <div class="source-item">
+            <span class="source-url">rgbfaq.com</span>
+            <span class="source-desc">Community FAQ — edge cases and common errors</span>
+        </div>
+        <div class="source-item">
+            <span class="source-url">LNP/BP YouTube</span>
+            <span class="source-desc">Video walkthroughs of issuance flows</span>
+        </div>
+    </div>
+
+    <div style="margin-top:1rem; background:var(--surface2); border:1px solid var(--border); border-radius:var(--radius); padding:1rem 1.25rem;">
+        <div class="answer-tag" style="margin-bottom:0.5rem;">WHAT CLAUDE DOES NOT USE</div>
+        <ul class="flist">
+            <li class="neg">General Bitcoin tutorials — they do not cover RGB</li>
+            <li class="neg">rgb.tech's security notice as the final word on v0.11.1 — cross-referenced with rgb.info and the Association's position</li>
+            <li class="neg">Stack Overflow — almost no accurate RGB content exists there yet (which is exactly the gap identified in the Part 1 audit)</li>
+        </ul>
+    </div>
+</section>
+
+<!-- ── 06 Q4 ── -->
+<section id="q4">
+    <div class="section-label">06 — Answer to Q4</div>
+    <h2>Making Claude Code RGB-Aware: Four Levers</h2>
+    <p class="lead">What the Association needs to do — as a content role, not an engineering role — to make every AI coding tool default to rgb.info and v0.11.1.</p>
+
+    <div class="lever-card lever-1">
+        <div class="lever-header">
+            <span class="lever-num">LEVER 01</span>
+            <h3>CLAUDE.md files in the RGB-WG repos</h3>
+        </div>
+        <div class="lever-body">
+            <p>Claude Code reads a file called <code>CLAUDE.md</code> automatically whenever it opens a project. A plain-text file placed in the RGB-WG GitHub repos sets the correct context for every Claude session inside that repo — right version, right docs, right caveats — without the developer doing anything.</p>
+            <p>Example content: <em>"This project uses RGB v0.11.1 (rgb.info). Do not reference rgb.tech or any pre-v0.11 documentation. Contract schema reference: [link]. CLI reference: [link]."</em></p>
+            <p>No engineering required. This is a content task, executable in week one.</p>
+        </div>
+        <div class="lever-meta">
+            <span class="lm-item lm-who">Who: you</span>
+            <span class="lm-item lm-time">Timeline: week 1</span>
+            <span class="lm-item lm-impact-high">Impact: immediate for Claude Code users</span>
+        </div>
+    </div>
+
+    <div class="lever-card lever-2">
+        <div class="lever-header">
+            <span class="lever-num">LEVER 02</span>
+            <h3>llms.txt on rgb.info</h3>
+        </div>
+        <div class="lever-body">
+            <p>An emerging standard gaining fast adoption: a file at <code>rgb.info/llms.txt</code> containing clean, structured plain-text documentation formatted for AI tools to consume. AI coding tools that support it — Claude, Cursor, and others — fetch it automatically when users ask about RGB.</p>
+            <p>The result: always current documentation, always the right version, served to every AI coding session involving RGB. One publication, continuous effect.</p>
+            <p>You write the content. One developer publishes the file.</p>
+        </div>
+        <div class="lever-meta">
+            <span class="lm-item lm-who">Who: you + 1 dev</span>
+            <span class="lm-item lm-time">Timeline: week 1</span>
+            <span class="lm-item lm-impact-high">Impact: broad, fast</span>
+        </div>
+    </div>
+
+    <div class="lever-card lever-3">
+        <div class="lever-header">
+            <span class="lever-num">LEVER 03</span>
+            <h3>Restructure docs for AI consumption</h3>
+        </div>
+        <div class="lever-body">
+            <p>Current RGB docs are written for humans reading linearly. AI tools extract information more reliably when documentation follows four rules:</p>
+            <ul class="flist" style="margin-bottom:0.5rem;">
+                <li>One concept per page with a clear title</li>
+                <li>Explicit version tags at the top — <em>Applies to: v0.11.1</em></li>
+                <li>Code examples that actually run, not pseudocode</li>
+                <li>Explicit "do not confuse with" notes — RGB vs RGB++, rgb.tech vs rgb.info</li>
+            </ul>
+            <p>Pure content work. Restructuring the existing docs with these principles improves AI answers across all platforms long-term.</p>
+        </div>
+        <div class="lever-meta">
+            <span class="lm-item lm-who">Who: you</span>
+            <span class="lm-item lm-time">Timeline: month 1</span>
+            <span class="lm-item lm-impact-medium">Impact: long-term, cumulative</span>
+        </div>
+    </div>
+
+    <div class="lever-card lever-4">
+        <div class="lever-header">
+            <span class="lever-num">LEVER 04</span>
+            <h3>MCP server for RGB documentation</h3>
+        </div>
+        <div class="lever-body">
+            <p>MCP (Model Context Protocol) is Anthropic's open standard for connecting Claude to live data sources. When a developer asks Claude Code to issue an RGB token, Claude pulls the current v0.11.1 spec live from the server — always the right version, never stale training data.</p>
+            <p>A developer builds the server. The Association's content role is to specify what it serves, write the documentation it exposes, and coordinate maintenance. Being the first Bitcoin protocol with an MCP server is a concrete, memorable signal to the entire AI-tools ecosystem.</p>
+        </div>
+        <div class="lever-meta">
+            <span class="lm-item lm-who">Who: dev team (you spec it)</span>
+            <span class="lm-item lm-time">Timeline: month 2+</span>
+            <span class="lm-item lm-impact-top">Impact: highest of all four</span>
+        </div>
+    </div>
+</section>
+
+<!-- ── 07 PRIORITY TABLE ── -->
+<section id="priority">
+    <div class="section-label">07 — Action Plan</div>
+    <h2>Priority Table</h2>
+    <p class="lead">Ordered by speed of execution. The first two actions can ship in week one without waiting on anyone.</p>
+
+    <table class="priority-table">
+        <thead>
+            <tr>
+                <th>Action</th>
+                <th>Who</th>
+                <th>Timeline</th>
+                <th>Impact</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>CLAUDE.md in RGB-WG repos</td>
+                <td><span class="badge b-you">You</span></td>
+                <td><span class="badge b-week1">Week 1</span></td>
+                <td style="color:var(--teal); font-size:0.83rem;">Immediate for Claude Code users</td>
+            </tr>
+            <tr>
+                <td>llms.txt on rgb.info</td>
+                <td><span class="badge b-you">You</span> <span class="badge b-dev">+ 1 dev</span></td>
+                <td><span class="badge b-week1">Week 1</span></td>
+                <td style="color:var(--teal); font-size:0.83rem;">Broad — covers most AI coding tools</td>
+            </tr>
+            <tr>
+                <td>Restructure docs for AI consumption</td>
+                <td><span class="badge b-you">You</span></td>
+                <td><span class="badge b-month1">Month 1</span></td>
+                <td style="color:var(--blue); font-size:0.83rem;">Long-term improvement across all platforms</td>
+            </tr>
+            <tr>
+                <td>MCP server for RGB documentation</td>
+                <td><span class="badge b-dev">Dev team</span></td>
+                <td><span class="badge b-month2">Month 2+</span></td>
+                <td style="color:var(--orange); font-size:0.83rem;">Highest impact — live, always-correct context</td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+
+</div>
+</main>
+
+<footer>
+    <div class="container">
+        <p>
+            <a href="rgb-first-90-days.html">← Part 1: 90-Day SEO &amp; AI Visibility Plan</a>
+            &nbsp;·&nbsp;
+            <a href="index.html">Portfolio</a>
+            &nbsp;·&nbsp;
+            Prepared by MariJ · April 2026
+        </p>
+    </div>
+</footer>
+
+</body>
+</html>
