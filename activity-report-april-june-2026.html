@@ -454,13 +454,13 @@
 
   <!-- TABLE STYLE -->
   <style>
-    .audit-table { width:100%; border-collapse:collapse; font-size:13.5px; margin-bottom:32px; }
-    .audit-table th { background:#0d0d1f; color:#fff; padding:10px 14px; text-align:left; font-weight:600; }
-    .audit-table th:first-child { border-radius:6px 0 0 0; }
-    .audit-table th:last-child { border-radius:0 6px 0 0; }
-    .audit-table td { padding:10px 14px; border-bottom:1px solid #eaeaea; vertical-align:top; }
+    .audit-table { width:100%; border-collapse:collapse; font-size:13.5px; margin-bottom:32px; border:1.5px solid #d0d7e3; border-radius:8px; overflow:hidden; }
+    .audit-table th { background:#0d0d1f; color:#fff; padding:10px 14px; text-align:left; font-weight:600; border-right:1px solid #2a2a40; }
+    .audit-table th:last-child { border-right:none; }
+    .audit-table td { padding:10px 14px; border-bottom:1.5px solid #e0e6f0; border-right:1px solid #e0e6f0; vertical-align:top; }
+    .audit-table td:last-child { border-right:none; }
     .audit-table tr:last-child td { border-bottom:none; }
-    .audit-table tr:nth-child(even) td { background:#fafafa; }
+    .audit-table tr:nth-child(even) td { background:#f7f9fc; }
     .audit-verdict { display:inline-block; font-size:11px; font-weight:700; padding:2px 8px; border-radius:10px; margin-bottom:4px; }
     .v-bad { background:#fdecea; color:#b91c1c; }
     .v-mixed { background:#fff3e0; color:#b45309; }
