@@ -335,7 +335,7 @@
 <div id="sticky-nav">
   <span class="snav-logo">RGB · Report</span>
   <a href="#s10">01 · AI Audit</a>
-  <a href="#s12">02 · SEO</a>
+  <a href="#s12">02 · Search</a>
   <a href="#s01">03 · AI Infra</a>
   <a href="#s02">04 · Website</a>
   <a href="#s03">05 · Blog</a>
@@ -385,7 +385,7 @@
   </style>
   <ol class="toc">
     <li><a href="#s10"><span class="toc-num">01</span><span class="toc-title">AI Visibility Audit — Baseline vs. Re-audit</span></a></li>
-    <li><a href="#s12"><span class="toc-num">02</span><span class="toc-title">Google Search Performance</span></a></li>
+    <li><a href="#s12"><span class="toc-num">02</span><span class="toc-title">Search Performance</span></a></li>
     <li><a href="#s01"><span class="toc-num">03</span><span class="toc-title">AI Infrastructure &amp; Distribution</span></a></li>
     <li><a href="#s02"><span class="toc-num">04</span><span class="toc-title">Website SEO &amp; Technical Launch</span></a></li>
     <li><a href="#s03"><span class="toc-num">05</span><span class="toc-title">Blog Content Production</span></a></li>
@@ -557,6 +557,25 @@
     <strong>Disinformation removal:</strong> Gate.io removed two incorrect articles upon request — one of which was a third-party reprint — that used outdated terminology and cited wrong sources. Removing disinformation sources is as relevant as creating correct content: it reduces the number of conflicting signals that AI models retrieve when searching for information on RGB Protocol on Bitcoin, and that were actively pulling answers in the wrong direction.
   </div>
 
+  <!-- BING COPILOT -->
+  <h3 style="margin-top:8px;margin-bottom:10px;font-size:15px;color:#0d0d1f;">Bing Copilot — Citation Data</h3>
+  <p style="font-size:13px;color:#888;margin-bottom:12px;">Not manually audited. Data from Bing Webmaster Tools <em>AI Performance Overview</em> dashboard · Period: 5–22 June 2026.</p>
+
+  <table class="audit-table" style="margin-bottom:12px;">
+    <thead>
+      <tr><th>Date</th><th>Citations</th><th>Cited Pages</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>8 Jun</td><td><strong>11</strong></td><td>3</td></tr>
+      <tr><td>9 Jun</td><td>1</td><td>1</td></tr>
+      <tr><td>17 Jun</td><td><strong>7</strong></td><td>1</td></tr>
+      <tr><td>21 Jun</td><td>3</td><td>1</td></tr>
+      <tr><td style="color:#888;">All other days</td><td style="color:#888;">0</td><td style="color:#888;">0</td></tr>
+    </tbody>
+  </table>
+
+  <p style="font-size:13px;color:#888;margin-bottom:32px;">22 total citations across 4 active days. First citation: 8 June — 5 days after IndexNow activation.</p>
+
 </section>
 
 
@@ -564,8 +583,9 @@
 <section id="s12">
   <div class="section-title">
     <span class="section-number">02</span>
-    <h2>Google Search Performance</h2>
+    <h2>Search Performance</h2>
   </div>
+  <h3 style="margin-top:0;margin-bottom:12px;font-size:15px;color:#0d0d1f;">Google Search Console</h3>
   <p>Data source: Google Search Console · Period: 20 April – 20 June 2026 · Site launch: 3 June 2026.</p>
 
   <h3 style="margin-top:24px;margin-bottom:12px;font-size:15px;color:#0d0d1f;">Before vs. After Site Launch</h3>
@@ -618,6 +638,24 @@
     </tbody>
   </table>
   <p style="font-size:12.5px;color:#888;margin-top:8px;">Brand queries dominate — rgb.info ranks in position 2 for its core terms. Non-brand queries (e.g. "what is rgb protocol bitcoin", "rgb lightning") are generating impressions but not yet clicks, indicating ranking consolidation is still in progress.</p>
+
+  <h3 style="margin-top:32px;margin-bottom:12px;font-size:15px;color:#0d0d1f;">Bing Search Performance</h3>
+  <p>Data source: Bing Webmaster Tools · Period: 5–22 June 2026.</p>
+  <table class="audit-table" style="margin-bottom:12px;">
+    <thead>
+      <tr>
+        <th></th>
+        <th>Total (5–22 Jun)</th>
+        <th>Daily average</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>Impressions</strong></td><td>56</td><td>~3 / day</td></tr>
+      <tr><td><strong>Clicks</strong></td><td>2</td><td>&lt; 1 / day</td></tr>
+      <tr><td><strong>CTR</strong></td><td colspan="2">~3.6% overall · 40% on 13 Jun (anomaly — likely branded query)</td></tr>
+    </tbody>
+  </table>
+  <p style="font-size:13.5px;color:#555;">Bing organic traffic is still negligible, consistent with a site newly indexed on Bing. By comparison, Google is already delivering ~169 impressions/day after the Kinsta launch. The Copilot citation data in section 01 confirms Bing has indexed rgb.info and is using it as a knowledge source — organic ranking on Bing search is a separate process that typically lags several weeks behind indexation.</p>
 
 </section>
 
