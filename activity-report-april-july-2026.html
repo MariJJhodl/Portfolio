@@ -1,0 +1,1822 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RGB Protocol Association — Activity Report, April–July 2026</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: 15px;
+    line-height: 1.7;
+    color: #1a1a2e;
+    background: #fff;
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 60px 48px;
+  }
+
+  /* HEADER */
+  .report-header {
+    border-bottom: 3px solid #e85a3a;
+    padding-bottom: 28px;
+    margin-bottom: 28px;
+  }
+
+  .report-header .logo-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 20px;
+  }
+
+  .rgb-badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    color: #e85a3a;
+    border: 1.5px solid #e85a3a;
+    padding: 3px 10px;
+    border-radius: 4px;
+    text-transform: uppercase;
+  }
+
+  .report-header h1 {
+    font-size: 26px;
+    font-weight: 700;
+    color: #0d0d1f;
+    line-height: 1.25;
+    margin-bottom: 8px;
+  }
+
+  .report-meta {
+    font-size: 13px;
+    color: #666;
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+
+  .report-meta span strong {
+    color: #333;
+  }
+
+  /* TAB SWITCHER */
+  .tab-switcher-label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #aaa;
+    margin-bottom: 10px;
+  }
+  .tab-switcher {
+    display: flex;
+    gap: 4px;
+    background: #fff;
+    border: 1.5px solid #0d0d1f;
+    border-radius: 10px;
+    padding: 5px;
+    margin-bottom: 40px;
+    width: 100%;
+  }
+  .tab-switcher button {
+    flex: 1;
+    text-align: center;
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    color: #777;
+    background: transparent;
+    border: none;
+    border-radius: 7px;
+    padding: 13px 28px;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+  }
+  .tab-switcher button.active {
+    background: #22c55e;
+    color: #0d0d1f;
+    box-shadow: 0 1px 6px rgba(34,197,94,0.45);
+  }
+  .tab-switcher button:hover:not(.active) { color: #333; }
+
+  /* STICKY MINI TAB SWITCHER */
+  #sticky-nav .sticky-tabs {
+    display: flex;
+    gap: 3px;
+    padding-right: 12px;
+    margin-right: 8px;
+    border-right: 1px solid #eaeaea;
+    flex-shrink: 0;
+  }
+  #sticky-nav .sticky-tabs button {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    color: #999;
+    background: transparent;
+    border: none;
+    border-radius: 5px;
+    padding: 6px 11px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.15s, color 0.15s;
+  }
+  #sticky-nav .sticky-tabs button.active {
+    background: #22c55e;
+    color: #0d0d1f;
+  }
+  #sticky-nav .sticky-tabs button:hover:not(.active) { color: #333; }
+
+  /* SOURCE CARDS (Visibility Report tab) */
+  .source-card {
+    background: #fff;
+    border: 1.5px solid var(--src-color, #999);
+    border-top: 4px solid var(--src-color, #999);
+    border-radius: 10px;
+    padding: 22px 24px 20px;
+    margin-bottom: 28px;
+  }
+  .source-card.accent-ai { --src-color: #7c3aed; }
+  .source-card.accent-bing { --src-color: #0891b2; }
+  .source-card.accent-google { --src-color: #2b6cb0; }
+  .source-card.accent-wp { --src-color: #e85a3a; }
+  .source-card.accent-s01 { --src-color: #7c3aed; }
+  .source-card.accent-s02 { --src-color: #2b6cb0; }
+  .source-card.accent-s03 { --src-color: #db2777; }
+  .source-card.accent-s04 { --src-color: #d97706; }
+  .source-card.accent-s05 { --src-color: #dc2626; }
+  .source-card.accent-s06 { --src-color: #059669; }
+  .source-card.accent-s07 { --src-color: #4f46e5; }
+  .source-card.accent-s08 { --src-color: #e85a3a; }
+  .source-card.accent-s09 { --src-color: #64748b; }
+  .source-tag {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--src-color, #999);
+    margin-bottom: 14px;
+    cursor: pointer;
+    user-select: none;
+  }
+  .source-tag-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+  }
+  .source-tag-label::before {
+    content: "";
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--src-color, #999);
+    flex-shrink: 0;
+  }
+  .card-collapse-arrow {
+    font-size: 12px;
+    color: #ccc;
+    transition: transform 0.2s;
+  }
+  .card-body.collapsed { display: none; }
+  .source-card > h3:first-of-type { margin-top: 0 !important; }
+  .source-card > *:last-child { margin-bottom: 0 !important; }
+
+  /* REFERENCE / ARCHIVED DATA NOTES */
+  .ref-note {
+    display: block;
+    font-size: 12px;
+    color: #999;
+    background: #fafbfc;
+    border-left: 2px solid #d8dde5;
+    padding: 8px 12px;
+    margin-top: 14px;
+    border-radius: 0 5px 5px 0;
+  }
+  .ref-note .ref-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9.5px;
+    font-weight: 700;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: #b3b3b3;
+    display: block;
+    margin-bottom: 3px;
+  }
+
+  /* JUMP-TO PILLS (Visibility Report tab) */
+  .jump-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 36px;
+  }
+  .jump-pills a {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    color: #444;
+    background: #fff;
+    border: 1.5px solid #e0e6f0;
+    border-radius: 20px;
+    padding: 6px 14px;
+    text-decoration: none;
+    transition: border-color 0.15s, color 0.15s;
+  }
+  .jump-pills a::before {
+    content: "";
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--pill-color, #999);
+    flex-shrink: 0;
+  }
+  .jump-pills a:hover { border-color: var(--pill-color, #999); color: #0d0d1f; }
+  .jump-pills a.pill-ai { --pill-color: #7c3aed; }
+  .jump-pills a.pill-bing { --pill-color: #0891b2; }
+  .jump-pills a.pill-google { --pill-color: #2b6cb0; }
+  .jump-pills a.pill-wp { --pill-color: #e85a3a; }
+
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  /* INTRO */
+  .intro {
+    background: #f7f9fc;
+    border-left: 4px solid #e85a3a;
+    padding: 18px 22px;
+    border-radius: 0 6px 6px 0;
+    margin-bottom: 44px;
+    font-size: 14.5px;
+    color: #333;
+  }
+
+  /* SECTION */
+  section {
+    margin-bottom: 48px;
+  }
+
+  .section-title {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    margin-bottom: 18px;
+    padding-bottom: 10px;
+    border-bottom: 1.5px solid #eaeaea;
+  }
+
+  .section-number {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    color: #e85a3a;
+    background: #fff4f1;
+    padding: 2px 8px;
+    border-radius: 4px;
+    flex-shrink: 0;
+  }
+
+  .section-title h2 {
+    font-size: 17px;
+    font-weight: 700;
+    color: #0d0d1f;
+  }
+
+  .section-subtitle {
+    font-size: 13px;
+    color: #888;
+    margin-bottom: 16px;
+    font-style: italic;
+  }
+
+  /* ITEMS */
+  .item-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .item-list li {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    font-size: 14.5px;
+  }
+
+  .badge {
+    flex-shrink: 0;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 12px;
+    margin-top: 3px;
+    letter-spacing: 0.03em;
+  }
+
+  .badge.done {
+    background: #e6f7ef;
+    color: #1a7a4a;
+  }
+
+  .badge.progress {
+    background: #fff3e0;
+    color: #b45309;
+  }
+
+  .item-text {
+    flex: 1;
+    color: #2d2d3a;
+  }
+
+  .item-text strong {
+    font-weight: 600;
+    color: #0d0d1f;
+  }
+
+  .item-note {
+    display: block;
+    font-size: 13px;
+    color: #777;
+    margin-top: 2px;
+  }
+
+  /* SUBSECTION */
+  .subsection {
+    margin-bottom: 20px;
+  }
+
+  .subsection-title {
+    font-size: 13.5px;
+    font-weight: 600;
+    color: #555;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 10px;
+    margin-top: 18px;
+  }
+
+  /* STATS ROW */
+  .stats-row {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+  }
+
+  .stat-box {
+    background: #f7f9fc;
+    border: 1.5px solid #e0e6f0;
+    border-radius: 8px;
+    padding: 14px 20px;
+    flex: 1;
+    min-width: 140px;
+    text-align: center;
+  }
+
+  .stat-box .stat-number {
+    font-size: 28px;
+    font-weight: 700;
+    color: #e85a3a;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .stat-box .stat-label {
+    font-size: 12px;
+    color: #666;
+    line-height: 1.3;
+  }
+
+  /* FOOTER */
+  .report-footer {
+    margin-top: 60px;
+    padding-top: 20px;
+    border-top: 1.5px solid #eaeaea;
+    font-size: 12.5px;
+    color: #aaa;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .report-footer a {
+    color: #e85a3a;
+    text-decoration: none;
+  }
+
+  /* PRINT */
+  @media print {
+    body { padding: 40px 36px; font-size: 13px; }
+    .report-header h1 { font-size: 22px; }
+    section { margin-bottom: 36px; }
+    .stats-row { gap: 10px; }
+    .stat-box .stat-number { font-size: 22px; }
+    #sticky-nav, #top-btn, .tab-switcher { display: none !important; }
+    .section-body { display: block !important; }
+    .tab-panel { display: block !important; }
+  }
+
+  /* STICKY NAV */
+  #sticky-nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    background: rgba(255,255,255,0.97);
+    border-bottom: 2px solid #e85a3a;
+    display: none;
+    align-items: center;
+    z-index: 1000;
+    padding: 0 24px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+    overflow-x: auto;
+    backdrop-filter: blur(4px);
+  }
+  #sticky-nav .snav-logo {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: #e85a3a;
+    font-weight: 700;
+    white-space: nowrap;
+    padding: 11px 16px 11px 0;
+    border-right: 1px solid #eaeaea;
+    margin-right: 6px;
+    letter-spacing: 0.05em;
+  }
+  #sticky-nav-links {
+    display: flex;
+    align-items: center;
+  }
+  #sticky-nav a {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    color: #bbb;
+    text-decoration: none;
+    padding: 11px 9px;
+    white-space: nowrap;
+    transition: color 0.15s;
+  }
+  #sticky-nav a:hover { color: #e85a3a; }
+  #sticky-nav a.active { color: #e85a3a; }
+
+  /* BACK TO TOP */
+  #top-btn {
+    position: fixed;
+    bottom: 28px;
+    right: 28px;
+    width: 40px;
+    height: 40px;
+    background: #e85a3a;
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    font-size: 18px;
+    cursor: pointer;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s;
+    z-index: 999;
+    box-shadow: 0 3px 10px rgba(232,90,58,0.35);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+  }
+  #top-btn:hover { background: #d44d2e; }
+
+  /* COLLAPSIBLE SECTIONS */
+  .section-title {
+    cursor: pointer;
+    user-select: none;
+  }
+  .section-title:hover h2 { color: #e85a3a; }
+  .collapse-arrow {
+    margin-left: auto;
+    font-size: 13px;
+    color: #ccc;
+    flex-shrink: 0;
+    transition: transform 0.2s;
+    padding-left: 8px;
+  }
+  .section-body.collapsed { display: none; }
+
+  /* TOC (shared) */
+  .toc { list-style:none; display:flex; flex-direction:column; gap:0; border:1.5px solid #eaeaea; border-radius:8px; overflow:hidden; }
+  .toc li { display:flex; align-items:baseline; border-bottom:1px solid #eaeaea; }
+  .toc li:last-child { border-bottom:none; }
+  .toc a { display:flex; align-items:baseline; gap:0; width:100%; padding:9px 16px; font-size:13.5px; color:#2d2d3a; text-decoration:none; transition:background 0.15s; }
+  .toc a:hover { background:#f7f9fc; }
+  .toc-num { font-family:'JetBrains Mono',monospace; font-size:11px; color:#e85a3a; font-weight:600; margin-right:14px; flex-shrink:0; width:22px; }
+  .toc-title { flex:1; }
+</style>
+</head>
+<body>
+
+<!-- STICKY NAV -->
+<div id="sticky-nav">
+  <span class="snav-logo">RGB · Report</span>
+  <div class="sticky-tabs">
+    <button type="button" class="tabswitch-btn active" data-tab="visibility">Visibility</button>
+    <button type="button" class="tabswitch-btn" data-tab="activities">Activities</button>
+  </div>
+  <div id="sticky-nav-links"></div>
+</div>
+
+<!-- BACK TO TOP -->
+<button id="top-btn" title="Back to top">↑</button>
+
+<div class="report-header">
+  <div class="logo-row">
+    <span class="rgb-badge">RGB Protocol Association</span>
+    <span class="rgb-badge" style="border-color:#2b6cb0;color:#2b6cb0;">rgb.info</span>
+  </div>
+  <h1>Technical Marketing & Community — Activity Report<br>April–July 2026</h1>
+  <div class="report-meta">
+    <span><strong>Role:</strong> Technical Marketing &amp; Community Specialist</span>
+    <span><strong>Period:</strong> 20 April – 14 July 2026 (85 days)</span>
+    <span><strong>Prepared by:</strong> MariJ</span>
+  </div>
+</div>
+
+<!-- TAB SWITCHER -->
+<div class="tab-switcher-label">View</div>
+<div class="tab-switcher">
+  <button type="button" class="tabswitch-btn active" data-tab="visibility">Visibility Report</button>
+  <button type="button" class="tabswitch-btn" data-tab="activities">MariJ Activities</button>
+</div>
+
+<!-- ============================================================ -->
+<!-- TAB 1 — MARIJ ACTIVITIES -->
+<!-- ============================================================ -->
+<div id="tab-activities" class="tab-panel">
+
+<div class="intro">
+  This report covers all activities carried out over the first 85 days of the collaboration with RGB Protocol Association. The work spans AI visibility infrastructure, website launch, content production, media outreach, disambiguation campaigns, and community setup — all aimed at establishing rgb.info and docs.rgb.info as the authoritative sources for RGB Protocol on Bitcoin, for both humans and AI systems.
+</div>
+
+<!-- TABLE OF CONTENTS -->
+<nav style="margin-bottom:40px;">
+  <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#aaa;margin-bottom:12px;">Contents</div>
+  <ol class="toc">
+    <li><a href="#s01"><span class="toc-num">01</span><span class="toc-title">AI Infrastructure &amp; Distribution</span></a></li>
+    <li><a href="#s02"><span class="toc-num">02</span><span class="toc-title">Website SEO &amp; Technical Launch</span></a></li>
+    <li><a href="#s03"><span class="toc-num">03</span><span class="toc-title">Blog Content Production</span></a></li>
+    <li><a href="#s04"><span class="toc-num">04</span><span class="toc-title">Outreach &amp; Link Building</span></a></li>
+    <li><a href="#s05"><span class="toc-num">05</span><span class="toc-title">Disambiguation &amp; Disinformation Correction</span></a></li>
+    <li><a href="#s06"><span class="toc-num">06</span><span class="toc-title">Chinese Market</span></a></li>
+    <li><a href="#s07"><span class="toc-num">07</span><span class="toc-title">Official Documentation Review</span></a></li>
+    <li><a href="#s08"><span class="toc-num">08</span><span class="toc-title">Community &amp; Events</span></a></li>
+    <li><a href="#s11"><span class="toc-num">09</span><span class="toc-title">Future Priorities</span></a></li>
+  </ol>
+</nav>
+
+<!-- STATS SUMMARY -->
+<div class="stats-row">
+  <div class="stat-box">
+    <div class="stat-number">27</div>
+    <div class="stat-label">Articles published<br>(rgb.info + rgbprotocol.org)</div>
+  </div>
+  <div class="stat-box">
+    <div class="stat-number">6</div>
+    <div class="stat-label">Ecosystem blogs<br>written &amp; sent</div>
+  </div>
+  <div class="stat-box">
+    <div class="stat-number">12+</div>
+    <div class="stat-label">Media outlets<br>contacted</div>
+  </div>
+</div>
+
+
+<!-- SECTION 01 -->
+<section id="s01">
+  <div class="section-title">
+    <span class="section-number">01</span>
+    <h2>AI Infrastructure &amp; Distribution</h2>
+  </div>
+  <div class="source-card accent-s01">
+  <p class="section-subtitle">Making AI systems find RGB Protocol on Bitcoin from the right source, with accurate information.</p>
+
+  <ul class="item-list">
+    <li>
+      <span class="badge done">Done</span>
+      <div class="item-text">
+        <strong>Hugging Face dataset</strong> — Official dataset published under org <code>rgb-protocol</code>, with 13 knowledge files (llms-full.txt, glossary, cheatsheet, FAQ, CLI reference, sandbox tutorial, history, RGB-Tools references).
+        <span class="item-note">URL: huggingface.co/datasets/rgb-protocol/rgb-protocol-on-bitcoin — First official RGB dataset on HF; future AI models trained on HF data will find the correct source.</span>
+      </div>
+    </li>
+    <li>
+      <span class="badge done">Done</span>
+      <div class="item-text">
+        <strong>Custom GPT on OpenAI GPT Store</strong> — Published with Birk's account. 13 knowledge files loaded; 6,984-character instruction set with official identity and version guidance.
+        <span class="item-note">The GPT explicitly tells users that v0.12 is not production-ready and directs them to rgb.info and docs.rgb.info.</span>
+      </div>
+    </li>
+    <li>
+      <span class="badge done">Done</span>
+      <div class="item-text">
+        <strong>Context7 — 5 repos indexed</strong> — Submitted rgb-protocol/RGB-Documentation, rgb-protocol/rgb-sandbox, RGB-Tools/rgb-lib, RGB-Tools/rgb-proxy-server, RGB-Tools/rgb-lightning-node. Ownership claim PR merged on RGB-Documentation.
+        <span class="item-note">Context7 is used by developers via Claude Code and Cursor; indexed repos serve correct RGB context while coding.</span>
+      </div>
+    </li>
+    <li>
+      <span class="badge done">Done</span>
+      <div class="item-text">
+        <strong>llms.txt on rgb.info and rgbprotocol.org</strong> — Files live and accessible on both sites. Technical solution for Kinsta/Nginx environment: Yoast SEO + CDN exclusion rule. Custom PHP snippet documented for reference.
+      </div>
+    </li>
+    <li>
+      <span class="badge done">Done</span>
+      <div class="item-text">
+        <strong>robots.txt with AI signals</strong> — Both rgb.info and rgbprotocol.org configured with explicit signals for GPTBot, ClaudeBot, anthropic-ai, PerplexityBot, and Content-Signal header. Verified live post-launch.
+      </div>
+    </li>
+    <li>
+      <span class="badge done">Done</span>
+      <div class="item-text">
+        <strong>llms.txt and robots.txt on rgbprotocol.org — diagnosed and fixed</strong> — llms.txt was stuck on a stale staging version (wrong domain, missing pages) despite cache purges at every layer (CDN, WordPress, Yoast, plugin removal); root cause narrowed down to a static file at the server root, fixed by Birk. robots.txt confirmed correct (AI bots allowed, Content-Signal present).
+      </div>
+    </li>
+    <li>
+      <span class="badge done">Done</span>
+      <div class="item-text">
+        <strong>robots.txt on rgb.info — validation errors fixed</strong> — Removed two non-standard directives (<code>Content-Signal</code>, <code>Schemamap</code>) that PageSpeed/Site Kit flagged as invalid robots.txt syntax. Confirmed clean by PageSpeed after the fix.
+        <span class="item-note">Separately, AI readiness files (CLAUDE.md, .cursorrules, llms.txt) proposed as PRs to 5 rgb-protocol repos were not permitted — developers prefer not to have AI config files in the root of production repos. To be reconsidered in a different form (e.g., opt-in, separate repo) after July 2026.</span>
+      </div>
+    </li>
+  </ul>
+  </div>
+</section>
+
+
+<!-- SECTION 02 -->
+<section id="s02">
+  <div class="section-title">
+    <span class="section-number">02</span>
+    <h2>Website SEO &amp; Technical Launch</h2>
+  </div>
+  <div class="source-card accent-s02">
+  <p class="section-subtitle">Building the technical foundation for both sites to be crawlable, indexable, and AI-visible.</p>
+
+  <div class="subsection">
+    <div class="subsection-title">rgb.info — New WordPress site on Kinsta</div>
+    <ul class="item-list">
+      <li>
+        <span class="badge done">Done</span>
+        <div class="item-text">
+          <strong>Full Yoast SEO configuration</strong> — SEO titles, meta descriptions, focus keyphrases, og:image, alt text, schema JSON-LD, XML sitemap — applied to all 16+ pages via Bulk Editor and manual review.
+        </div>
+      </li>
+      <li>
+        <span class="badge done">Done</span>
+        <div class="item-text">
+          <strong>301 redirect mapping and import</strong> — All 15 old URLs mapped to new pages (high-confidence), plus 6 internal slug changes. 21 redirects loaded into Redirection plugin before launch. All tested post-launch.
+        </div>
+      </li>
+      <li>
+        <span class="badge done">Done</span>
+        <div class="item-text">
+          <strong>Post-launch technical checks</strong> — Canonical tag, llms.txt, sitemap, robots.txt, og:image, de-indexing flag, IndexNow first submission — all verified. Sitemap submitted to Bing Webmaster Tools (37 URLs discovered); IndexNow active.
+          <span class="item-note">DNS migration (Bluehost → Kinsta) carried out by Birk on 3 June 2026.</span>
+        </div>
+      </li>
+      <li>
+        <span class="badge done">Done</span>
+        <div class="item-text">
+          <strong>Site analytics — WP Statistics installed</strong> — Chosen over Site Kit/GA4 (blocked by a Kinsta/Nginx OAuth redirect_uri mismatch) and Plausible (no free tier): cookie-free, GDPR-compliant without a consent banner, data stored locally in WordPress. Weekly traffic reports configured.
+        </div>
+      </li>
+      <li>
+        <span class="badge done">Done</span>
+        <div class="item-text">
+          <strong>Site-wide "On this page" anchor audit and fixes</strong> — Every content page with a sidebar table of contents checked against the live site; broken or missing anchors fixed on Get Started, Use Cases, RGB Lightning Network, and How RGB Works pages (wrong target URLs, missing <code>id</code> attributes, or fully absent anchors).
+        </div>
+      </li>
+      <li>
+        <span class="badge done">Done</span>
+        <div class="item-text">
+          <strong>Technical corrections from Zoe Fatilbà's review</strong> — Applied across the RGB Lightning Network, Get Started, and Use Cases pages: corrected schema links (pointing to Maxim Orlovsky's RGB-WG repos instead of rgb-protocol), replaced an obsolete client-side-validation dependency card with RGB Ops, fixed imprecise technical phrasing (dust limit purpose, selective disclosure, CFA definition), removed a stale "Emerging" status badge.
+        </div>
+      </li>
+      <li>
+        <span class="badge done">Done</span>
+        <div class="item-text">
+          <strong>Blog page layout fixes</strong> — Fixed a sort-order bug across 6 blocks that showed the oldest post instead of the latest; added a missing "View All Talks" link and fixed its alignment; standardized featured-card heights. Added YouTube (@RGB_Hub) to the site footer.
+        </div>
+      </li>
+    </ul>
+  </div>
+
+  <div class="subsection">
+    <div class="subsection-title">rgbprotocol.org — Association site on Kinsta</div>
+    <ul class="item-list">
+      <li>
+        <span class="badge done">Done</span>
+        <div class="item-text">
+          <strong>Full SEO on all pages</strong> — Yoast configured; keyphrase, SEO title, meta description, og:image set on every page (Home, About, Bug Bounty, Contact, Members, News, Events).
+        </div>
+      </li>
+      <li>
+        <span class="badge done">Done</span>
+        <div class="item-text">
+          <strong>Migration of all 4 news articles</strong> from rgbprotocol.org/news to native WordPress posts, with SEO optimization, expanded body copy, and correct attribution.
+        </div>
+      </li>
+      <li>
+        <span class="badge done">Done</span>
+        <div class="item-text">
+          <strong>301 redirects for old domain</strong> — 11 redirects mapped (static pages + news articles), loaded into Redirection plugin.
+        </div>
+      </li>
+      <li>
+        <span class="badge done">Done</span>
+        <div class="item-text">
+          <strong>Privacy Policy and Terms of Use</strong> — Written and published on both rgb.info and rgbprotocol.org, with correct footer links and noindex flag.
+        </div>
+      </li>
+      <li>
+        <span class="badge done">Done</span>
+        <div class="item-text">
+          <strong>Homepage restyling</strong> — "Latest News" block fixed to pull from WordPress posts; Events section simplified with archive link; CSS fixes for category badge alignment.
+        </div>
+      </li>
+    </ul>
+  </div>
+  </div>
+</section>
+
+
+<!-- SECTION 03 -->
+<section id="s03">
+  <div class="section-title">
+    <span class="section-number">03</span>
+    <h2>Blog Content Production</h2>
+  </div>
+  <div class="source-card accent-s03">
+  <p class="section-subtitle">Publishing authoritative, SEO- and AEO-optimized content on rgb.info to be indexed by search engines and AI crawlers.</p>
+
+  <div class="subsection">
+    <div class="subsection-title">Original articles — written, optimized, and published</div>
+    <ul class="item-list">
+      <li>
+        <span class="badge done">Done</span>
+        <div class="item-text">
+          <strong>"What is RGB Protocol on Bitcoin"</strong> (Federico Tenga) — Technical review, 5 factual corrections verified against docs.rgb.info, AEO optimization, 5 custom illustrations created with ChatGPT. Published rgb.info.
+        </div>
+      </li>
+      <li>
+        <span class="badge done">Done</span>
+        <div class="item-text">
+          <strong>"RGB vs RGB++"</strong> — Full disambiguation article with comparison table, "Four things called RGB" section (Protocol on Bitcoin / RGB++ / v0.12 / color model), 2 custom images. Published rgb.info.
+          <span class="item-note">Keyphrase: <em>RGB vs RGB++</em>. AEO-optimized for zero-click answers.</span>
+        </div>
+      </li>
+      <li>
+        <span class="badge done">Done</span>
+        <div class="item-text">
+          <strong>"Why v0.11.1 and not v0.12"</strong> — Developer-audience article explaining the technical and organizational reasons behind the v0.11.1 choice. Published rgb.info.
+        </div>
+      </li>
+      <li>
+        <span class="badge done">Done</span>
+        <div class="item-text">
+          <strong>"RGB as the Universal Asset Standard for Every Bitcoin Layer"</strong> — Based on Federico Tenga's talk at Tuscany Lightning Summit 2026 (Viareggio). Transcribed, written (~2,000 words), technical review, 2 custom images, AEO-optimized. Published rgb.info.
+        </div>
+      </li>
+      <li>
+        <span class="badge done">Done</span>
+        <div class="item-text">
+          <strong>"Lightning Network as the Common Language of Bitcoin Layers"</strong> — Based on the Plan B Forum 2025 panel (Giacomo Zucco moderator; Tenga, Rauch, Argentieri, Sheinfeld speakers). Written, reviewed, 2 custom images, AEO-optimized. Published rgb.info.
+        </div>
+      </li>
+      <li>
+        <span class="badge done">Done</span>
+        <div class="item-text">
+          <strong>"The History of RGB Protocol on Bitcoin"</strong> (Birk) — Editing, link building, 5 images created (timeline, diagrams, ecosystem map), SEO/AEO optimization. Published rgb.info.
+        </div>
+      </li>
+      <li>
+        <span class="badge done">Done</span>
+        <div class="item-text">
+          <strong>"RGB Protocol Association at BTC Prague 2026"</strong> — Conference recap with events and speakers (Renat Skitsan/Utexo, Walter Maffione/KaleidoSwap). Published on rgbprotocol.org.
+        </div>
+      </li>
+    </ul>
+  </div>
+
+  <div class="subsection">
+    <div class="subsection-title">Original articles — written, optimized, and published (continued)</div>
+    <ul class="item-list">
+      <li>
+        <span class="badge done">Done</span>
+        <div class="item-text">
+          <strong>"RGB on Lightning: What's Coming Next"</strong> (Zoe Fatilbà, Bitfinex/RGB team) — Based on her Tuscany Lightning Summit talk. Covers RLN, LDK changes, protocol/rgb-lib/RLN roadmap, client-side validation trade-offs. 2 custom images. Published rgb.info.
+        </div>
+      </li>
+      <li>
+        <span class="badge done">Done</span>
+        <div class="item-text">
+          <strong>"Trustless Trading on Bitcoin: RGB Assets and Atomic Swaps"</strong> (Walter Maffione, KaleidoSwap) — Based on his Tuscany Lightning Summit talk. Custom infographic + speaker photo. Published rgb.info.
+        </div>
+      </li>
+      <li>
+        <span class="badge done">Done</span>
+        <div class="item-text">
+          <strong>Michael Chobanian interview</strong> (co-founder &amp; board member, RGB Protocol Association) — Q&amp;A format on institutional advantages, sovereign identity, and the Association's role. Custom cover image. Published rgb.info.
+        </div>
+      </li>
+      <li>
+        <span class="badge done">Done</span>
+        <div class="item-text">
+          <strong>Viktor Ihnatiuk interview</strong> (co-founder &amp; CEO, Utexo) — Business case for USDT on Bitcoin via RGB/Lightning; investor round, custody partners, and a selective-disclosure paragraph added post-publication after ecosystem feedback. Published rgb.info.
+        </div>
+      </li>
+      <li>
+        <span class="badge done">Done</span>
+        <div class="item-text">
+          <strong>Matteo Branchetti interview</strong> (CPO, Utexo) — Keyphrase "stablecoins on Bitcoin". Published rgb.info 10 July.
+        </div>
+      </li>
+      <li>
+        <span class="badge done">Done</span>
+        <div class="item-text">
+          <strong>"USDT on the Lightning Network: Why It's Good for Lightning Itself"</strong> — Original article (not interview-based) covering RGB Lightning channel mechanics, state transitions, selective disclosure, and Federico Tenga's economic argument for why USDT adoption benefits Lightning even for non-USDT users. 2 custom images. Published rgb.info 14 July.
+        </div>
+      </li>
+    </ul>
+  </div>
+
+  <div class="subsection">
+    <div class="subsection-title">Articles migrated from Atlas21 + old rgb.info (with SEO optimization)</div>
+    <ul class="item-list">
+      <li>
+        <span class="badge done">Done</span>
+        <div class="item-text">
+          <strong>8 Atlas21 articles</strong> migrated to rgb.info blog — each with SEO title, keyphrase, meta description, correct WordPress formatting, and featured image.
+        </div>
+      </li>
+      <li>
+        <span class="badge done">Done</span>
+        <div class="item-text">
+          <strong>News and short posts from old rgb.info</strong> — Ardoino/USDt, Iris Wallet Desktop, RGB vs Taproot Assets — migrated, expanded (300+ words each), SEO-optimized.
+        </div>
+      </li>
+    </ul>
+  </div>
+
+  <div class="subsection">
+    <div class="subsection-title">Video and talk content</div>
+    <ul class="item-list">
+      <li>
+        <span class="badge done">Done</span>
+        <div class="item-text">
+          <strong>Community Call articles</strong> — DIBA/BitMask and Utexo/ThunderStack community call videos transcribed (TurboScribe) and published as SEO articles on rgb.info blog.
+        </div>
+      </li>
+      <li>
+        <span class="badge done">Done</span>
+        <div class="item-text">
+          <strong>CoinMarketCap Academy article</strong> — "The Universal Asset Standard Behind USDT on Bitcoin" (adapted from the Tenga talk), completed and sent to content@coinmarketcap.com. Awaiting response.
+        </div>
+      </li>
+    </ul>
+  </div>
+  </div>
+</section>
+
+
+<!-- SECTION 04 -->
+<section id="s04">
+  <div class="section-title">
+    <span class="section-number">04</span>
+    <h2>Outreach &amp; Link Building</h2>
+  </div>
+  <div class="source-card accent-s04">
+  <p class="section-subtitle">Acquiring backlinks from third-party domains to rgb.info, and placing RGB content on high-authority external sites.</p>
+
+  <div class="subsection">
+    <div class="subsection-title">Link insertion — existing articles on third-party sites</div>
+    <ul class="item-list">
+      <li>
+        <span class="badge done">Published</span>
+        <div class="item-text">
+          <strong>Marco Costanza</strong> — Link to rgb.info added to existing article. ✓ Confirmed.
+        </div>
+      </li>
+      <li>
+        <span class="badge done">Published</span>
+        <div class="item-text">
+          <strong>CryptoSmart.it</strong> — Existing article completely updated: v0.11.1 mainnet, NIA/CFA/UDA/PFA terminology, RGB vs RGB++ disambiguation, rgb.info as "portale ufficiale certificato," no link to rgb.tech. ✓ Published.
+        </div>
+      </li>
+      <li>
+        <span class="badge done">Sent</span>
+        <div class="item-text">
+          <strong>Atlas21</strong> — 9 RGB articles mapped (8 without rgb.info link); link insertion request sent with detailed list of priority articles. Federico Tenga informed.
+        </div>
+      </li>
+      <li>
+        <span class="badge done">Sent</span>
+        <div class="item-text">
+          <strong>Bitcoin Magazine</strong> — Email sent to editor@bitcoinmagazine.com targeting article "RGB V0.11.1 Launches" (July 2025). Link insertion request for rgb.info and docs.rgb.info.
+          <span class="item-note">Separately, Bitcoin Magazine published a new article on 6 July ("USDT Returns to Bitcoin: RGB and UTEXO Enable Private Lightning Settlements", via Utexo's press contact) with confirmed backlinks to the rgb.info homepage and a deep link to the client-side validation page — no mention of rgb.tech or RGB-WG. This is the third mainstream source needed to reopen the Wikipedia draft (with Decrypt and The Block).</span>
+        </div>
+      </li>
+      <li>
+        <span class="badge done">Sent</span>
+        <div class="item-text">
+          <strong>DiarioBitcoin (Spanish)</strong> — Proposed a permanent "RGB" glossary entry (the site auto-links glossary terms from every article that mentions them) rather than a single-article link insertion, after Federico Tenga flagged an article covering the USDT/RGB relaunch with no link to either rgb.info or rgb.tech. Email sent 9 July to editorial@diariobitcoin.com.
+        </div>
+      </li>
+      <li>
+        <span class="badge done">Sent</span>
+        <div class="item-text">
+          <strong>Crypto Briefing</strong> — Link insertion request sent for Tether/RGB article. Email bounced; message re-sent via X @CryptoBriefing.
+        </div>
+      </li>
+      <li>
+        <span class="badge done">Sent</span>
+        <div class="item-text">
+          <strong>The Bitcoin Manual</strong> — Email sent with 14 corrections across 4 RGB articles, requesting updates and links to rgb.info.
+        </div>
+      </li>
+      <li>
+        <span class="badge done">Sent</span>
+        <div class="item-text">
+          <strong>CriptoNoticias</strong> — Updated article (Spanish) proposed via contact form.
+        </div>
+      </li>
+    </ul>
+  </div>
+
+  <div class="subsection">
+    <div class="subsection-title">Ecosystem blog articles — custom content written and sent</div>
+    <ul class="item-list">
+      <li>
+        <span class="badge done">Done</span>
+        <div class="item-text">
+          <strong>KaleidoSwap</strong> — Custom article written, sent to Emile (@Jelleml). <strong>Published</strong> at kaleidoswap.com/blog/rgb-protocol ✓ — backlink to rgb.info live.
+        </div>
+      </li>
+      <li>
+        <span class="badge done">Done</span>
+        <div class="item-text">
+          <strong>BiHelix</strong> — Custom article written (verified against GitHub repos and bihelix.net), sent to Birk for forwarding. <strong>Published on X</strong> ✓. Awaiting publication on BiHelix website.
+        </div>
+      </li>
+      <li>
+        <span class="badge done">Done</span>
+        <div class="item-text">
+          <strong>Utexo</strong> — Custom article written and sent.
+        </div>
+      </li>
+      <li>
+        <span class="badge done">Done</span>
+        <div class="item-text">
+          <strong>DIBA/BitMask</strong> — Custom article written and sent to Gideon (@giddy_up_up).
+        </div>
+      </li>
+      <li>
+        <span class="badge done">Done</span>
+        <div class="item-text">
+          <strong>Tribe RGB</strong> — Custom article written and sent to Anant (@Anant_tap).
+        </div>
+      </li>
+      <li>
+        <span class="badge done">Done</span>
+        <div class="item-text">
+          <strong>LNFI Network</strong> — Custom article written (multi-asset DeFi angle, RGB + Taproot Assets), sent to Darius (@dariusnostr). <strong>Published</strong> ✓ — https://x.com/LnfiNetwork/status/2075128154885386686
+        </div>
+      </li>
+    </ul>
+  </div>
+
+  <div class="subsection">
+    <div class="subsection-title">Media outreach</div>
+    <ul class="item-list">
+      <li>
+        <span class="badge done">Done</span>
+        <div class="item-text">
+          <strong>Gate.io Learn</strong> — Two outdated RGB articles (one linking rgb.tech) removed by Gate team. New article written (<em>what-is-rgb-gate-io.md</em>) and submitted for publication.
+        </div>
+      </li>
+      <li>
+        <span class="badge done">Sent</span>
+        <div class="item-text">
+          <strong>CoinMarketCap Academy</strong> — Adapted article ("The Universal Asset Standard Behind USDT on Bitcoin") completed and sent to content@coinmarketcap.com. Awaiting response.
+        </div>
+      </li>
+      <li>
+        <span class="badge done">Sent</span>
+        <div class="item-text">
+          <strong>Spark.money</strong> — Article presents RGB v0.12 as the production-ready milestone with no mention of the RGB Protocol Association. Two earlier outreach attempts (email, contact form) went unanswered; a third attempt via X (@spark) sent 9 July, flagging that one of the article's own links already points to v0.11.1 documentation. Follow-up due ~23 July if no response.
+        </div>
+      </li>
+    </ul>
+  </div>
+  </div>
+</section>
+
+
+<!-- SECTION 05 -->
+<section id="s05">
+  <div class="section-title">
+    <span class="section-number">05</span>
+    <h2>Disambiguation &amp; Disinformation Correction</h2>
+  </div>
+  <div class="source-card accent-s05">
+  <p class="section-subtitle">Correcting sources that AI systems currently cite as authoritative for RGB — to redirect traffic and authority to rgb.info.</p>
+
+  <ul class="item-list">
+    <li>
+      <span class="badge done">Done</span>
+      <div class="item-text">
+        <strong>Bitcoin Optech — 2 PRs merged</strong>
+        <span class="item-note">PR #2739: RGB topic page updated (merged by @murchandamus, commit 2422159). Second PR: removal of Maxim Orlovsky yellowpaper link from the Client-Side Validation page — the most AI-cited technical page on the topic.</span>
+      </div>
+    </li>
+    <li>
+      <span class="badge done">Done</span>
+      <div class="item-text">
+        <strong>Bitcoin Optech — newsletter proposal</strong> — Email sent to info@bitcoinops.org covering v0.11.1 mainnet, tapret/opret, Lightning, Tether USDT, and v0.11.1 vs v0.12 disambiguation. Contact with @bitschmidty (CEO Brink / Optech) established.
+      </div>
+    </li>
+    <li>
+      <span class="badge done">Done</span>
+      <div class="item-text">
+        <strong>Bitcoin Stack Exchange — 9+ answers published</strong>
+        <span class="item-note">7 answers published 23 April (smart contracts, sidechain vs LN, Tether, taproot commit, ERC-20, Lightning, token issuance). 2 questions seeded ("Which RGB version should I build on?", "Options for issuing tokens on Bitcoin"). 4 answers re-published after account suspension and restoration, all with affiliation disclosure. Account currently active.</span>
+      </div>
+    </li>
+    <li>
+      <span class="badge done">Done</span>
+      <div class="item-text">
+        <strong>Bitcoin Tribe README — PR merged</strong> — Disambiguation note (RGB Protocol on Bitcoin v0.11.1 vs v0.12 vs RGB++) added to Bitcoin Tribe's GitHub repo. PR #1953 merged 9 June 2026.
+      </div>
+    </li>
+    <li>
+      <span class="badge done">Done</span>
+      <div class="item-text">
+        <strong>BTCStudy (Chinese) — PR opened</strong> — Issue #13 opened 11 June requesting correction of rgb.tech link and proposing two articles. Ajian (editor) responded positively. PR #14 opened 18 June with full Chinese translation of "What is RGB Protocol on Bitcoin" + 4 translated images.
+        <span class="item-note">BTCStudy is one of the main Bitcoin educational resources for Chinese speakers, widely indexed by DeepSeek and other AI systems.</span>
+      </div>
+    </li>
+    <li>
+      <span class="badge done">Done</span>
+      <div class="item-text">
+        <strong>CKB DevRel — disambiguation note published</strong> — Issue opened on github.com/ckb-devrel/CKB-Developer-Resource asking to clarify that RGB++ and RGB Protocol on Bitcoin are separate projects. Positive response received from Hanssen; note published on site.
+      </div>
+    </li>
+    <li>
+      <span class="badge done">Done</span>
+      <div class="item-text">
+        <strong>GitHub org rgb-protocol — public members added</strong> — Suggested to Federico Tenga; Federico invited key developers as public members on github.com/orgs/rgb-protocol/people, increasing the org's credibility signal for AI crawlers.
+      </div>
+    </li>
+    <li>
+      <span class="badge done">Done</span>
+      <div class="item-text">
+        <strong>BTCStudy PR #14 — merged</strong> — Full Chinese translation of "What is RGB Protocol on Bitcoin" merged 26 June on one of the main Chinese-language Bitcoin education sites, widely crawled by DeepSeek and other Chinese-facing AI systems. All 66 editor review threads resolved via the GitHub GraphQL API after the REST endpoint under-reported them.
+      </div>
+    </li>
+  </ul>
+  </div>
+</section>
+
+
+<!-- SECTION 06 -->
+<section id="s06">
+  <div class="section-title">
+    <span class="section-number">06</span>
+    <h2>Chinese Market</h2>
+  </div>
+  <div class="source-card accent-s06">
+  <p class="section-subtitle">Building presence in sources that feed Chinese AI systems (DeepSeek, Baidu) and Chinese-speaking Bitcoin communities.</p>
+
+  <ul class="item-list">
+    <li>
+      <span class="badge done">Done</span>
+      <div class="item-text">
+        <strong>"RGB vs RGB++" — Chinese article written</strong> — Two versions: short (optimized for DeepSeek, targets BlockBeats/PANews/BTCStudy) and long (full history, v0.12, 6 FAQ Q&amp;A, 8-dimension comparison table).
+      </div>
+    </li>
+    <li>
+      <span class="badge done">Done</span>
+      <div class="item-text">
+        <strong>Chinese translation of "What is RGB Protocol on Bitcoin"</strong> — Full translation completed and terminologically verified against BTCStudy's existing articles and docs.rgb.info glossary. Images translated with ChatGPT.
+      </div>
+    </li>
+    <li>
+      <span class="badge done">Done</span>
+      <div class="item-text">
+        <strong>BTCStudy PR #14 — merged and live</strong> — Translation, with 4 translated images, merged 26 June after applying all of editor Ajian's review suggestions.
+      </div>
+    </li>
+  </ul>
+  </div>
+</section>
+
+
+<!-- SECTION 07 -->
+<section id="s07">
+  <div class="section-title">
+    <span class="section-number">07</span>
+    <h2>Official Documentation Review</h2>
+  </div>
+  <div class="source-card accent-s07">
+  <p class="section-subtitle">Improving the quality of docs.rgb.info as the primary authoritative source — better docs mean better AI-generated answers.</p>
+
+  <ul class="item-list">
+    <li>
+      <span class="badge done">Done</span>
+      <div class="item-text">
+        <strong>Ongoing protocol study</strong> — reviewing docs.rgb.info in depth alongside the sentence-by-sentence corrections, to build the technical fluency needed for more accurate blog articles and community answers.
+      </div>
+    </li>
+    <li>
+      <span class="badge done">Done</span>
+      <div class="item-text">
+        <strong>docs.rgb.info homepage README</strong> — Sentence-by-sentence review completed. Corrections (typos, grammar, phrasing, unclear terminology) submitted to the dev team via shared Google Sheet.
+      </div>
+    </li>
+    <li>
+      <span class="badge done">Done</span>
+      <div class="item-text">
+        <strong>"Paradigms of Distributed Computing"</strong> — Full page reviewed sentence by sentence. Corrections submitted via Google Sheet.
+      </div>
+    </li>
+    <li>
+      <span class="badge done">Done</span>
+      <div class="item-text">
+        <strong>"Client-Side Validation"</strong> — Full sentence-by-sentence review completed. Corrections: typos, wrong collocations, sentence fragments, dangling modifiers, prepositions, number/gender agreement, gerunds.
+      </div>
+    </li>
+    <li>
+      <span class="badge done">Done</span>
+      <div class="item-text">
+        <strong>"Single-Use Seals"</strong> — Full sentence-by-sentence review completed, including terminology, collocations, missing articles, singular/plural agreement, punctuation, and conceptual accuracy. Flagged an unresolved documentation gap: how the very first seal in a chain is proven is not explicitly covered anywhere in the docs.
+      </div>
+    </li>
+    <li>
+      <span class="badge done">Done</span>
+      <div class="item-text">
+        <strong>"Commitment Schemes"</strong> — Full sentence-by-sentence review completed: typos, grammar, 8 collocation fixes, ambiguous pronoun references, and one technical attribution error (the commitment lives in the witness transaction output, not the spent UTXO).
+      </div>
+    </li>
+  </ul>
+  </div>
+</section>
+
+
+<!-- SECTION 08 -->
+<section id="s08">
+  <div class="section-title">
+    <span class="section-number">08</span>
+    <h2>Community &amp; Events</h2>
+  </div>
+  <div class="source-card accent-s08">
+  <p class="section-subtitle">Building public presence and live channels for RGB Protocol on Bitcoin.</p>
+
+  <ul class="item-list">
+    <li>
+      <span class="badge done">Done</span>
+      <div class="item-text">
+        <strong>Community calls — 2 held, biweekly on Telegram/X (@RGB_Hub)</strong> — First call (24 June): "Kaleidoswap: Trustless Atomic Swaps," 140 combined views. Second call (9 July): "The Future of DEXs" with @Jelleml (KaleidoSwap) and @dariusnostr (LNFI Network), 234 peak viewers on X, alongside follower growth to 2,517 (X) and 1,579 (Telegram). Third call topic decided ("TapRay: A New DEX on RGB Protocol on Bitcoin"), scheduling in progress.
+        <span class="item-note">Restream multistreaming set up in June (YouTube + Telegram); MariJ hosts every 2nd and 4th Thursday.</span>
+      </div>
+    </li>
+    <li>
+      <span class="badge done">Done</span>
+      <div class="item-text">
+        <strong>Viareggio Summit — recording and documentation</strong> — Attended the Tuscany Lightning Summit (12–13 May 2026). Recorded 7 interviews (Alekos Filini, Birk, Matteo, Michael, Mo ×2, Viktor) and 5 speeches (Federico Tenga, Michael, Viktor, Walter/KaleidoSwap, Zoe). Took notes on speaker questions and key points from each talk. All video files archived in <code>immagini-video/viareggio/</code>. Federico Tenga, Zoe, Walter, Michael Chobanian, Viktor Ihnatiuk, and Matteo Branchetti transcribed and published as articles on rgb.info (see Section 03).
+        <span class="item-note">Remaining to transcribe: Alekos Filini, Birk, Mo (×2 sessions), Renate/Utexo (transcribed, not yet written up).</span>
+      </div>
+    </li>
+    <li>
+      <span class="badge done">Done</span>
+      <div class="item-text">
+        <strong>BTC Prague 2026 — article coverage</strong> — Recap article written and published on rgbprotocol.org. Prague meetup (Freedom Tech Beers - RGB Meetup) added to the Events page.
+      </div>
+    </li>
+    <li>
+      <span class="badge done">Done</span>
+      <div class="item-text">
+        <strong>Reddit — r/RGB_Bitcoin live and operational</strong> — After r/RGBProtocolOnBitcoin and its institutional account were both auto-banned by Reddit's antispam filters (new account + new subreddit + external links), the subreddit was relaunched on 25 June as r/RGB_Bitcoin, created by an established community member (9k karma) who added MariJ's institutional account as a second moderator. A 3-month content calendar and the first weeks of posts are written and scheduled.
+        <span class="item-note">Lesson learned: Reddit requires an account with existing karma to create and seed a new subreddit — a brand-new institutional account cannot do it directly, even as a moderator.</span>
+      </div>
+    </li>
+    <li>
+      <span class="badge done">Done</span>
+      <div class="item-text">
+        <strong>Monthly Association meeting</strong> — Participated and drafted meeting notes shared with the group (25 May 2026).
+      </div>
+    </li>
+  </ul>
+  </div>
+</section>
+
+
+
+<!-- SECTION 09 -->
+<section id="s11">
+  <div class="section-title">
+    <span class="section-number">09</span>
+    <h2>Future Priorities</h2>
+  </div>
+  <div class="source-card accent-s09">
+  <p class="section-subtitle">Open tasks from the activity log — some immediate, some medium-term. Not all bound to July 2026.</p>
+
+  <style>
+    .next-col { display:flex; gap:24px; flex-wrap:wrap; }
+    .next-group { flex:1; min-width:220px; }
+    .next-group-title { font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:0.07em; color:#e85a3a; margin-bottom:10px; }
+    .next-list { list-style:none; display:flex; flex-direction:column; gap:7px; }
+    .next-list li { font-size:13.5px; color:#333; display:flex; gap:8px; align-items:flex-start; }
+    .next-list li::before { content:"→"; color:#e85a3a; font-weight:700; flex-shrink:0; margin-top:1px; }
+  </style>
+
+  <div class="next-col">
+
+    <div class="next-group">
+      <div class="next-group-title">Content pipeline</div>
+      <ul class="next-list">
+        <li>Viareggio Summit — transcribe + publish remaining speeches and interviews (Alekos Filini, Birk, Mo ×2, Renate/Utexo write-up)</li>
+        <li>Wikipedia — reopen the draft now that 3 mainstream sources are available (Decrypt, The Block, Bitcoin Magazine)</li>
+        <li>docs.rgb.info slides — redesign in the site's visual style + GitHub PR removing remaining Maxim Orlovsky references</li>
+        <li>docs.rgb.info — continue sentence-by-sentence review from "Deterministic Bitcoin Commitments"; once complete, new course to be created for filming in Turin</li>
+        <li>Draft the course to be recorded in Turin</li>
+        <li>Plan B Network course (csv402)</li>
+      </ul>
+    </div>
+
+    <div class="next-group">
+      <div class="next-group-title">External media &amp; outreach</div>
+      <ul class="next-list">
+        <li>Ready to place — Bitfinex Education (greenlit 16 June, not yet written)</li>
+        <li>CoinTelegraph — Dev Hub terms settled (6 July call); next: propose article topics with Gioele</li>
+        <li>Outreach follow-ups — Spark.money (~23 July), DiarioBitcoin glossary entry (~23 July), TechFlowPost, Bitfinex blog update, The Block (when USDT live), Bitcoin Optech newsletter, Block Tempo, and so on</li>
+      </ul>
+    </div>
+
+
+    <div class="next-group">
+      <div class="next-group-title">AI &amp; disambiguation</div>
+      <ul class="next-list">
+        <li>Knowledge graph — Wikidata entity (url = rgb.info)</li>
+        <li>Community — continue r/RGB_Bitcoin content calendar; monitor v0.12/BitlightLab narrative</li>
+      </ul>
+    </div>
+
+    <div class="next-group">
+      <div class="next-group-title">Chinese market</div>
+      <ul class="next-list">
+        <li>Study RGB terminology from the published BTCStudy article for accurate community communication</li>
+        <li>TechFlowPost outreach — finish reviewing remaining search results, decide angle</li>
+        <li>Submit to BlockBeats, PANews, Jinse Finance, Foresight News</li>
+        <li>Block Tempo — outreach</li>
+        <li>Start Chinese-language community calls for the Chinese-speaking audience</li>
+      </ul>
+    </div>
+
+    <div class="next-group">
+      <div class="next-group-title">Developer tools &amp; community</div>
+      <ul class="next-list">
+        <li>Third community call — "TapRay: A New DEX on RGB Protocol on Bitcoin," scheduling in progress</li>
+        <li>MCP Server RGB — official server on Hugging Face Spaces, pre-configured in rgb-protocol repos for Claude Code use</li>
+        <li>AMA #1 — live session with Federico Tenga or ecosystem builder</li>
+        <li>Telegram bot — community engagement tracking (messages, active users, top topics)</li>
+      </ul>
+    </div>
+
+  </div>
+
+  <div style="margin-top:20px;background:#f7f9fc;border:1.5px solid #e0e6f0;border-radius:8px;padding:14px 20px;font-size:13.5px;color:#555;">
+    <strong>Ongoing:</strong> AI re-audit (June and July 2026 results in the Visibility Report tab — next: 15 September 2026) · community calls every 2nd and 4th Thursday · docs.rgb.info sentence-by-sentence review · SEO monitoring via Google Search Console and Bing Webmaster Tools.
+  </div>
+  </div>
+</section>
+
+</div>
+<!-- END TAB 1 -->
+
+
+<!-- ============================================================ -->
+<!-- TAB 2 — VISIBILITY REPORT -->
+<!-- ============================================================ -->
+<div id="tab-visibility" class="tab-panel active">
+
+<div class="intro">
+  This tab tracks whether AI systems and search engines recognize rgb.info and docs.rgb.info as the authoritative source for RGB Protocol on Bitcoin — the AI Visibility Audit (baseline vs. re-audit across 5 platforms) and Search Performance data (Google Search Console, Bing Webmaster Tools) that measure the effect of the work in the MariJ Activities tab.
+</div>
+
+<!-- TABLE OF CONTENTS -->
+<nav style="margin-bottom:24px;">
+  <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#aaa;margin-bottom:12px;">Contents</div>
+  <ol class="toc">
+    <li><a href="#s10"><span class="toc-num">01</span><span class="toc-title">AI Visibility Audit — Baseline vs. Re-audit</span></a></li>
+    <li><a href="#s12"><span class="toc-num">02</span><span class="toc-title">Search Performance</span></a></li>
+  </ol>
+</nav>
+
+<div class="jump-pills">
+  <a href="#card-ai" class="pill-ai">AI Audit</a>
+  <a href="#card-bing-copilot" class="pill-bing">Bing Copilot</a>
+  <a href="#card-google" class="pill-google">Google Search Console</a>
+  <a href="#card-bing-search" class="pill-bing">Bing Search</a>
+  <a href="#card-wp" class="pill-wp">WP Statistics</a>
+</div>
+
+<!-- SECTION 1 — AI VISIBILITY AUDIT -->
+<section id="s10">
+  <div class="section-title">
+    <span class="section-number">01</span>
+    <h2>AI Visibility Audit — Baseline vs. Re-audit</h2>
+  </div>
+
+  <div class="jump-pills">
+    <a href="#card-ai" class="pill-ai">AI Audit</a>
+    <a href="#card-bing-copilot" class="pill-bing">Bing Copilot</a>
+  </div>
+
+  <p class="section-subtitle">12 questions (9 English + 3 Chinese) tested on 5 platforms. Baseline: March 2026 (before the collaboration started). Re-audits: June 2026 (60 days) and July 2026 (85 days).</p>
+
+  <div id="card-ai" class="source-card accent-ai">
+  <div class="source-tag"><span class="source-tag-label">AI Visibility Audit · 5 platforms</span></div>
+  <p style="font-size:13.5px;color:#555;margin-bottom:20px;">
+    <strong>What we're measuring:</strong> whether AI systems cite rgb.info and docs.rgb.info as the authoritative source for RGB Protocol on Bitcoin — rather than rgb.tech — and whether they give accurate answers about v0.11.1, the RGB Protocol Association, and the distinction between RGB Protocol on Bitcoin and RGB++.
+  </p>
+
+  <!-- METHODOLOGY -->
+  <div style="background:#f7f9fc;border:1.5px solid #e0e6f0;border-radius:8px;padding:16px 20px;margin-bottom:24px;font-size:13.5px;color:#444;">
+    <strong>Questions asked (same in both audits):</strong><br>
+    Q1 What is the RGB protocol for Bitcoin? &nbsp;·&nbsp;
+    Q2 Which version should I build on? &nbsp;·&nbsp;
+    Q3 Is RGB v0.11 safe to build on? &nbsp;·&nbsp;
+    Q4 Where can I learn about RGB protocol? &nbsp;·&nbsp;
+    Q5 What is the difference between rgb.info and rgb.tech? &nbsp;·&nbsp;
+    Q6 What is the RGB Protocol Association? &nbsp;·&nbsp;
+    Q7 RGB vs Taproot Assets? &nbsp;·&nbsp;
+    Q8 What happened with the RGB fork in 2025? &nbsp;·&nbsp;
+    Q9 How do I get started with RGB on Bitcoin?<br>
+    <span style="color:#888;">Chinese (Q10–12):</span>
+    Q10 什么是RGB协议？ &nbsp;·&nbsp;
+    Q11 RGB和RGB++有什么区别？ &nbsp;·&nbsp;
+    Q12 在哪里可以学习RGB协议？<br><br>
+    <a href="AI-questions-RGB-reaudit-july2026.txt" style="font-size:12.5px;color:#e85a3a;text-decoration:none;font-weight:600;" target="_blank">↗ Raw audit data — all 5 platforms, all 12 questions (July 2026)</a>
+    &nbsp;&nbsp;·&nbsp;&nbsp;
+    <a href="AI-questions-RGB-reaudit-june2026.txt" style="font-size:12.5px;color:#888;text-decoration:none;font-weight:600;" target="_blank">↗ Re-audit raw data (June 2026)</a>
+    &nbsp;&nbsp;·&nbsp;&nbsp;
+    <a href="AI-questions-RGB.txt" style="font-size:12.5px;color:#888;text-decoration:none;font-weight:600;" target="_blank">↗ Baseline raw data (March 2026)</a>
+  </div>
+
+  <!-- TABLE STYLE -->
+  <style>
+    .audit-table { width:100%; border-collapse:collapse; font-size:13.5px; margin-bottom:32px; border:1.5px solid #d0d7e3; border-radius:8px; overflow:hidden; }
+    .audit-table th { background:#0d0d1f; color:#fff; padding:10px 14px; text-align:left; font-weight:600; border-right:1px solid #2a2a40; }
+    .audit-table th:last-child { border-right:none; }
+    .audit-table td { padding:10px 14px; border-bottom:1.5px solid #e0e6f0; border-right:1px solid #e0e6f0; vertical-align:top; }
+    .audit-table td:last-child { border-right:none; }
+    .audit-table tr:last-child td { border-bottom:none; }
+    .audit-table tr:nth-child(even) td { background:#f7f9fc; }
+    .audit-verdict { display:inline-block; font-size:11px; font-weight:700; padding:2px 8px; border-radius:10px; margin-bottom:4px; }
+    .v-bad { background:#fdecea; color:#b91c1c; }
+    .v-mixed { background:#fff3e0; color:#b45309; }
+    .v-good { background:#e6f7ef; color:#1a7a4a; }
+    .audit-quote { font-style:italic; color:#666; font-size:12.5px; margin-top:4px; display:block; }
+    .platform-col { font-weight:700; color:#0d0d1f; white-space:nowrap; }
+  </style>
+
+  <table class="audit-table">
+    <thead>
+      <tr>
+        <th style="width:11%;">Platform</th>
+        <th style="width:29%;">Baseline — March 2026</th>
+        <th style="width:29%;">Re-audit — June 2026</th>
+        <th style="width:31%;">Re-audit — July 2026</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="platform-col">ChatGPT</td>
+        <td>
+          <span class="audit-verdict v-mixed">Neutral / Wrong direction</span>
+          <span class="audit-quote">"Think of rgb.info as 'learning' and rgb.tech as 'building.'" — Positions rgb.tech as the build reference. Does not mention the RGB Protocol Association as the supporting org. Neutral on fork, no mention of v0.11.1 as the production version.</span>
+        </td>
+        <td>
+          <span class="audit-verdict v-mixed">Improved — Balanced</span>
+          <span class="audit-quote">Now correctly identifies the split. rgb.info cited as educational portal, docs.rgb.info as technical documentation. Does not clearly recommend v0.11.1 — presents both ecosystems as equal alternatives. "If you follow the rgb.info ecosystem, build on v0.11.1. If you follow the rgb.tech ecosystem, build on v0.12."</span>
+        </td>
+        <td>
+          <span class="audit-verdict v-good">Improved further</span>
+          <span class="audit-quote">No longer fully symmetric — v0.11.1 now framed as the production choice: "Mainnet-oriented. Supported by the RGB Protocol Association. Intended for production applications." v0.12 framed only as "a major redesign […] not wire-compatible," without a production label. Association described accurately: "supports the ecosystem rather than controlling the protocol."</span>
+        </td>
+      </tr>
+      <tr>
+        <td class="platform-col">Gemini</td>
+        <td>
+          <span class="audit-verdict v-bad">Incorrect</span>
+          <span class="audit-quote">"rgb.tech: the primary technical hub maintained by the LNP/BP Standards Association […] traffic consolidated toward rgb.tech." — rgb.info described as "community-facing" and being phased out. rgb.tech cited as primary.</span>
+        </td>
+        <td>
+          <span class="audit-verdict v-good">Improved — Correct</span>
+          <span class="audit-quote">rgb.info correctly identified as the mainnet/commercial branch. Names Association member companies (Bitfinex, Fulgur Ventures, Bitmask, Plan B Network, LNFI). Correctly describes the Orlovsky vs. commercial builders split. Minor issue: still uses RGB20/RGB21 terminology (v0.10 nomenclature) instead of NIA/IFA/UDA.</span>
+        </td>
+        <td>
+          <span class="audit-verdict v-good">Stable — Correct</span>
+          <span class="audit-quote">Holds the June improvement: "v0.11.1 is the version adopted by major ecosystem players (such as Tether for native USDT, BitMask, and Iris Wallet) […] v0.11.1 remains the current stable, active standard." Association members listed again (Bitfinex, Fulgur Ventures, DIBA/BitMask, Plan ₿ Network, Boosty Labs). Same minor issue persists: RGB20/RGB21 terminology still used.</span>
+        </td>
+      </tr>
+      <tr>
+        <td class="platform-col">Perplexity</td>
+        <td>
+          <span class="audit-verdict v-bad">Incorrect</span>
+          <span class="audit-quote">"rgb.info (not in the primary official doc set) […] for authoritative technical information, rgb.tech and the associated GitHub orgs are the canonical reference." — Explicitly marks rgb.info as non-authoritative.</span>
+        </td>
+        <td>
+          <span class="audit-verdict v-mixed">Partial improvement</span>
+          <span class="audit-quote">rgb.info now correctly cited as education hub (vs. "non-authoritative" in March). Still recommends v0.12 for production, following the rgb.tech security notice as authoritative. Vague on the RGB Protocol Association: "I did not find a single concise official definition."</span>
+        </td>
+        <td>
+          <span class="audit-verdict v-mixed">Partial improvement</span>
+          <span class="audit-quote">No longer repeats the rgb.tech security-notice narrative from June — Q3 now gives a generic, non-committal answer instead of "no, do not build on v0.11.1." Still doesn't clearly recommend v0.11.1 or disambiguate the split: rgb.tech is described as "a more technical hub […] often pointing to the official docs.rgb.info," blurring the fact that the two are competing projects. RGB Protocol Association still undefined: "I did not find a single concise official definition."</span>
+        </td>
+      </tr>
+      <tr>
+        <td class="platform-col">Grok</td>
+        <td>
+          <span class="audit-verdict v-bad">Seriously incorrect</span>
+          <span class="audit-quote">"v0.11.1 is a dangerous fork by Bitfinex. It contains dangerous consensus changes. The official team issued a security notice on 18 July 2025." — Calls rgb.info-backed v0.11.1 dangerous; directs users to rgb.tech/install.</span>
+        </td>
+        <td>
+          <span class="audit-verdict v-good">Most improved</span>
+          <span class="audit-quote">Complete reversal from March. Now recommends v0.11.1 as the production version and rgb.info as primary resource. "Visit rgb.info for overview and wallets. Use developer tools: rgb-lib, RGB Sandbox, Lightning node integrations." Correctly describes the split without demonizing v0.11.1.</span>
+        </td>
+        <td>
+          <span class="audit-verdict v-bad">Regressed</span>
+          <span class="audit-quote">Reverses June's improvement. Q8: "a forked 'v0.11.1' release with heavy consensus modifications […] Official channels issued security notices warning against production use of the fork […] the recommended path stayed with official RGB-WG/mainline versions" — near-identical framing to the March baseline. Q5 now calls rgb.info and rgb.tech "complementary parts of the same ecosystem," erasing the 2025 split entirely.</span>
+        </td>
+      </tr>
+      <tr>
+        <td class="platform-col">DeepSeek</td>
+        <td>
+          <span class="audit-verdict v-bad">Seriously incorrect</span>
+          <span class="audit-quote">"rgb.info: an archive of older RGB protocol versions and historical information, no longer actively maintained." and "RGB v0.11 is an early test version with potential vulnerabilities, not recommended for production." — Inverts reality on both points.</span>
+        </td>
+        <td>
+          <span class="audit-verdict v-mixed">Partial improvement</span>
+          <span class="audit-quote">rgb.info now correctly cited as the official educational portal (vs. "archive, no longer maintained" in March). Still recommends v0.12 for production. Inverts rgb.tech role in Q5 — describes rgb.tech as the site that "announced the controversial fork" instead of the site that published the security notice against it. Mentions ThunderStack as active infrastructure — company no longer exists (now Utexo).</span>
+        </td>
+        <td>
+          <span class="audit-verdict v-mixed">Mixed — regressed on safety</span>
+          <span class="audit-quote">Identity questions hold the June gains: rgb.info still correctly cited as education portal (Q5), Association now described with an accurate company list — "Bitfinex, Fulgur Ventures, Bitmask, and LNFI" (Q6). But the safety question regressed hard: Q3 states "v0.11.1 is not recommended for production use" and explicitly advises "NOT to use products built with version v0.11.1 […] for any assets or purposes with any real value" — language close to the March baseline. ThunderStack mention (June's error) is gone.</span>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div style="border-top:1.5px dashed #e5e7eb; margin:4px 0 28px;"></div>
+
+  <!-- BASELINE SUMMARY -->
+  <style>
+    .summary-list { list-style:none; margin:8px 0 0; display:flex; flex-direction:column; gap:5px; }
+    .summary-list li { padding-left:14px; position:relative; }
+    .summary-list li::before { content:"–"; position:absolute; left:0; }
+  </style>
+  <div style="background:#fdecea;border-left:4px solid #b91c1c;padding:14px 18px;border-radius:0 6px 6px 0;margin-bottom:16px;font-size:13.5px;color:#333;">
+    <strong>Baseline summary (March 2026):</strong>
+    <ul class="summary-list">
+      <li>All 5 platforms pointed to rgb.tech as the primary/authoritative source</li>
+      <li>Grok and DeepSeek called v0.11.1 dangerous or non-production</li>
+      <li>Perplexity labeled rgb.info "not in the primary official doc set"</li>
+      <li>None correctly described the RGB Protocol Association or rgb.info as the official resource</li>
+    </ul>
+  </div>
+
+  <div style="background:#e6f7ef;border-left:4px solid #1a7a4a;padding:14px 18px;border-radius:0 6px 6px 0;font-size:13.5px;color:#333;margin-bottom:16px;">
+    <strong>Re-audit summary (June–July 2026):</strong>
+    <ul class="summary-list">
+      <li>rgb.info now recognized as an official/educational source by all 5 platforms (up from 0) — the 2025 split is universally acknowledged</li>
+      <li><strong>ChatGPT &amp; Gemini</strong> — held or extended June's gains: Gemini names Association members, ChatGPT now leans toward v0.11.1 as the production choice</li>
+      <li><strong>Perplexity</strong> — improved further, dropped the rgb.tech security-notice narrative (still vague, not yet clearly correct)</li>
+      <li><strong>Grok</strong> — regressed: reversed its June turnaround, back to near-baseline framing on v0.11.1 safety</li>
+      <li><strong>DeepSeek</strong> — mixed: held its gains on identity/Association, regressed on the core safety question (language close to March)</li>
+    </ul>
+  </div>
+
+  <div style="border-top:1.5px dashed #e5e7eb; margin:4px 0 24px;"></div>
+
+  <div style="background:#f7f9fc;border:1.5px solid #e0e6f0;border-radius:8px;padding:16px 20px;font-size:13.5px;color:#444;margin-bottom:32px;">
+    <strong>What drove the improvement.</strong> Two things fed the June–July gains. <strong>Indexing infrastructure</strong> — Google/Bing sitemaps, IndexNow, meta description and llms.txt/robots.txt fixes across the Kinsta migration — sped up and cleaned the signal AI crawlers (GPTBot, PerplexityBot, ClaudeBot) receive from rgb.info. <strong>Editorial output and third-party citations</strong> — regular blog updates and original articles on rgb.info, plus external mentions and outreach placements on KaleidoSwap, BiHelix, CryptoSmart.it, Bitcoin Magazine, Bitcoin Optech, CKB DevRel, and Bitcoin Tribe — multiplied the recognition signals models use to decide which source is authoritative. <strong>Removing disinformation</strong> mattered just as much as adding content: Gate.io took down two outdated articles that were actively pulling answers toward rgb.tech.
+  </div>
+
+  <div style="background:#f7f9fc;border:1.5px solid #e0e6f0;border-radius:8px;padding:16px 20px;font-size:13.5px;color:#444;margin-bottom:32px;">
+    <strong>Why some platforms regressed in July.</strong> The Grok/DeepSeek regression concentrates on the safety question (Q2/Q3/Q8) — the one spot where rgb.tech's original security notice is a single, specific, quotable source, while rgb.info's rebuttal is spread across many pages rather than one equally citable page. Both platforms also lean more on live web/social retrieval, making them more sensitive to whatever is freshly indexed — though that's not the full story, since Perplexity is equally live-search-based yet improved over the same period. The likely fix isn't more content volume, but one dedicated page rebutting the 2025 security notice point by point.
+  </div>
+  </div>
+
+  <!-- BING COPILOT -->
+  <div id="card-bing-copilot" class="source-card accent-bing">
+  <div class="source-tag"><span class="source-tag-label">Bing Webmaster Tools · AI citations</span></div>
+  <h3 style="margin-top:8px;margin-bottom:10px;font-size:15px;color:#0d0d1f;">Bing Copilot — Citation Data</h3>
+  <p style="font-size:13px;color:#888;margin-bottom:12px;">Not manually audited. Data from Bing Webmaster Tools <em>AI Performance Overview</em> dashboard · Period: 28 June – 13 July 2026.</p>
+
+  <table class="audit-table" style="margin-bottom:12px;">
+    <thead>
+      <tr><th>Date</th><th>Citations</th><th>Cited Pages</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>29 Jun</td><td>3</td><td>1</td></tr>
+      <tr><td>7 Jul</td><td>4</td><td>2</td></tr>
+      <tr><td>8 Jul</td><td><strong>5</strong></td><td>5</td></tr>
+      <tr><td>9 Jul</td><td>1</td><td>1</td></tr>
+      <tr><td>11 Jul</td><td>3</td><td>3</td></tr>
+      <tr><td>12 Jul</td><td>2</td><td>2</td></tr>
+      <tr><td style="color:#888;">All other days</td><td style="color:#888;">0</td><td style="color:#888;">0</td></tr>
+    </tbody>
+  </table>
+
+  <p style="font-size:13px;color:#888;margin-bottom:8px;">18 total citations across 6 active days out of 16 (13 Jul: 0), 14 pages cited. Clear split in two: 28 Jun–6 Jul was nearly flat (one spike on 29 Jun), then 7–13 Jul turned active on 5 of 7 days — overlapping with the Bitcoin Magazine article (6 Jul) and a busier publishing week.</p>
+
+  <p class="ref-note"><span class="ref-label">Archived reference</span>5–22 Jun 2026: 22 citations across 4 active days, first citation 8 June — 5 days after IndexNow activation.</p>
+  </div>
+
+</section>
+
+
+<!-- SECTION 2 -->
+<section id="s12">
+  <div class="section-title">
+    <span class="section-number">02</span>
+    <h2>Search Performance</h2>
+  </div>
+
+  <div class="jump-pills">
+    <a href="#card-google" class="pill-google">Google Search Console</a>
+    <a href="#card-bing-search" class="pill-bing">Bing Search</a>
+    <a href="#card-wp" class="pill-wp">WP Statistics</a>
+  </div>
+
+  <div id="card-google" class="source-card accent-google">
+  <div class="source-tag"><span class="source-tag-label">Google Search Console</span></div>
+  <h3 style="margin-top:0;margin-bottom:12px;font-size:15px;color:#0d0d1f;">Google Search Console</h3>
+  <p>Data source: Google Search Console · Period: 28 June – 13 July 2026 (GSC reporting lags ~2 days, so 14–15 Jul aren't in the export yet).</p>
+
+  <h3 style="margin-top:24px;margin-bottom:12px;font-size:15px;color:#0d0d1f;">28 Jun–13 Jul vs. Previous Period</h3>
+  <table class="audit-table">
+    <thead>
+      <tr>
+        <th></th>
+        <th>Previous period<br><span style="font-weight:400;font-size:11px;">3 Jun – 20 Jun (18 days)</span></th>
+        <th>Current period<br><span style="font-weight:400;font-size:11px;">28 Jun – 13 Jul (16 days)</span></th>
+        <th>Change</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>Impressions / day</strong></td><td>169</td><td>540</td><td style="color:#2a9d5c;font-weight:700;">+219%</td></tr>
+      <tr><td><strong>Clicks / day</strong></td><td>2.1</td><td>7.0</td><td style="color:#2a9d5c;font-weight:700;">+233%</td></tr>
+      <tr><td><strong>Avg. position</strong></td><td>5.8</td><td>5.47</td><td style="color:#2a9d5c;">↑ slight improvement</td></tr>
+      <tr><td><strong>CTR</strong></td><td>1.2%</td><td>1.3%</td><td style="color:#2a9d5c;">↑ slight improvement</td></tr>
+    </tbody>
+  </table>
+
+  <p>Impressions more than tripled and clicks more than tripled versus the already-strong post-launch period. The growth isn't gradual — it's concentrated in a spike on <strong>7–8 July</strong> (1,746 and 1,042 impressions, 26 and 30 clicks) that lines up exactly with the <strong>Bitcoin Magazine article published 6 July</strong>, plus a secondary rise on 9–10 July matching the <strong>community call (9 Jul)</strong> and Federico Tenga sharing the "History of RGB" article on Telegram (9 Jul, reposted 10 Jul). The first week of the period (28 Jun–4 Jul, before these events) averaged 389 impressions/day; the second week (5–13 Jul) averaged 657/day.</p>
+
+  <h3 style="margin-top:24px;margin-bottom:12px;font-size:15px;color:#0d0d1f;">Pages Gaining Visibility (28 Jun–13 Jul)</h3>
+  <table class="audit-table">
+    <thead>
+      <tr><th>Page</th><th>Impressions</th><th>Avg. Position</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>rgb.info/ (homepage)</td><td>3,843</td><td>4.92</td></tr>
+      <tr><td>/usdt-on-bitcoin-utexo-rgb-lightning/</td><td>820</td><td>6.46</td></tr>
+      <tr><td>/learn/how-rgb-protocol-on-bitcoin-works/</td><td>637</td><td>6.21</td></tr>
+      <tr><td>/learn/rgb-lightning-network/</td><td>504</td><td>6.12</td></tr>
+      <tr><td>/learn/client-side-validation/</td><td>474</td><td>5.04</td></tr>
+      <tr><td>/rgb-v0-11-1-bitcoin-mainnet-launch/</td><td>442</td><td>4.38</td></tr>
+    </tbody>
+  </table>
+  <p style="font-size:12.5px;color:#888;margin-top:8px;">The Viktor Ihnatiuk/Utexo USDT article (published 3 Jul, updated 14 Jul) is the second most-visible page in the period — consistent with the same Bitcoin Magazine/Utexo coverage wave driving the overall spike.</p>
+
+  <h3 style="margin-top:24px;margin-bottom:12px;font-size:15px;color:#0d0d1f;">Top Queries (28 Jun–13 Jul)</h3>
+  <table class="audit-table">
+    <thead>
+      <tr><th>Query</th><th>Clicks</th><th>Impressions</th><th>CTR</th><th>Avg. Position</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>rgb protocol</td><td>32</td><td>125</td><td>25.6%</td><td>4.33</td></tr>
+      <tr><td>rgb bitcoin</td><td>13</td><td>56</td><td>23.21%</td><td>1.86</td></tr>
+      <tr><td>rgb protocol bitcoin</td><td>8</td><td>47</td><td>17.02%</td><td>2.15</td></tr>
+      <tr><td>bitcoin rgb</td><td>5</td><td>19</td><td>26.32%</td><td>2.42</td></tr>
+      <tr><td>rgb network</td><td>1</td><td>17</td><td>5.88%</td><td>7.0</td></tr>
+    </tbody>
+  </table>
+  <p style="font-size:12.5px;color:#888;margin-top:8px;">Brand queries still dominate — rgb.info ranks in position ~2 for its core terms. Non-brand queries (e.g. "what is rgb protocol bitcoin," "rgb lightning") continue to generate impressions but not yet clicks, the same pattern as the previous period.</p>
+
+  <p class="ref-note"><span class="ref-label">Archived reference — pre/post site launch</span>20 Apr – 20 Jun 2026: 76 → 169 impressions/day (+123%), avg. position 7.8 → 5.8, CTR 2.6% → 1.2%. Top queries then: "rgb bitcoin" (29 clicks), "rgb protocol" (19), "rgb info" (10).</p>
+  </div>
+
+  <div id="card-bing-search" class="source-card accent-bing">
+  <div class="source-tag"><span class="source-tag-label">Bing Webmaster Tools · Search</span></div>
+  <h3 style="margin-top:0;margin-bottom:12px;font-size:15px;color:#0d0d1f;">Bing Search Performance</h3>
+  <p>Data source: Bing Webmaster Tools · Period: 28 June – 13 July 2026.</p>
+  <table class="audit-table" style="margin-bottom:12px;">
+    <thead>
+      <tr>
+        <th></th>
+        <th>Total (28 Jun–13 Jul)</th>
+        <th>Daily average</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>Impressions</strong></td><td>56</td><td>~3.5 / day</td></tr>
+      <tr><td><strong>Clicks</strong></td><td>2</td><td>&lt; 1 / day</td></tr>
+      <tr><td><strong>CTR</strong></td><td colspan="2">~3.6% overall</td></tr>
+    </tbody>
+  </table>
+  <p style="font-size:13.5px;color:#555;">Bing organic traffic is still small in absolute terms but stable rather than declining — total volume now matches the previous period exactly (56 impressions / 2 clicks over 5–22 Jun) despite one fewer day, with a similar split: the first week (28 Jun–4 Jul) was mostly quiet, then 5–13 Jul picked up (peak: 12 impressions on 7 Jul), mirroring the same timing as the Copilot citation increase above. By comparison, Google is already delivering ~169 impressions/day after the Kinsta launch — organic ranking on Bing typically lags indexation by several weeks.</p>
+  <p class="ref-note"><span class="ref-label">Archived reference</span>5–22 Jun 2026: 56 impressions, 2 clicks, ~3.6% CTR — including a 40% CTR anomaly on 13 Jun, likely a branded query.</p>
+  </div>
+
+  <div id="card-wp" class="source-card accent-wp">
+  <div class="source-tag"><span class="source-tag-label">WP Statistics · Site data</span></div>
+  <h3 style="margin-top:0;margin-bottom:12px;font-size:15px;color:#0d0d1f;">Website Analytics</h3>
+  <p>Data source: WP Statistics · Period: 28 June – 14 July 2026. First period with a full data collection window since the plugin was installed on 29 June — no prior period exists for comparison.</p>
+
+  <table class="audit-table" style="margin-bottom:16px;">
+    <thead>
+      <tr><th></th><th>Total</th><th>Notes</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>Visitors</strong></td><td>2,166</td><td rowspan="2">Desktop 70.9% · Mobile 28.5% · Chrome 64.7%. GNU/Linux is 15.4% of operating systems — unusually high, consistent with a technical/developer audience.</td></tr>
+      <tr><td><strong>Views</strong></td><td>3,406</td></tr>
+    </tbody>
+  </table>
+
+  <h4 style="margin-top:20px;margin-bottom:8px;font-size:13.5px;color:#0d0d1f;">Referral sources — real traffic, not just citations</h4>
+  <p style="font-size:13.5px;color:#444;">The AI Visibility Audit and Bing Copilot data (section 01) measure whether AI systems <em>cite</em> rgb.info. WP Statistics shows some of that visibility converting into actual visits:</p>
+  <ul class="item-list" style="margin-bottom:12px;">
+    <li><span class="item-text"><strong>ChatGPT sent 8 direct visits</strong> to the site (6 landed on blog posts specifically) — via chatgpt.com referrals, not survey data.</span></li>
+    <li><span class="item-text"><strong>bitcoinmagazine.com — 13 referrals</strong>, confirming real readers followed the 6 July article to rgb.info.</span></li>
+    <li><span class="item-text"><strong>btcstudy.org — 2 referrals</strong>, confirming the Chinese translation is sending readers back to the English site.</span></li>
+    <li><span class="item-text">X/Twitter (t.co) is the top referrer on blog posts specifically — 179 referrals, ahead of Google (109) on that content type.</span></li>
+  </ul>
+
+  <h4 style="margin-top:20px;margin-bottom:8px;font-size:13.5px;color:#0d0d1f;">Top content (28 Jun–14 Jul)</h4>
+  <table class="audit-table" style="margin-bottom:16px;">
+    <thead>
+      <tr><th>Content</th><th>Views</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>The History of RGB Protocol on Bitcoin</td><td>271</td></tr>
+      <tr><td>The Business Case for USDT on Bitcoin (Utexo/Viktor Ihnatiuk)</td><td>163</td></tr>
+      <tr><td>What is RGB Protocol on Bitcoin? A complete guide</td><td>121</td></tr>
+      <tr><td>Bitcoin Magazine Covers USDT on RGB Protocol (Update post)</td><td>84</td></tr>
+      <tr><td>RGB on Lightning: What's Coming Next</td><td>55</td></tr>
+    </tbody>
+  </table>
+  <p style="font-size:12.5px;color:#888;margin-top:-8px;margin-bottom:16px;">5 posts published in the window, 920 words/post average.</p>
+
+  <h4 style="margin-top:20px;margin-bottom:8px;font-size:13.5px;color:#0d0d1f;">Geography</h4>
+  <p style="font-size:13.5px;color:#444;">Asia is the top continent by visitors (50.2%) — ahead of North America (24.7%) and Europe (21.2%) — driven by Hong Kong (33.1% of all visitors) and Singapore (13.9%). <strong>Caveat:</strong> Hong Kong and Singapore are also among the most common VPN/proxy exit points globally, so this isn't necessarily a clean read on audience geography — some share of this traffic may not reflect visitors' actual location. Flagged here as raw data, not as a confirmed Asia audience win.</p>
+  </div>
+
+</section>
+
+</div>
+<!-- END TAB 2 -->
+
+
+<!-- FOOTER -->
+<div class="report-footer">
+  <span>MariJ — Technical Marketing &amp; Community Specialist<br>RGB Protocol Association</span>
+  <span>Period: 20 April – 14 July 2026<br>Report date: 14 July 2026</span>
+  <span><a href="https://rgb.info">rgb.info</a> · <a href="https://docs.rgb.info">docs.rgb.info</a></span>
+</div>
+
+<script>
+  // TAB SWITCHING
+  const TAB_NAV = {
+    activities: [
+      { id: 's01', label: '01 · AI Infra' },
+      { id: 's02', label: '02 · Website' },
+      { id: 's03', label: '03 · Blog' },
+      { id: 's04', label: '04 · Outreach' },
+      { id: 's05', label: '05 · Disambiguation' },
+      { id: 's06', label: '06 · Chinese' },
+      { id: 's07', label: '07 · Docs' },
+      { id: 's08', label: '08 · Community' },
+      { id: 's11', label: '09 · Priorities' }
+    ],
+    visibility: [
+      { id: 's10', label: '01 · AI Audit' },
+      { id: 's12', label: '02 · Search' }
+    ]
+  };
+
+  const stickyNav = document.getElementById('sticky-nav');
+  const stickyNavLinks = document.getElementById('sticky-nav-links');
+
+  function renderStickyLinks(tab) {
+    stickyNavLinks.innerHTML = TAB_NAV[tab].map(item => `<a href="#${item.id}">${item.label}</a>`).join('');
+  }
+
+  function switchTab(tab) {
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.toggle('active', p.id === 'tab-' + tab));
+    document.querySelectorAll('.tabswitch-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
+    renderStickyLinks(tab);
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  }
+
+  document.querySelectorAll('.tabswitch-btn').forEach(btn => {
+    btn.addEventListener('click', () => switchTab(btn.dataset.tab));
+  });
+
+  renderStickyLinks('visibility');
+
+  // RESPONSIVE TABLES — wrap every table in a horizontal-scroll container
+  document.querySelectorAll('table').forEach(table => {
+    const wrapper = document.createElement('div');
+    wrapper.style.overflowX = 'auto';
+    table.parentNode.insertBefore(wrapper, table);
+    wrapper.appendChild(table);
+  });
+
+  // COLLAPSIBLE SOURCE CARDS (Visibility Report tab)
+  document.querySelectorAll('.source-card').forEach(card => {
+    const tag = card.querySelector('.source-tag');
+    if (!tag) return;
+    const body = document.createElement('div');
+    body.className = 'card-body';
+    [...card.children].forEach(child => {
+      if (child !== tag) body.appendChild(child);
+    });
+    card.appendChild(body);
+    const arrow = document.createElement('span');
+    arrow.className = 'card-collapse-arrow';
+    arrow.textContent = '▾';
+    tag.appendChild(arrow);
+    tag.addEventListener('click', () => {
+      const collapsed = body.classList.toggle('collapsed');
+      arrow.textContent = collapsed ? '▸' : '▾';
+    });
+  });
+
+  // COLLAPSIBLE SECTIONS
+  document.querySelectorAll('section[id]').forEach(section => {
+    const title = section.querySelector('.section-title');
+    if (!title) return;
+    const body = document.createElement('div');
+    body.className = 'section-body';
+    [...section.children].slice(1).forEach(child => body.appendChild(child));
+    section.appendChild(body);
+    const arrow = document.createElement('span');
+    arrow.className = 'collapse-arrow';
+    arrow.textContent = '▾';
+    title.appendChild(arrow);
+    title.addEventListener('click', () => {
+      const collapsed = body.classList.toggle('collapsed');
+      arrow.textContent = collapsed ? '▸' : '▾';
+    });
+  });
+
+  // STICKY NAV — show on scroll past the header
+  window.addEventListener('scroll', () => {
+    stickyNav.style.display = window.scrollY > 360 ? 'flex' : 'none';
+  });
+
+  // Active section highlight
+  const sectionObserver = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      const link = stickyNav.querySelector(`a[href="#${entry.target.id}"]`);
+      if (link) link.classList.toggle('active', entry.isIntersecting);
+    });
+  }, { rootMargin: '-20% 0px -70% 0px' });
+  document.querySelectorAll('section[id]').forEach(s => sectionObserver.observe(s));
+
+  // BACK TO TOP
+  const topBtn = document.getElementById('top-btn');
+  window.addEventListener('scroll', () => {
+    const show = window.scrollY > 400;
+    topBtn.style.opacity = show ? '1' : '0';
+    topBtn.style.pointerEvents = show ? 'auto' : 'none';
+  });
+  topBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+</script>
+</body>
+</html>

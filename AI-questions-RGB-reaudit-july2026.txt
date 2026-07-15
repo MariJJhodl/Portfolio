@@ -1,0 +1,562 @@
+==============================================================
+  AI VISIBILITY AUDIT — RAW DATA — RE-AUDIT
+  RGB Protocol Association
+  Tested: July 2026 | Platforms: 5 | Questions: 12
+  Research by: MariJ — Community Specialist & Technical Marketing
+==============================================================
+
+--------------------------------------------------------------
+QUESTIONS ASKED
+--------------------------------------------------------------
+
+English questions (asked to all platforms):
+
+  Q1.  What is the RGB protocol for Bitcoin?
+  Q2.  Which RGB protocol version should I build on?
+  Q3.  Is RGB v0.11 safe to build on?
+  Q4.  Where can I learn about RGB protocol?
+  Q5.  What is the difference between rgb.info and rgb.tech?
+  Q6.  What is the RGB Protocol Association?
+  Q7.  RGB vs Taproot Assets — which should I use?
+  Q8.  What happened with the RGB fork in 2025?
+  Q9.  How do I get started with RGB on Bitcoin?
+
+Chinese questions (asked to ChatGPT, Gemini, Grok, DeepSeek):
+
+  Q10. 什么是RGB协议？
+       (What is the RGB protocol?)
+  Q11. RGB和RGB++有什么区别？
+       (What is the difference between RGB and RGB++?)
+  Q12. 在哪里可以学习RGB协议？
+       (Where can I learn about RGB protocol?)
+
+==============================================================
+## ChatGPT
+==============================================================
+
+Below are concise answers to each question. For topics related to the 2025 split, I've distinguished between the two competing projects rather than taking either side's claims as established fact.
+
+Q1. What is the RGB protocol for Bitcoin?
+
+RGB is a protocol for issuing and transferring digital assets and smart contracts on Bitcoin using client-side validation. Instead of storing contract state on the blockchain, RGB keeps contract data off-chain and anchors cryptographic commitments in Bitcoin transactions.
+
+Key characteristics:
+
+Runs on Bitcoin without a separate blockchain.
+Uses client-side validation and single-use seals.
+Supports fungible tokens, NFTs, identities, and programmable contracts.
+Can integrate with the Lightning Network for fast asset transfers.
+Minimizes on-chain data and preserves privacy.
+Q2. Which RGB protocol version should I build on?
+
+That depends on which RGB ecosystem you intend to follow.
+
+Today there are effectively two independent development tracks:
+
+RGB v0.11.1 (rgb-protocol / rgb.info ecosystem)
+Mainnet-oriented.
+Supported by the RGB Protocol Association.
+Intended for production applications.
+Backed by projects such as RGB Lib and RGB Lightning Node.
+
+RGB v0.12 (rgb.tech / RGB-WG ecosystem)
+
+A major redesign of the protocol.
+Different roadmap and implementation.
+Not wire-compatible with v0.11.x.
+
+If your goal is compatibility with the current v0.11 production ecosystem, build on v0.11.1. If you specifically want to experiment with the redesigned RGB-WG architecture, investigate v0.12, recognizing that it represents a separate codebase and ecosystem.
+
+Q3. Is RGB v0.11 safe to build on?
+
+There is no universally accepted answer because the two ecosystems disagree.
+
+The rgb.info / RGB Protocol Association ecosystem states that v0.11.1 is the production-ready release and recommends it for developers.
+
+The rgb.tech / RGB-WG ecosystem argues that the v0.11.1 fork modified consensus and recommends its own v0.12 implementation instead.
+
+As a developer, the practical question is less "Which side is correct?" and more "Which ecosystem do I want to join?" You should evaluate:
+
+maintenance activity,
+documentation,
+tooling,
+audits,
+wallet support,
+ecosystem adoption.
+Q4. Where can I learn about RGB protocol?
+
+For the current rgb.info ecosystem:
+
+Official documentation: docs.rgb.info
+
+Educational site: rgb.info
+
+Core GitHub repositories (linked from rgb.info).
+
+For the rgb.tech / RGB-WG ecosystem:
+
+rgb.tech
+
+If you're studying RGB historically, it's useful to read material from both projects to understand where they diverged.
+
+Q5. What is the difference between rgb.info and rgb.tech?
+
+They represent different organizations and development directions.
+
+rgb.info
+
+Educational site for the rgb-protocol ecosystem.
+Focuses on RGB v0.11.1.
+Linked with the RGB Protocol Association.
+Provides documentation, SDKs, and developer resources.
+
+rgb.tech
+
+Website associated with the RGB-WG project.
+Focuses on the redesigned v0.12 architecture.
+Publishes its own technical roadmap and statements.
+Earlier in RGB's history, rgb.tech served as a primary public site for the project before the ecosystem split.
+Q6. What is the RGB Protocol Association?
+
+The RGB Protocol Association is a Swiss non-profit association established in 2025.
+
+According to its published mission, it supports:
+
+ecosystem growth,
+community,
+education,
+funding,
+development around RGB Protocol on Bitcoin.
+
+It states that the protocol itself remains open source while the Association supports the ecosystem rather than controlling the protocol.
+
+Q7. RGB vs Taproot Assets — which should I use?
+
+They have different design goals.
+
+RGB	Taproot Assets
+Client-side validation	Server-assisted asset proofs
+Greater contract flexibility	Simpler asset issuance
+Private contract state	More ecosystem integration with Lightning Labs software
+Independent protocol	Developed by Lightning Labs
+
+Choose RGB if you want:
+
+richer smart-contract capabilities,
+client-side validation,
+privacy-oriented architecture.
+
+Choose Taproot Assets if you want:
+
+tighter integration with the Lightning Labs ecosystem,
+a comparatively simpler asset model.
+
+The better choice depends on your application's requirements rather than one protocol being objectively superior.
+
+Q8. What happened with the RGB fork in 2025?
+
+In 2025, the RGB community split into two independent projects.
+
+Broadly:
+
+One group continued development of v0.11.1 under the rgb-protocol organization and later formed the RGB Protocol Association.
+
+Another group continued development of the redesigned v0.12 under the RGB-WG / rgb.tech project.
+
+Each side disputes aspects of the other's technical decisions and governance. As a result, developers should not assume compatibility between the two ecosystems.
+
+Q9. How do I get started with RGB on Bitcoin?
+
+A practical learning path is:
+
+Learn Bitcoin UTXOs and Taproot.
+Study client-side validation and single-use seals.
+Read the RGB protocol documentation.
+Explore the schema system.
+Experiment with RGB Lib or other developer tools.
+Build a simple fungible asset.
+Test transfers locally before moving to broader testing.
+Chinese Questions
+Q10. 什么是RGB协议？
+
+RGB协议是一种建立在比特币上的智能合约和资产发行协议，采用**客户端验证（Client-side Validation）**技术。
+
+它的特点包括：
+
+不需要新的区块链；
+合约数据主要保存在链下；
+比特币链上仅保存加密承诺（Commitment）；
+可发行代币、NFT、数字身份等资产；
+可与闪电网络结合，实现快速、低费用的资产转移。
+Q11. RGB和RGB++有什么区别？
+
+RGB 与 RGB++ 是两个完全不同的协议。
+
+RGB
+
+原生面向比特币。
+使用客户端验证。
+不依赖其他区块链。
+
+RGB++
+
+由 Nervos/CKB 社区提出。
+借助 CKB 实现资产映射和验证。
+与 RGB 没有共同代码库，也没有共同治理。
+Q12. 在哪里可以学习RGB协议？
+
+推荐资料：
+
+docs.rgb.info 官方文档
+
+rgb.info 学习网站
+
+GitHub 上的 rgb-protocol 核心仓库（可从 rgb.info 导航进入）。
+
+如果你希望全面了解 RGB 的发展历程和目前的技术分歧，也可以阅读：
+
+rgb.tech
+这样能够同时了解两个独立发展方向的设计理念与路线图。
+
+==============================================================
+## Gemini
+==============================================================
+
+Here are direct, clear answers to your questions regarding the RGB protocol.
+
+---
+
+## English Q&As
+
+### Q1. What is the RGB protocol for Bitcoin?
+
+**RGB** is a smart contract and asset issuance protocol built on top of Bitcoin and the Lightning Network. Unlike Ethereum, where smart contracts run globally on-chain, RGB uses **client-side validation**:
+
+* **Off-chain data:** All contract data and history are kept privately off-chain by the users involved.
+* **On-chain commitments:** It uses Bitcoin’s UTXOs as **"single-use seals"**. To transfer an asset, you spend a specific Bitcoin UTXO and commit to the new state transition inside that Bitcoin transaction (using Taproot/OP_RETURN).
+* This provides extreme scalability, privacy (no transaction graph is visible on-chain), and full compatibility with the Lightning Network.
+
+---
+
+### Q2. Which RGB protocol version should I build on?
+
+You should build on the **v0.11 branch (specifically v0.11.1)** if you are looking for production-ready mainnet development.
+
+* **v0.11.1** is the version adopted by major ecosystem players (such as Tether for native USDT, BitMask, and Iris Wallet) for mainnet deployment.
+* There is an ongoing transition/proposal for a **v0.12** rewrite (which aims to introduce zk-STARKs and compress history), but v0.11.1 remains the current stable, active standard for deployment.
+
+---
+
+### Q3. Is RGB v0.11 safe to build on?
+
+**Yes**, relative to the rest of the RGB ecosystem. Version v0.11.1 reached mainnet-readiness in **July 2025** and has undergone extensive security testing and developer integration. It is the version officially backed by the Swiss-based **RGB Protocol Association** for immediate application deployment. However, as with any cutting-edge cryptographic protocol, standard smart contract and client-side implementation risks apply.
+
+---
+
+### Q4. Where can I learn about RGB protocol?
+
+You can access several high-quality official resources:
+
+* **Educational Portal:** [rgb.info](https://rgb.info)
+* **Technical Documentation:** [docs.rgb.info](https://docs.rgb.info/)
+* **Specifications & FAQ:** [rgb.tech](https://rgb.tech) and [wtf.rgb.tech](https://wtf.rgb.tech)
+* **GitHub Organizations:** `github.com/rgb-protocol` (for v0.11 maintenance) and `github.com/rgb-wg` (for v0.12/LNP-BP standards).
+
+---
+
+### Q5. What is the difference between rgb.info and rgb.tech?
+
+They represent the two primary developer tracks within the RGB ecosystem, which became distinct during the 2025 organizational split:
+
+* **rgb.info:** Maintained by the **RGB Protocol Association** (the `rgb-protocol` GitHub group). It focuses on the stable, production-ready **v0.11.1** protocol branch, offering documentation, sandboxes, and developer tools aimed at immediate mainnet deployment.
+* **rgb.tech:** Maintained by the **LNP/BP Standards Association** and the **RGB Consortium** (the `rgb-wg` GitHub group led by Dr. Maxim Orlovsky). It focuses on the experimental and future-looking **v0.12** protocol specification and its corresponding core libraries.
+
+---
+
+### Q6. What is the RGB Protocol Association?
+
+Established in Switzerland in **July 2025**, the **RGB Protocol Association** is a Swiss non-profit foundation formed to accelerate the practical development and adoption of the RGB protocol.
+
+* Its members include prominent ecosystem actors like **Bitfinex, Fulgur Ventures, DIBA (BitMask), Plan ₿ Network, and Boosty Labs**.
+* The Association focuses on coordinating financial grants, sponsorships, standardizing the **v0.11.1** codebase, and helping companies natively integrate RGB assets onto Bitcoin.
+
+---
+
+### Q7. RGB vs Taproot Assets — which should I use?
+
+The choice depends on your specific product requirements:
+
+| Feature | RGB Protocol | Taproot Assets (Lightning Labs) |
+| --- | --- | --- |
+| **Primary Use Case** | Complex, private, Turing-complete smart contracts, DeFi, and tokens. | Simple asset issuance (stablecoins, memecoins) optimized for Lightning. |
+| **Privacy** | **High** (Client-side validation; zero public transaction graph). | **Medium** (Relies on public "Universe" servers to index metadata). |
+| **Expressiveness** | High (Supports complex logic via AluVM). | Low (Limited to simple transfers and issuance). |
+| **Status** | Multi-wallet ecosystem (Iris, BitMask, MyCitadel). | Heavily integrated into the official Lightning Labs stack. |
+
+> **Recommendation:** Use **Taproot Assets** if you want a simpler, out-of-the-box pipeline specifically for moving stablecoins over the standard Lightning Network. Use **RGB** if you require advanced smart contract programmability, absolute privacy, or want to build complex DeFi applications.
+
+---
+
+### Q8. What happened with the RGB fork in 2025?
+
+In mid-2025, a divergence in development philosophy split the RGB community:
+
+1. **The v0.11.1 Maintainers:** Led by major industry integrators (who formed the *RGB Protocol Association*). They decided to freeze and refine **v0.11.1** as a stable, production-ready standard to deploy tokens (like Tether) on mainnet immediately.
+2. **The LNP/BP Association (v0.12):** Led by Dr. Maxim Orlovsky, who pushed for a significant protocol rewrite (**v0.12**) introducing zk-STARKs.
+
+This resulted in a friendly administrative split. Instead of a hard fork of the Bitcoin blockchain, it was an **organizational and codebase split**—one focusing on immediate mainnet utility (v0.11.1) and the other on future R&D (v0.12).
+
+---
+
+### Q9. How do I get started with RGB on Bitcoin?
+
+1. **Try a Wallet:** Download **Iris Wallet** (mobile/desktop) or install **BitMask** (browser extension) to interact with RGB assets.
+2. **Set up a Sandbox:** Use the [rgb-sandbox](https://www.google.com/search?q=https://github.com/rgb-protocol/rgb-sandbox) repository to run a local node and test CLI commands.
+3. **Read the Schema:** Learn how to write or issue tokens using ready-made templates like **RGB-20** (fungible tokens) or **RGB-21** (NFTs).
+
+---
+
+## Chinese Q&As (中文解答)
+
+### Q10. 什么是RGB协议？
+
+**RGB协议**是基于比特币（Bitcoin）和闪电网络（Lightning Network）的**智能合约与资产发行协议**。
+
+* **客户端验证 (Client-side Validation)：** 与以太坊等将所有合约数据存在链上的网络不同，RGB的数据完全保存在链下（由交易双方保管）。
+* **一次性密封 (Single-use Seals)：** RGB借用比特币的 UTXO（未花费交易输出）作为“密封条”。当你花费该 UTXO 时，就相当于打开了密封，并在对应的比特币交易中写入状态转换证明（Commitment）。
+* **优势：** 极高的隐私性（链上看不出任何代币交易痕迹）、几乎无限的扩展性，且原生支持闪电网络。
+
+---
+
+### Q11. RGB和RGB++有什么区别？
+
+虽然名字相似，但两者的架构和底层逻辑有很大不同：
+
+| 特性 | RGB 协议 | RGB++ 协议 |
+| --- | --- | --- |
+| **底层代币状态** | 完全保存在客户端（链下），用户需自行保管历史证明。 | 通过“同构绑定”映射到 **Nervos CKB** 链上的 Cell 中。 |
+| **数据可用性 (DA)** | 用户点对点传输和验证历史数据，存在数据丢失风险。 | CKB 链充当了数据托管和验证层，用户无需自行保存历史证明。 |
+| **交互性** | 需要接收方在线合作完成交易。 | 支持非交互式转账、折叠交易以及无主合约。 |
+| **安全性** | 完全继承比特币 PoW 安全性。 | 依赖 CKB 链与比特币 UTXO 的绑定和 CKB 的共识安全。 |
+
+---
+
+### Q12. 在哪里可以学习RGB协议？
+
+您可以访问以下官方渠道和文档进行学习：
+
+* **官方科普与门户网站：** [rgb.info](https://rgb.info)
+* **中文与英文技术文档：** [docs.rgb.info](https://docs.rgb.info/)
+* **官方代码库：** [GitHub - rgb-protocol](https://github.com/rgb-protocol)（专注于 v0.11.1 生产版）和 [GitHub - rgb-wg](https://github.com/rgb-wg)（专注于 v0.12 开发版）。
+
+==============================================================
+## Perplexity
+==============================================================
+
+Here’s a concise, up-to-date overview to address your questions about RGB on Bitcoin. I’ll reference sources after each key claim.
+
+Q1. What is the RGB protocol for Bitcoin?
+- RGB is a protocol that enables native digital assets and smart-contract-like capabilities on Bitcoin and Lightning, using client-side validation and off-chain state management while keeping the Bitcoin blockchain as the sole settlement layer. [rgb](https://rgb.info/learn/what-is-rgb-protocol-on-bitcoin/)
+- It emphasizes privacy, flexibility, and asset issuance without on-chain smart contracts in the traditional sense, instead relying on cryptographic commitments and proofs off-chain. [rgb](https://rgb.info/learn/what-is-rgb-protocol-on-bitcoin/)
+
+Q2. Which RGB protocol version should I build on?
+- As of mid-2026, RGB has evolved, with v0.11.x being commonly referenced for mainstream builds and ongoing development around that era; newer minor releases (e.g., v0.11.1) appear in official docs and build guides for developers aiming at mainnet readiness. [rgb](https://rgb.info/build/get-started/)
+- When starting a new project, align with the latest stable release recommended in the official build/start guides and follow the on-page prerequisites and ecosystem tooling guidance. [rgb](https://rgb.info/build/get-started/)
+
+Q3. Is RGB v0.11 safe to build on?
+- Safety depends on using the latest stable release, applying recommended setup steps, and following official documentation and best practices. Build guides emphasize starting with the supported environment, libraries, and sandbox/testing before mainnet use. [rgb](https://rgb.info/build/get-started/)
+- Always verify the compatibility of your dependencies (Rust toolchain, libraries, schemas) against the exact v0.11.x documentation and the associated release notes to avoid known migration issues. [rgb](https://rgb.info/build/get-started/)
+
+Q4. Where can I learn about RGB protocol?
+- The primary resources are:
+  - The official RGB protocol site and its documentation hub, including the technical specification and “Get started” guides. [rgb](https://rgb.info/)
+  - The rgb.info learn pages for conceptual overviews and how RGB works on Bitcoin. [rgb](https://rgb.info/learn/what-is-rgb-protocol-on-bitcoin/)
+  - The RGB GitHub ecosystem (repositories for client-side validation, schemas, and libraries) linked from rgb.info and related community resources. [rgb](https://rgb.info/build/get-started/)
+- For a broader narrative, technical deep-dives and beginner-friendly primers exist in community blogs and educational posts referenced in the results. [blog.areabitcoin](https://blog.areabitcoin.co/rgb-protocol/)
+
+Q5. What is the difference between rgb.info and rgb.tech?
+- rgb.info is a public educational and onboarding resource that explains RGB concepts, architecture, and how to get started, with links to its documentation and tooling. [rgb](https://rgb.info/learn/what-is-rgb-protocol-on-bitcoin/)
+- rgb.tech is a more technical hub and repository-oriented site that aggregates documentation, source code, and build instructions for developers building on RGB, often pointing to the official docs.rgb.info and related libraries. [blog.areabitcoin](https://blog.areabitcoin.co/rgb-protocol/)
+- In short: rgb.info is the learner-friendly portal; rgb.tech serves as a developer-technical gateway and resource aggregator (including code and specs). [rgb](https://rgb.info/learn/what-is-rgb-protocol-on-bitcoin/)
+
+Q6. What is the RGB Protocol Association?
+- The RGB Protocol Association is the organizational body and governance/community structure surrounding RGB development, standardization of schemas, and ecosystem collaboration. It often facilitates coordination among maintainers, contributors, and projects within the RGB ecosystem. [rgb](https://rgb.info/)
+- For precise current status and membership details, consult the RGB association or official governance pages linked from rgb.info and rgb docs. [rgb](https://rgb.info/)
+
+Q7. RGB vs Taproot Assets — which should I use?
+- RGB and Taproot Assets (often discussed as Taro/RGB parallel ecosystems) address similar goals—issuing and transferring assets on Bitcoin—but with different design choices:
+  - RGB focuses on client-side validation, off-chain state, and private asset issuance layered on Bitcoin/Lightning, with its own schemas and tooling. [rgb](https://rgb.info/)
+  - Taproot Assets (and related frameworks) leverage Bitcoin's Taproot/scripts to enable on-chain asset representations with different security and privacy trade-offs and tooling ecosystems. [binance](https://www.binance.com/en/square/post/512852)
+- The best choice depends on your priorities: if you want a mature off-chain asset model with a rich RGB tooling set and privacy via client-side validation, RGB is strong; if you prefer tighter integration with Bitcoin’s on-chain script capabilities and Taproot features, Taproot Assets might be more straightforward. Review current docs and community guidance to assess compatibility, tooling maturity, and deployment requirements for your use case. [rgb](https://rgb.info/)
+
+Q8. What happened with the RGB fork in 2025?
+- There have been discussions and activity around RGB’s development trajectory, including proposed forks or major upgrades (e.g., version updates) across 2024–2025, with community-driven discussions and release notes guiding migration paths. For exact events, check release notes, governance announcements, and community posts from 2025 in the RGB docs and blogs. [rgb](https://rgb.info/learn/what-is-rgb-protocol-on-bitcoin/)
+- Always verify the specific fork details, as community-driven projects may have multiple forks or branches; consult the official channels for the precise outcome and migration guidance. [rgb](https://rgb.info/)
+
+Q9. How do I get started with RGB on Bitcoin?
+- Start with the official Get Started guide, which covers environment setup, prerequisites, libraries, and a step-by-step flow to issue your first asset on Bitcoin mainnet or testnet with sandbox tooling. [rgb](https://rgb.info/build/get-started/)
+- Follow the recommended paths: understand the protocol, set up your development environment (Rust and the RGB libraries), review supported schemas, and use the sandbox for testing before mainnet deployment. [rgb](https://rgb.info/build/get-started/)
+
+Q10. 什么是RGB协议？
+- RGB协议是在比特币和闪电网络上原生发行和管理数字资产的协议，使用客户端端验证来实现资产的私有化和可扩展性. [rgb](https://rgb.info/learn/what-is-rgb-protocol-on-bitcoin/)
+
+Q11. RGB和RGB++有什么区别？
+- RGB是原始的资产发行和管理协议，强调客户端端验证、私有状态和在比特币/闪电网络上的资产发行能力. [rgb](https://rgb.info/)
+- RGB++是对RGB的扩展/升级提案，旨在在保持比特币安全性和去中心化特性的同时增强可扩展性或功能性，属于对原始RGB的改进方向之一（请参考最新的官方文档和技术讨论以了解具体的差异和实现状态）. [rgb](https://rgb.info/)
+
+Q12. 在哪里可以学习RGB协议？
+- 官方资源：rgb.info、docs.rgb.info、以及 rgb-protocol 的 GitHub 生态与文档页面，提供入门、架构、实现细节和开发指南 。 [rgb](https://rgb.info/learn/what-is-rgb-protocol-on-bitcoin/)
+- 补充资源：相关博客、技术综述和教程文章，可以帮助建立对原理和工作机制的直观理解 。 [blog.areabitcoin](https://blog.areabitcoin.co/rgb-protocol/)
+
+要点总结
+- RGB是在比特币/闪电网络上进行资产发行和管理的协议，侧重客户端端验证与私有状态管理 。 [rgb](https://rgb.info/learn/what-is-rgb-protocol-on-bitcoin/)
+- 最新稳定分支（如 v0.11.x）通常是新项目的推荐起点，请以官方构建指南为准 。 [rgb](https://rgb.info/build/get-started/)
+- 学习资源以官方文档和教育页面为核心，结合社区文章与代码仓库进行实践 。 [rgb](https://rgb.info/learn/what-is-rgb-protocol-on-bitcoin/)
+
+如你愿意，我可以为你逐条追溯最新官方文档链接、提供每条问题的权威引用及简要的对比表格，或帮你制定一个入门到上线的学习与实现清单。请告诉我你更关注哪一个部分（入门、版本对比、实操步骤、或对比评估）。 
+参考来源：rgb.info、docs.rgb.info、rgb.protoc論文/博客等官方与权威资源的当前内容。
+
+==============================================================
+## Grok
+==============================================================
+
+**Q1. What is the RGB protocol for Bitcoin?**
+
+RGB is a protocol for issuing and transferring digital assets (tokens, NFTs, stablecoins, etc.) and running private, scalable smart contracts on Bitcoin and the Lightning Network. It uses **client-side validation**: contract data and state transitions stay off-chain and are shared privately between parties, while Bitcoin's blockchain serves only as a secure commitment/anchoring layer via single-use seals on UTXOs. This keeps everything private, lightweight (no on-chain bloat), and fully secured by Bitcoin's proof-of-work.
+
+Assets flow natively through Lightning channels (no bridges or wrappers), enabling fast, low-cost transfers. It supports expressive schemas for complex contracts (beyond simple tokens) while preserving Bitcoin's security model.
+
+**Q2. Which RGB protocol version should I build on?**
+
+Build on the latest stable/mainnet version promoted by official sources (e.g., **RGB v0.11.1** on Bitcoin mainnet as of mid-2025 launches, or newer like v0.12 where available and audited). Check rgb.info or rgb.tech for current recommendations, as they emphasize production-ready releases with ecosystem support (wallets, libs like rgb-lib, Lightning integration).
+
+**Q3. Is RGB v0.11 safe to build on?**
+
+**v0.11.1** (and its betas) reached mainnet in 2025 with live products (e.g., wallets, USDT issuances). It is considered production-viable by the RGB Protocol Association and ecosystem teams. However, there were warnings about certain forks/modifications of v0.11 consensus code. Stick to official, audited implementations from trusted repos (RGB-WG or rgb-protocol) and follow security notices. Newer versions (e.g., v0.12 with zk-STARK improvements) may offer further enhancements.
+
+**Q4. Where can I learn about RGB protocol?**
+
+- **Official docs/sites**: [rgb.tech](https://rgb.tech/) (core protocol, development, smart contracts) and [rgb.info](https://rgb.info/) (Bitcoin/Lightning focus, mainnet info, use cases).
+- GitHub: RGB-WG organization (specs, core libs, RFCs).
+- RGB Protocol Association resources and ecosystem guides.
+- Tutorials on client-side validation, schemas, wallets, and Lightning integration.
+
+**Q5. What is the difference between rgb.info and rgb.tech?**
+
+- **rgb.tech**: Focuses on the broader RGB smart contracts protocol (scalability, privacy, programming, AluVM/Contractum, general Bitcoin/Lightning integration). More developer-oriented for building contracts.
+- **rgb.info**: Centers on **RGB Protocol on Bitcoin** — practical mainnet deployment, Lightning-native assets, user/wallet focus, ecosystem news (e.g., stablecoins, launches). It's the go-to for Bitcoin-specific usage.
+
+They are complementary parts of the same ecosystem.
+
+**Q6. What is the RGB Protocol Association?**
+
+A Swiss non-profit founded in July 2025 to support the open-source RGB Protocol on Bitcoin ecosystem. It focuses on funding, community, education, events, and vertical growth (wallets, infrastructure, adoption). It backs members and promotes the protocol without controlling development (handled by the core team).
+
+**Q7. RGB vs Taproot Assets — which should I use?**
+
+RGB emphasizes **client-side validation** for superior privacy (no on-chain data), scalability (sharded, no blockspace competition), and native Lightning support with expressive schemas for complex contracts. Taproot Assets (formerly Taro) uses on-chain data in Taproot outputs for asset issuance, which is simpler for some cases but less private/scalable and may interact differently with Lightning.
+
+Choose **RGB** for privacy-first, Lightning-native, complex programmable assets on Bitcoin. Evaluate based on your needs (e.g., Taproot Assets may suit simpler token launches). Both aim for Bitcoin-native assets but differ in architecture.
+
+**Q8. What happened with the RGB fork in 2025?**
+
+There was controversy around a forked "v0.11.1" release with heavy consensus modifications from an older codebase. Official channels issued security notices warning against production use of the fork due to un-reviewed changes and risks. The recommended path stayed with official RGB-WG/mainline versions (leading to v0.11.1 mainnet and v0.12). This highlighted the importance of peer review and official implementations.
+
+**Q9. How do I get started with RGB on Bitcoin?**
+
+1. Visit rgb.info or rgb.tech for guides.
+2. Install a supporting wallet (e.g., Iris Wallet).
+3. Use tools like rgb-lib (SDK), command-line, or node for development.
+4. Issue/test assets on testnet, then mainnet.
+5. Explore Lightning integration and schemas for contracts. Check GitHub repos and integration docs.
+
+**Q10. 什么是RGB协议？ (What is the RGB protocol?)**
+
+RGB协议是比特币和闪电网络上的智能合约与数字资产协议。它采用**客户端验证**（client-side validation）模式：合约数据和状态转移在链下私密处理，仅将加密承诺锚定在比特币UTXO上。通过单次使用封印（single-use seals）和模式（schemas），实现隐私、可扩展的代币/NFT/稳定币发行及复杂合约，支持原生闪电网络转移，无需桥接或托管。
+
+**Q11. RGB和RGB++有什么区别？ (What is the difference between RGB and RGB++?)**
+
+**RGB**（原生比特币版）：基于客户端验证，直接在比特币和闪电网络运行，由LNP/BP/RGB团队维护。
+
+**RGB++**：Nervos/CKB团队开发的独立协议，受RGB概念启发，但架构不同（利用CKB的UTXO模型等），不是同一项目。RGB专注于比特币原生，RGB++是其扩展/变体，适用于不同链环境。
+
+**Q12. 在哪里可以学习RGB协议？ (Where can I learn about RGB protocol?)**
+
+推荐官方站点：rgb.tech（协议核心与开发）和rgb.info（比特币主网与闪电网络应用）。此外，GitHub RGB-WG组织、文档、教程和RGB Protocol Association资源。
+
+For the most up-to-date info, always refer directly to the official sites above, as the ecosystem evolves quickly.
+
+==============================================================
+## DeepSeek
+==============================================================
+
+Here are the answers to your questions about the RGB protocol, based on the available search results. The protocol is actively evolving, and there have been significant developments and discussions regarding its direction and security.
+
+### Q1. What is the RGB protocol for Bitcoin?
+RGB is an open-source protocol for issuing and managing digital assets (like tokens and NFTs) and smart contracts on the Bitcoin and Lightning Network . It aims to enhance Bitcoin's capabilities for programmability, scalability, and privacy .
+
+It achieves this through a "client-side validation" architecture . Instead of storing all transaction data on the Bitcoin blockchain (which is expensive and slow), RGB transactions are validated off-chain by the parties involved in the transfer . The Bitcoin blockchain is used primarily as a "commitment layer," where a small piece of cryptographic data (a commitment) is embedded in a regular Bitcoin transaction to anchor and secure the off-chain RGB state .
+
+This approach uses a concept called "single-use seals," where a Bitcoin UTXO (Unspent Transaction Output) acts as a seal. When this UTXO is spent, it "closes the seal" and validates the associated off-chain state change .
+
+### Q2. Which RGB protocol version should I build on?
+The answer to this question is complex and depends on your priorities, as there is currently a split in the community.
+
+Based on the latest official announcements, the version recommended by the core development team (RGB-WG) for production use is **v0.12** . They caution against using v0.11.1, which they describe as a fork with potential security and quality issues .
+
+However, another major announcement states that **v0.11.1** has been released on the Bitcoin mainnet and is being promoted by the newly formed RGB Protocol Association . This version is described as a significant milestone enabling the creation of digital assets on the mainnet .
+
+Given this conflicting information, it's crucial to do your own research and determine which version's roadmap and security model you trust more. **Caution is advised**, as there are security warnings against the production use of v0.11.1 from the original development team .
+
+### Q3. Is RGB v0.11 safe to build on?
+According to the core development team (RGB-WG), **v0.11.1 is not recommended for production use** . They released a security notice stating that v0.11.1 is a fork of unreleased code with "heavily modifications to the consensus, affecting its security" and "poor code quality" . They explicitly advise users "NOT to use products built with version v0.11.1 and modified consensus for any assets or purposes with any real value" .
+
+On the other hand, a different group—the RGB Protocol Association—has announced the launch of v0.11.1 on mainnet, framing it as a key step forward for the protocol .
+
+Because of this fundamental disagreement on what constitutes a safe version, you should proceed with extreme caution. The official developers recommend using v0.12 for production .
+
+### Q4. Where can I learn about RGB protocol?
+*   **Education Portal**: `rgb.info` is the main education portal for the RGB protocol .
+*   **Technical Documentation**: The official technical documentation is hosted at `docs.rgb.info`  and on the `rgb-protocol/RGB-Documentation` GitHub repository .
+*   **Community**: You can join the main community Telegram group for Q&A or the developers' Telegram group .
+*   **Other Resources**: A curated list of resources, articles, and wallets is available on GitHub . The `rgb.tech` site also provides links to technical documentation .
+
+### Q5. What is the difference between rgb.info and rgb.tech?
+*   **`rgb.info`**: This is the main **education portal** and entry point for learning about the RGB protocol .
+*   **`rgb.tech`**: This site serves as a **list of links to technical documentation** .
+
+### Q6. What is the RGB Protocol Association?
+The RGB Protocol Association is an entity officially announced on July 14, 2025 . It is described as a collaborative effort by key players developing and building on the protocol, including companies like Bitfinex, Fulgur Ventures, Bitmask, and LNFI . This association is behind the promotion and launch of the v0.11.1 version of the protocol . According to the `rgb-protocol` GitHub organization, it is the main supporting entity for the protocol .
+
+### Q7. RGB vs Taproot Assets — which should I use?
+*   **Taproot Assets** (formerly Taro) is a protocol heavily inspired by RGB, specifically designed for the transfer of tokens (assets) . It uses Bitcoin's taproot commitment structure to commit to these tokens .
+*   **Key Difference**: While both use client-side validation and single-use seals , RGB is more versatile. It allows for "arbitrary reachable state and Turing-complete state evolution rules," making it suitable for complex smart contracts and various asset types beyond just tokens . Taproot Assets is more specialized for token transfer .
+*   Which to use: If you need to build complex, programmable applications or issue various asset types, RGB is more flexible. If your primary focus is simply creating and transferring tokens, Taproot Assets might be a more focused alternative. Your choice may also be influenced by which version of RGB you consider viable (see Q2 and Q3).
+
+### Q8. What happened with the RGB fork in 2025?
+In July 2025, a significant disagreement became public. The "RGB Protocol Association" announced the launch of "RGB v0.11.1" on the Bitcoin mainnet . However, the original development team (RGB-WG) promptly issued a security notice . They stated that this v0.11.1 is a **fork** of a previous, unreleased codebase. They criticized the fork for having "heavily modifications to the consensus, affecting its security," "poor code quality," and a lack of test coverage . They strongly advised against using it for any real value and reaffirmed their recommendation to use their v0.12 version . This represents a public schism in the project's community.
+
+### Q9. How do I get started with RGB on Bitcoin?
+*   **Developer Tools**: The `rgb-sandbox` repository on GitHub provides a self-contained demo environment based on RGB v0.11.1 to explore features . It uses a local `regtest` Bitcoin network for testing.
+*   **Wallets**: Several wallets support RGB, including:
+    *   **Bitmask**: A browser extension that supports RGB20 and RGB21 tokens .
+    *   **Iris Wallet**: An Android wallet for issuing, spending, and receiving RGB assets .
+    *   **MyCitadel**: A multiplatform RGB-enabled wallet .
+*   **Libraries**: For developers, there are libraries like `rgb-lib` (a Rust library for building RGB wallets)  and `flutter_rgb` (a Flutter plugin) .
+
+### Chinese Questions (Questions asked to ChatGPT, Gemini, Grok, DeepSeek)
+
+**Q10. 什么是RGB协议？**
+RGB协议是一个开源协议，旨在通过私有合约在比特币和闪电网络上发行和转移数字资产（如代币和NFT）。其核心创新是“客户端验证”架构，即交易数据在链下由参与者验证，只在比特币区块链上嵌入一个小的加密承诺来锚定资产，从而提升可扩展性和隐私性，并最大限度地减少链上足迹。
+
+**Q11. RGB和RGB++有什么区别？**
+RGB和RGB++是两种不同的协议，由不同的团队开发。
+*   **RGB**: 是一个**客户端验证**协议，链下处理合约逻辑，链上仅用于锚定。它的运作方式更注重隐私，但用户体验可能较为复杂，例如需要管理UTXO地址。
+*   **RGB++**: 是**一条独立的区块链（如Nervos/CKB）**，它借鉴了RGB的思想，但使用了一条图灵完备的UTXO链来“替代”客户端验证的过程。它利用“同构绑定”技术将比特币的UTXO与影子链上的UTXO一一对应，从而在链上处理智能合约，简化了用户体验，并支持跨UTXO链的互操作性。
+
+**Q12. 在哪里可以学习RGB协议？**
+*   **教育门户网站**: `rgb.info` 是RGB协议的主要教育门户和入门点。
+*   **技术文档**: 官方技术文档在 `docs.rgb.info` 和 `rgb-protocol/RGB-Documentation` GitHub仓库中。
+*   **社区**: 可以加入主要的Telegram社区群组进行讨论。
+*   **其他资源**: `rgb.tech` 网站提供了指向技术文档的链接，GitHub上也有社区维护的资源和文章列表。
+
