@@ -148,6 +148,7 @@
   .source-card.accent-bing { --src-color: #0891b2; }
   .source-card.accent-google { --src-color: #2b6cb0; }
   .source-card.accent-wp { --src-color: #e85a3a; }
+  .source-card.accent-x { --src-color: #000000; }
   .source-card.accent-s01 { --src-color: #7c3aed; }
   .source-card.accent-s02 { --src-color: #2b6cb0; }
   .source-card.accent-s03 { --src-color: #db2777; }
@@ -251,6 +252,7 @@
   .jump-pills a.pill-bing { --pill-color: #0891b2; }
   .jump-pills a.pill-google { --pill-color: #2b6cb0; }
   .jump-pills a.pill-wp { --pill-color: #e85a3a; }
+  .jump-pills a.pill-x { --pill-color: #000000; }
 
   .tab-panel { display: none; }
   .tab-panel.active { display: block; }
@@ -1331,6 +1333,7 @@
   <ol class="toc">
     <li><a href="#s10"><span class="toc-num">01</span><span class="toc-title">AI Visibility Audit — Baseline vs. Re-audit</span></a></li>
     <li><a href="#s12"><span class="toc-num">02</span><span class="toc-title">Search Performance</span></a></li>
+    <li><a href="#s13"><span class="toc-num">03</span><span class="toc-title">Social Performance — X (@RGB_Hub)</span></a></li>
   </ol>
 </nav>
 
@@ -1340,6 +1343,7 @@
   <a href="#card-google" class="pill-google">Google Search Console</a>
   <a href="#card-bing-search" class="pill-bing">Bing Search</a>
   <a href="#card-wp" class="pill-wp">WP Statistics</a>
+  <a href="#card-x" class="pill-x">X Analytics</a>
 </div>
 
 <!-- SECTION 1 — AI VISIBILITY AUDIT -->
@@ -1698,6 +1702,57 @@
 
 </section>
 
+
+<!-- SECTION 3 -->
+<section id="s13">
+  <div class="section-title">
+    <span class="section-number">03</span>
+    <h2>Social Performance — X (@RGB_Hub)</h2>
+  </div>
+
+  <div class="jump-pills">
+    <a href="#card-x" class="pill-x">X Analytics</a>
+  </div>
+
+  <div id="card-x" class="source-card accent-x">
+  <div class="source-tag"><span class="source-tag-label">X Analytics · @RGB_Hub</span></div>
+  <h3 style="margin-top:0;margin-bottom:12px;font-size:15px;color:#0d0d1f;">Account Overview</h3>
+  <p>Data source: X Analytics (analytics.x.com), account @RGB_Hub · Period: 15 April – 13 July 2026 (90 days).</p>
+
+  <table class="audit-table">
+    <thead>
+      <tr><th></th><th>Total</th><th>Notes</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>Impressions</strong></td><td>74,991</td><td rowspan="4">833/day average, but accelerating: 521/day in the first half of the period (15 Apr–29 May) vs. 1,145/day in the second half (30 May–13 Jul) — <span style="color:#2a9d5c;font-weight:700;">+120%</span>.</td></tr>
+      <tr><td><strong>Engagements</strong></td><td>1,777</td></tr>
+      <tr><td><strong>Engagement rate</strong></td><td>2.37%</td></tr>
+      <tr><td><strong>Profile visits</strong></td><td>355</td></tr>
+      <tr><td><strong>Follower growth (net)</strong></td><td>+448</td><td>664 new follows − 216 unfollows.</td></tr>
+    </tbody>
+  </table>
+
+  <h4 style="margin-top:20px;margin-bottom:8px;font-size:13.5px;color:#0d0d1f;">Top post (15 Apr–13 Jul)</h4>
+  <p style="font-size:13.5px;color:#444;">"RGB Protocol on Bitcoin is not a new idea..." (10 July, the "History of RGB" article) — <strong>23,645 impressions, 875 engagements, 148 link clicks</strong>, by far the best-performing post of the period. Timing lines up with the secondary Search Console spike on 9–10 July noted in the section above (Federico Tenga sharing the same article on Telegram).</p>
+
+  <h4 style="margin-top:20px;margin-bottom:8px;font-size:13.5px;color:#0d0d1f;">Link clicks by destination</h4>
+  <p style="font-size:13.5px;color:#444;">Across the 7 posts with tracked URL clicks (363 total), t.co destinations were checked manually against each post:</p>
+  <table class="audit-table">
+    <thead>
+      <tr><th>Destination</th><th>Clicks</th><th>Posts</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>rgb.info</strong></td><td>229</td><td>"History of RGB" (148), "New on the blog" — Federico Tenga guide (44), site relaunch announcement (26), "RGB Bytes" → /learn/rgb-lightning-network/ (11)</td></tr>
+      <tr><td>Community call links (Telegram/stream, not rgb.info)</td><td>134</td><td>3 community call announcement posts</td></tr>
+    </tbody>
+  </table>
+  <p style="font-size:12.5px;color:#888;margin-top:8px;"><strong>63% of tracked link clicks (229/363) sent traffic to rgb.info</strong> — the rest went to community call logistics links, not the site.</p>
+
+  <p class="ref-note"><span class="ref-label">Data note</span>The account_overview export from X Analytics returns the same 90-day table regardless of which tab (Followers / Impressions / Profile visits) is selected before exporting — the four CSVs downloaded for this report were identical, so all overview metrics above come from one dataset, not four independent exports. The per-post breakdown ("top posts") may not include every post published in the window, only the higher-performing ones.</p>
+  </div>
+
+</section>
+
 </div>
 <!-- END TAB 2 -->
 
@@ -1725,7 +1780,8 @@
     ],
     visibility: [
       { id: 's10', label: '01 · AI Audit' },
-      { id: 's12', label: '02 · Search' }
+      { id: 's12', label: '02 · Search' },
+      { id: 's13', label: '03 · Social' }
     ]
   };
 
