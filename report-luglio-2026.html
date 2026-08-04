@@ -1,0 +1,1025 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RGB Protocol on Bitcoin — Report Performance Luglio 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* Palette sito — da palette-grandezza-immagini.md */
+    --navy: #0F0F2E;
+    --bg: #F7FAFC;
+    --bg-alt: #EDF2F7;
+    --card: #FFFFFF;
+    --border: #E2E0F0;
+    --text-main: #1A202C;
+    --text-mid: #2D3748;
+    --text-secondary: #4A5568;
+    --text-light: #718096;
+    --accent-blue: #2B6CB0;
+    --accent-blue-dark: #215387;
+    --logo-red: #E85A3A;
+    --logo-green: #52C47A;
+    --logo-blue: #5B9BD5;
+    --status-good: #52C47A;
+    --status-warn: #E85A3A;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    font-family: 'DM Sans', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text-main);
+    line-height: 1.5;
+  }
+
+  .wrap {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 24px 80px;
+  }
+
+  /* ---------- Header ---------- */
+  header.page-header {
+    background: var(--navy);
+    color: #FFFFFF;
+    padding: 48px 24px 40px;
+    margin-bottom: 40px;
+  }
+  header.page-header .wrap { padding-bottom: 0; }
+  .eyebrow {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--logo-blue);
+    margin: 0 0 8px;
+  }
+  h1 {
+    font-size: 32px;
+    font-weight: 700;
+    margin: 0 0 8px;
+    letter-spacing: -0.01em;
+  }
+  .header-sub {
+    color: #B8B6D0;
+    font-size: 15px;
+    margin: 0;
+  }
+
+  /* ---------- Section shell ---------- */
+  section { margin-bottom: 56px; }
+  .section-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+  }
+  h2 {
+    font-size: 20px;
+    font-weight: 700;
+    margin: 0;
+    color: var(--navy);
+  }
+  .section-note {
+    font-size: 13px;
+    color: var(--text-light);
+    margin: 0;
+  }
+
+  /* ---------- Scorecard ---------- */
+  .scorecard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px;
+  }
+  .stat-tile {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+  }
+  .stat-label {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--text-light);
+    margin: 0 0 10px;
+  }
+  .stat-value-row {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    margin-bottom: 4px;
+  }
+  .stat-value {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--navy);
+    font-variant-numeric: tabular-nums;
+  }
+  .stat-trend {
+    font-size: 13px;
+    font-weight: 600;
+    padding: 2px 7px;
+    border-radius: 100px;
+  }
+  .stat-trend.up { color: var(--status-good); background: #EAF9F0; }
+  .stat-trend.down { color: var(--status-warn); background: #FEF0ED; }
+  .stat-trend.flat { color: var(--text-light); background: var(--bg-alt); }
+  .stat-caption {
+    font-size: 12px;
+    color: var(--text-light);
+    margin: 0;
+  }
+  .stat-explain {
+    font-size: 11px;
+    color: var(--text-light);
+    font-style: italic;
+    margin: 4px 0 0;
+    line-height: 1.4;
+  }
+  .stat-explain strong { color: var(--text-secondary); font-style: normal; }
+
+  /* ---------- Week selector ---------- */
+  .period-selector {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px;
+    margin-bottom: 24px;
+  }
+  .period-selector .label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin-right: 4px;
+  }
+  .period-btn {
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    background: var(--bg-alt);
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    padding: 7px 14px;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s, border-color 0.15s;
+  }
+  .period-btn:hover { border-color: var(--accent-blue); }
+  .period-btn.active {
+    background: var(--navy);
+    border-color: var(--navy);
+    color: #FFFFFF;
+  }
+  .period-current {
+    margin-left: auto;
+    font-size: 13px;
+    color: var(--text-light);
+  }
+  .period-current strong { color: var(--text-main); }
+
+  /* ---------- Chart card ---------- */
+  .chart-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+  }
+  .chart-card-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+  }
+  .chart-title { font-size: 15px; font-weight: 700; margin: 0 0 4px; color: var(--text-main); }
+  .chart-subtitle { font-size: 13px; color: var(--text-light); margin: 0; }
+  .table-toggle {
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--accent-blue);
+    background: none;
+    border: 1px solid var(--accent-blue);
+    border-radius: 100px;
+    padding: 5px 12px;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .table-toggle:hover { background: #EAF1FA; }
+
+  .chart-svg {
+    width: 100%;
+    height: 260px;
+    display: block;
+    overflow: visible;
+    font-family: 'DM Sans', system-ui, sans-serif;
+  }
+  .chart-svg.small { height: 200px; }
+  .chart-svg .axis-line { stroke: var(--border); stroke-width: 1; }
+  .chart-svg .axis-label { fill: var(--text-light); font-size: 10px; }
+  .chart-svg .bar-value { fill: var(--text-secondary); font-size: 10px; font-weight: 600; }
+  .chart-svg .bar { cursor: default; transition: opacity 0.15s; }
+  .chart-svg .bar:hover { opacity: 0.8; }
+  .chart-svg .line-path { fill: none; stroke-width: 2; }
+  .chart-svg .line-area { opacity: 0.12; }
+  .chart-svg .line-dot { cursor: default; }
+  .chart-svg .line-dot:hover { r: 5; }
+
+  .legend-row {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-top: 14px;
+    font-size: 13px;
+    color: var(--text-secondary);
+  }
+  .legend-item { display: flex; align-items: center; gap: 7px; }
+  .legend-dot { width: 10px; height: 10px; border-radius: 3px; flex-shrink: 0; }
+
+  .chart-grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+  @media (max-width: 720px) {
+    .chart-grid-2 { grid-template-columns: 1fr; }
+  }
+
+  /* Table view (hidden by default) */
+  .table-view {
+    display: none;
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    margin-top: 4px;
+  }
+  .table-view.visible { display: table; }
+  .table-view th, .table-view td {
+    text-align: left;
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--border);
+  }
+  .table-view th {
+    color: var(--text-light);
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 11px;
+    letter-spacing: 0.03em;
+  }
+
+  /* ---------- Narrative callout ---------- */
+  .callout {
+    border-left: 3px solid var(--accent-blue);
+    background: var(--card);
+    border-radius: 0 8px 8px 0;
+    padding: 14px 18px;
+    margin-top: 16px;
+    font-size: 14px;
+    color: var(--text-secondary);
+  }
+  .callout strong { color: var(--text-main); }
+  .callout-title {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--accent-blue);
+    margin: 0 0 8px;
+  }
+  .callout.howto {
+    border-left-color: var(--border);
+    background: transparent;
+    color: var(--text-light);
+    font-size: 12px;
+    padding: 10px 16px;
+  }
+  .callout.howto strong { color: var(--text-secondary); }
+
+  /* ---------- WP Stats macro grid ---------- */
+  .macro-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 16px;
+  }
+  .macro-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+  }
+  .macro-card h3 {
+    font-size: 14px;
+    font-weight: 700;
+    margin: 0 0 12px;
+    color: var(--navy);
+  }
+  .macro-list { list-style: none; margin: 0; padding: 0; }
+  .macro-list li {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    padding: 7px 0;
+    border-bottom: 1px solid var(--border);
+    color: var(--text-secondary);
+  }
+  .macro-list li:last-child { border-bottom: none; }
+
+  /* ---------- Footer ---------- */
+  footer {
+    text-align: center;
+    font-size: 12px;
+    color: var(--text-light);
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+  }
+</style>
+</head>
+<body>
+
+<header class="page-header">
+  <div class="wrap">
+    <p class="eyebrow">RGB Protocol Association</p>
+    <h1>Report Performance — Luglio 2026</h1>
+    <p class="header-sub">Sito (rgb.info) e social (@RGB_Hub) — performance su Search (Google, Bing) e X, 29 giugno – 2 agosto 2026</p>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <!-- ================= SCORECARD MENSILE ================= -->
+  <section id="scorecard">
+    <div class="section-head">
+      <h2>Il mese in breve</h2>
+      <p class="section-note">Dati su 5 settimane complete (29 giugno – 2 agosto) · trend = confronto tra la prima e l'ultima settimana (nessun dato del mese precedente disponibile per il confronto mese-su-mese)</p>
+    </div>
+    <div class="scorecard-grid">
+      <div class="stat-tile">
+        <p class="stat-label">Click totali (Search)</p>
+        <div class="stat-value-row">
+          <span class="stat-value">180</span>
+          <span class="stat-trend up">▲ +60%</span>
+        </div>
+        <p class="stat-caption">Google (176) + Bing (4) · settimana 1 vs 5</p>
+        <p class="stat-explain">L'ultima settimana ne ha il 60% in più della prima (15 → 24)</p>
+      </div>
+      <div class="stat-tile">
+        <p class="stat-label">Impression totali</p>
+        <div class="stat-value-row">
+          <span class="stat-value">13.500</span>
+          <span class="stat-trend down">▼ −31%</span>
+        </div>
+        <p class="stat-caption">Google (13.349) + Bing (151) · settimana 1 vs 5</p>
+        <p class="stat-explain">L'ultima settimana ne ha il 31% in meno della prima (2.786 → 1.919) — il sito compare meno spesso nei risultati di ricerca (dettaglio CTR nella card qui accanto)</p>
+      </div>
+      <div class="stat-tile">
+        <p class="stat-label">CTR (Google)</p>
+        <div class="stat-value-row">
+          <span class="stat-value">1,32%</span>
+          <span class="stat-trend up">▲ +0,78 pp</span>
+        </div>
+        <p class="stat-caption">Click ÷ impression · settimana 1: 0,51% → settimana 5: 1,29%</p>
+        <p class="stat-explain">Il CTR (click-through rate) misura <strong>quanto spesso chi vede il sito nei risultati poi lo clicca</strong>. È più che raddoppiato nonostante meno impression: il sito compare meno spesso, ma quando compare convince di più</p>
+      </div>
+      <div class="stat-tile">
+        <p class="stat-label">Follower X</p>
+        <div class="stat-value-row">
+          <span class="stat-value">+536</span>
+          <span class="stat-trend up">▲ 624 / −88</span>
+        </div>
+        <p class="stat-caption">@RGB_Hub, netti (nuovi − unfollow)</p>
+        <p class="stat-explain">Crescita costante per tutto il mese, mai in calo — la linea è sempre in salita</p>
+      </div>
+      <div class="stat-tile">
+        <p class="stat-label">Citazioni Copilot</p>
+        <div class="stat-value-row">
+          <span class="stat-value">70</span>
+          <span class="stat-trend up">▲ 47%</span>
+        </div>
+        <p class="stat-caption">% delle citazioni del mese arrivate nell'ultima settimana (33 su 70)</p>
+        <p class="stat-explain">Non è una % di crescita (variazione da un numero quasi nullo non è confrontabile in modo sensato) — è la <strong>quota sul totale del mese</strong>. Molto irregolare: quasi sempre zero, con picchi concentrati in poche giornate (22, 29, 30 luglio)</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= CONFRONTO TRA SETTIMANE (sempre visibile) ================= -->
+  <section id="weekly-comparison">
+    <div class="section-head">
+      <h2>Confronto tra settimane</h2>
+      <p class="section-note">Tutte le settimane affiancate — nessuna interazione richiesta, il confronto è diretto</p>
+    </div>
+    <div class="callout howto">
+      <p style="margin:0 0 10px;"><strong>Come si legge:</strong> i grafici a linee mostrano l'andamento <strong>giorno per giorno</strong> lungo tutto il mese (utile per vedere il trend generale e i picchi). Per confrontare direttamente i totali di una settimana contro l'altra, guarda la <strong>tabella sotto ogni grafico</strong> (già visibile): riga per riga, una settimana accanto all'altra, coi valori esatti.</p>
+      <p style="margin:0 0 6px;"><strong>Glossario:</strong></p>
+      <ul style="margin:0; padding-left:18px; columns:2; column-gap:24px;">
+        <li><strong>Impression</strong>: quante volte un contenuto/pagina è stato visto</li>
+        <li><strong>Engagement (X)</strong>: interazioni totali — like, repost, risposte, click</li>
+        <li><strong>Engagement rate</strong>: engagement ÷ impression, in %</li>
+        <li><strong>Click</strong>: visite reali generate dai risultati di ricerca</li>
+        <li><strong>CTR</strong>: click ÷ impression, in % — quanto converte chi vede il sito</li>
+        <li><strong>Posizione media</strong>: dove compare il sito su Google (1 = primo risultato, meno è meglio)</li>
+        <li><strong>Citazioni Copilot</strong>: quante volte Bing Copilot (non AI in generale) cita rgb.info per rispondere a una domanda</li>
+      </ul>
+    </div>
+    <div class="chart-grid-2">
+
+      <div class="chart-card">
+        <div class="chart-card-head">
+          <div>
+            <p class="chart-title">Search — andamento nel mese</p>
+            <p class="chart-subtitle">Google, giorno per giorno — dettaglio Google vs Bing per settimana nella tabella sotto</p>
+          </div>
+          <button class="table-toggle" data-toggle-table="weekly-search-table">Nascondi tabella</button>
+        </div>
+        <p class="chart-subtitle" style="margin:0 0 6px;font-weight:600;color:var(--text-secondary);">Andamento click nel mese (Google, giorno per giorno)</p>
+        <svg class="chart-svg small" id="chart-monthly-search-clicks"></svg>
+        <p class="chart-subtitle" style="margin:16px 0 6px;font-weight:600;color:var(--text-secondary);">Andamento impression nel mese (Google)</p>
+        <svg class="chart-svg small" id="chart-monthly-search-impressions"></svg>
+        <p class="chart-subtitle" style="margin:16px 0 6px;font-weight:600;color:var(--text-secondary);">Andamento posizione media nel mese (Google — più in alto nel grafico = posizione migliore, come una classifica)</p>
+        <svg class="chart-svg small" id="chart-monthly-search-position"></svg>
+
+        <table class="table-view visible" id="weekly-search-table">
+          <thead><tr><th>Settimana</th><th>Click Google</th><th>Click Bing</th><th>Impr. Google</th><th>Impr. Bing</th><th>CTR Google</th><th>Posizione media</th></tr></thead>
+          <tbody>
+            <tr><td>29 giu–5 lug</td><td>14</td><td>1</td><td>2.771</td><td>15</td><td>0,51%</td><td>5,21</td></tr>
+            <tr><td>6–12 lug</td><td>87</td><td>1</td><td>5.157</td><td>38</td><td>1,69%</td><td>5,64</td></tr>
+            <tr><td>13–19 lug</td><td>27</td><td>0</td><td>2.177</td><td>30</td><td>1,24%</td><td>5,22</td></tr>
+            <tr><td>20–26 lug</td><td>24</td><td>2</td><td>1.380</td><td>13</td><td>1,74%</td><td>5,71</td></tr>
+            <tr><td>27 lug–2 ago</td><td>24</td><td>0*</td><td>1.864</td><td>55*</td><td>1,29%</td><td>5,56</td></tr>
+          </tbody>
+        </table>
+        <p class="section-note" style="margin-top:10px;">Settimane complete (lun-dom). * Bing non ha ancora il dato del 2 agosto (fermo al 1°) — numeri comunque trascurabili. Posizione media ponderata sulle impression, solo Google (Bing non la riporta)</p>
+      </div>
+
+      <div class="chart-card">
+        <div class="chart-card-head">
+          <div>
+            <p class="chart-title">Engagement X — andamento nel mese</p>
+            <p class="chart-subtitle">Giorno per giorno, 29 giugno - 1 agosto — dettaglio per settimana nella tabella sotto</p>
+          </div>
+          <button class="table-toggle" data-toggle-table="weekly-social-table">Nascondi tabella</button>
+        </div>
+        <p class="chart-subtitle" style="margin:0 0 6px;font-weight:600;color:var(--text-secondary);">Andamento impression nel mese (giorno per giorno)</p>
+        <svg class="chart-svg small" id="chart-monthly-social-impressions"></svg>
+        <p class="chart-subtitle" style="margin:16px 0 6px;font-weight:600;color:var(--text-secondary);">Andamento engagement nel mese</p>
+        <svg class="chart-svg small" id="chart-monthly-social-engagement"></svg>
+        <p class="chart-subtitle" style="margin:16px 0 6px;font-weight:600;color:var(--text-secondary);">Andamento engagement rate nel mese (engagement ÷ impression — equivalente X del CTR)</p>
+        <svg class="chart-svg small" id="chart-monthly-social-engrate"></svg>
+
+        <table class="table-view visible" id="weekly-social-table">
+          <thead><tr><th>Settimana</th><th>Impression</th><th>Engagement</th><th>Engagement rate</th><th>Follower netti</th></tr></thead>
+          <tbody>
+            <tr><td>29 giu–5 lug</td><td>12.837</td><td>333</td><td>2,59%</td><td>+53</td></tr>
+            <tr><td>6–12 lug</td><td>28.847</td><td>538</td><td>1,87%</td><td>+78</td></tr>
+            <tr><td>13–19 lug</td><td>22.685</td><td>634</td><td>2,79%</td><td>+174</td></tr>
+            <tr><td>20–26 lug</td><td>35.326</td><td>1.173</td><td>3,32%</td><td>+111</td></tr>
+            <tr><td>27 lug–1 ago*</td><td>50.153</td><td>1.204</td><td>2,40%</td><td>+120</td></tr>
+          </tbody>
+        </table>
+        <p class="section-note" style="margin-top:10px;">Settimane complete (lun-dom). * Manca ancora il 2 agosto su X Analytics (non disponibile al momento dell'export)</p>
+      </div>
+
+    </div>
+
+    <div class="callout" id="weekly-callout">
+      <p class="callout-title">X (@RGB_Hub)</p>
+      <p style="margin:0 0 8px;">Impression ed engagement crescono in modo marcato: <strong>quasi quadruplicano</strong> tra la prima e l'ultima settimana (<strong>12.837 → 50.153</strong> impression), con il picco nell'ultima settimana (27 lug-1 ago: <strong>50.153</strong> impression, <strong>1.204</strong> engagement) — probabilmente trainato dagli annunci della community call cinese con Darius/LNFI Network e dall'articolo KaleidoSwap su trustless trading.</p>
+      <p style="margin:0;">La settimana migliore per crescita follower netti è invece il <strong>13-19 luglio (+174)</strong>, nonostante impression più basse delle due settimane successive: segno che non è sempre il volume a portare più follower.</p>
+    </div>
+
+    <div class="callout" id="weekly-callout-search" style="border-left-color:var(--logo-red);">
+      <p class="callout-title" style="color:var(--logo-red);">Search & Copilot (Google, Bing)</p>
+      <p style="margin:0 0 8px;">Le impression calano nell'ultima settimana rispetto alla prima (<strong>−31%</strong>), ma il CTR più che raddoppia (<strong>0,51% → 1,29%</strong>) e i click salgono comunque (<strong>+60%</strong>) — il sito compare un po' meno spesso, ma quando compare converte meglio.</p>
+      <p style="margin:0 0 8px;">La posizione media resta stabile, tra <strong>5 e 6</strong> per quasi tutto il mese.</p>
+      <p style="margin:0;">Le citazioni Copilot sono molto irregolari: quasi sempre a zero, con <strong>tre picchi isolati</strong> (22, 29, 30 luglio) che da soli valgono quasi la metà (<strong>47%</strong>) delle citazioni del mese — segno che Copilot cita rgb.info solo in risposta a domande molto specifiche, non in modo costante. <strong>Nota:</strong> questo dato copre solo Copilot (via Bing Webmaster Tools) — non misura le citazioni su ChatGPT, Claude, Perplexity o altre AI.</p>
+    </div>
+  </section>
+
+  <!-- ================= DRILL-DOWN GIORNALIERO PER SETTIMANA ================= -->
+  <section id="daily-drilldown">
+    <div class="section-head">
+      <h2>Dettaglio giornaliero di una settimana</h2>
+      <p class="section-note">Scegli una settimana per vedere l'andamento giorno per giorno</p>
+    </div>
+    <div class="period-selector" id="periodSelector">
+      <span class="label">Settimana:</span>
+      <button class="period-btn active" data-period="w1">29 giu – 5 lug</button>
+      <button class="period-btn" data-period="w2">6 – 12 lug</button>
+      <button class="period-btn" data-period="w3">13 – 19 lug</button>
+      <button class="period-btn" data-period="w4">20 – 26 lug</button>
+      <button class="period-btn" data-period="w5">27 lug – 2 ago</button>
+      <span class="period-current">Settimana attiva: <strong id="periodLabel">29 giu – 5 lug</strong></span>
+    </div>
+
+    <div class="chart-grid-2">
+
+      <div class="chart-card">
+        <div class="chart-card-head">
+          <div>
+            <p class="chart-title">Google vs Bing — giorno per giorno</p>
+            <p class="chart-subtitle">Click per canale, settimana selezionata</p>
+          </div>
+          <button class="table-toggle" data-toggle-table="channels-table">Tabella</button>
+        </div>
+        <svg class="chart-svg small" id="chart-channels-bar"></svg>
+        <div class="legend-row">
+          <span class="legend-item"><span class="legend-dot" style="background:var(--accent-blue)"></span>Google</span>
+          <span class="legend-item"><span class="legend-dot" style="background:var(--logo-red)"></span>Bing</span>
+        </div>
+        <table class="table-view" id="channels-table">
+          <thead><tr><th>Giorno</th><th>Click Google</th><th>Impr. Google</th><th>Click Bing</th><th>Impr. Bing</th></tr></thead>
+          <tbody id="channels-table-body"></tbody>
+        </table>
+      </div>
+
+      <div class="chart-card">
+        <div class="chart-card-head">
+          <div>
+            <p class="chart-title">Impression X — giorno per giorno</p>
+            <p class="chart-subtitle">Settimana selezionata</p>
+          </div>
+          <button class="table-toggle" data-toggle-table="social-table">Tabella</button>
+        </div>
+        <svg class="chart-svg small" id="chart-daily-social"></svg>
+        <table class="table-view" id="social-table">
+          <thead><tr><th>Data</th><th>Impression</th><th>Engagement</th><th>Nuovi follower</th><th>Unfollow</th></tr></thead>
+          <tbody id="social-table-body"></tbody>
+        </table>
+      </div>
+
+    </div>
+
+    <div class="callout" id="narrative-callout"></div>
+  </section>
+
+  <!-- ================= SITO — MACRO MENSILE (WP STATISTICS) ================= -->
+  <section id="site-macro">
+    <div class="section-head">
+      <h2>Sito — panoramica del mese</h2>
+      <p class="section-note">WP Statistics · dati mensili aggregati</p>
+    </div>
+
+    <div class="chart-card" style="margin-bottom:24px;">
+      <div class="chart-card-head">
+        <div>
+          <p class="chart-title">Andamento visite nel mese (29 giu – 1 ago)</p>
+          <p class="chart-subtitle">Views e visitatori giorno per giorno</p>
+        </div>
+      </div>
+      <p class="chart-subtitle" style="margin:0 0 6px;font-weight:600;color:var(--text-secondary);">Views</p>
+      <svg class="chart-svg small" id="chart-site-views"></svg>
+      <p class="chart-subtitle" style="margin:16px 0 6px;font-weight:600;color:var(--text-secondary);">Visitatori</p>
+      <svg class="chart-svg small" id="chart-site-visitors"></svg>
+      <p class="section-note" style="margin-top:10px;">⚠️ <strong>Stima approssimativa</strong>, non dati esatti: WP Statistics (versione gratuita) non offre un export giornaliero, solo un grafico immagine nella dashboard. Questa serie è stata ricostruita leggendo la forma di quel grafico e facendola coincidere con i totali reali del mese (7.381 views, 4.795 visitatori) — il picco del 17-19 luglio è reale e ben visibile nell'originale, i valori esatti giorno per giorno sono una ricostruzione plausibile, non il dato preciso di WP Statistics.</p>
+    </div>
+
+    <div class="macro-grid">
+      <div class="macro-card">
+        <h3>Pagine più visitate</h3>
+        <ul class="macro-list">
+          <li><span>Home</span><span>1.710</span></li>
+          <li><span>Client-side validation</span><span>434</span></li>
+          <li><span>RGB &amp; Lightning Network</span><span>420</span></li>
+          <li><span>Blog &amp; Media</span><span>371</span></li>
+          <li><span>History of RGB</span><span>357</span></li>
+        </ul>
+      </div>
+      <div class="macro-card">
+        <h3>Referral principali</h3>
+        <ul class="macro-list">
+          <li><span>google.com</span><span>1.237</span></li>
+          <li><span>t.co (X/Twitter)</span><span>674</span></li>
+          <li><span>duckduckgo.com</span><span>24</span></li>
+          <li><span>bitcoinmagazine.com</span><span>18</span></li>
+          <li><span>youtube.com</span><span>16</span></li>
+        </ul>
+      </div>
+      <div class="macro-card">
+        <h3>Geografia visitatori (per continente)</h3>
+        <ul class="macro-list">
+          <li><span>Asia</span><span>43,4%</span></li>
+          <li><span>Nord America</span><span>33,3%</span></li>
+          <li><span>Europa</span><span>19,1%</span></li>
+          <li><span>Sud America</span><span>2,2%</span></li>
+          <li><span>Africa</span><span>2%</span></li>
+        </ul>
+      </div>
+      <div class="macro-card">
+        <h3>Motori di ricerca (referral)</h3>
+        <ul class="macro-list">
+          <li><span>Google</span><span>1.237</span></li>
+          <li><span>ChatGPT</span><span>25</span></li>
+          <li><span>DuckDuckGo</span><span>24</span></li>
+        </ul>
+      </div>
+    </div>
+    <p class="section-note" style="margin-top:12px;">Fonte: WP Statistics (Content Analytics, Page Insights, Geographic, Referrals) — dati mensili aggregati, export via PDF, non filtrabili per settimana</p>
+  </section>
+
+  <footer>
+    Report generato per RGB Protocol Association — performance luglio 2026 (29 giugno – 2 agosto)
+  </footer>
+
+</div>
+
+<script>
+  // ============ DATI REALI — X (@RGB_Hub), luglio 2026 ============
+  // Fonte: account_overview_analytics.csv (31 giorni, 1-31 luglio)
+  const xDaily = {
+    w1: [
+      {date:'29 giu', impressions:1314, engagements:40,  newFollows:28, unfollows:2},
+      {date:'30 giu', impressions:2618, engagements:58,  newFollows:5,  unfollows:1},
+      {date:'1 lug', impressions:979,  engagements:42,  newFollows:4,  unfollows:0},
+      {date:'2 lug', impressions:440,  engagements:5,   newFollows:4,  unfollows:2},
+      {date:'3 lug', impressions:2266, engagements:81,  newFollows:15, unfollows:7},
+      {date:'4 lug', impressions:3683, engagements:79,  newFollows:6,  unfollows:6},
+      {date:'5 lug', impressions:1537, engagements:28,  newFollows:10, unfollows:1},
+    ],
+    w2: [
+      {date:'6 lug',  impressions:1780,  engagements:29,  newFollows:7,  unfollows:1},
+      {date:'7 lug',  impressions:1533,  engagements:24,  newFollows:14, unfollows:5},
+      {date:'8 lug',  impressions:665,   engagements:17,  newFollows:9,  unfollows:0},
+      {date:'9 lug',  impressions:4020,  engagements:113, newFollows:21, unfollows:2},
+      {date:'10 lug', impressions:12888, engagements:281, newFollows:27, unfollows:4},
+      {date:'11 lug', impressions:5911,  engagements:50,  newFollows:12, unfollows:3},
+      {date:'12 lug', impressions:2050,  engagements:24,  newFollows:6,  unfollows:3},
+    ],
+    w3: [
+      {date:'13 lug', impressions:1204,  engagements:9,   newFollows:12, unfollows:2},
+      {date:'14 lug', impressions:881,   engagements:15,  newFollows:6,  unfollows:2},
+      {date:'15 lug', impressions:915,   engagements:6,   newFollows:5,  unfollows:0},
+      {date:'16 lug', impressions:1408,  engagements:55,  newFollows:11, unfollows:2},
+      {date:'17 lug', impressions:10882, engagements:395, newFollows:59, unfollows:6},
+      {date:'18 lug', impressions:5215,  engagements:113, newFollows:89, unfollows:5},
+      {date:'19 lug', impressions:2180,  engagements:41,  newFollows:12, unfollows:3},
+    ],
+    w4: [
+      {date:'20 lug', impressions:3428,  engagements:89,  newFollows:19, unfollows:2},
+      {date:'21 lug', impressions:7485,  engagements:452, newFollows:37, unfollows:1},
+      {date:'22 lug', impressions:1669,  engagements:41,  newFollows:10, unfollows:2},
+      {date:'23 lug', impressions:3780,  engagements:147, newFollows:12, unfollows:0},
+      {date:'24 lug', impressions:1633,  engagements:36,  newFollows:9,  unfollows:1},
+      {date:'25 lug', impressions:12772, engagements:365, newFollows:20, unfollows:4},
+      {date:'26 lug', impressions:4559,  engagements:43,  newFollows:14, unfollows:0},
+    ],
+    w5: [ // 27 lug - 1 ago (manca il 2 agosto, non ancora disponibile su X Analytics)
+      {date:'27 lug', impressions:10762, engagements:362, newFollows:24, unfollows:7},
+      {date:'28 lug', impressions:7197,  engagements:84,  newFollows:22, unfollows:1},
+      {date:'29 lug', impressions:5413,  engagements:198, newFollows:45, unfollows:5},
+      {date:'30 lug', impressions:12873, engagements:410, newFollows:27, unfollows:5},
+      {date:'31 lug', impressions:10270, engagements:127, newFollows:16, unfollows:1},
+      {date:'1 ago',  impressions:3638,  engagements:23,  newFollows:7,  unfollows:2},
+    ],
+  };
+
+  const xWeekly = [
+    {label:'29 giu–5 lug', impressions:12837, engagements:333},
+    {label:'6–12 lug',     impressions:28847, engagements:538},
+    {label:'13–19 lug',    impressions:22685, engagements:634},
+    {label:'20–26 lug',    impressions:35326, engagements:1173},
+    {label:'27 lug–1 ago*',impressions:50153, engagements:1204},
+  ];
+
+  const periodLabels = {
+    w1: "29 giu – 5 lug",
+    w2: "6 – 12 lug",
+    w3: "13 – 19 lug",
+    w4: "20 – 26 lug",
+    w5: "27 lug – 2 ago"
+  };
+
+  // ============ DATI REALI — Search (Google Search Console + Bing), luglio 2026 ============
+  const searchDaily = {
+    w1: [
+      {date:'29 giu', gClicks:3, gImpr:423, bClicks:0, bImpr:1, pos:4.7},
+      {date:'30 giu', gClicks:3, gImpr:668, bClicks:0, bImpr:2, pos:5.1},
+      {date:'1 lug', gClicks:3, gImpr:276, bClicks:0, bImpr:0, pos:5.9},
+      {date:'2 lug', gClicks:0, gImpr:306, bClicks:0, bImpr:2, pos:6.4},
+      {date:'3 lug', gClicks:3, gImpr:264, bClicks:1, bImpr:5, pos:4.9},
+      {date:'4 lug', gClicks:2, gImpr:427, bClicks:0, bImpr:5, pos:5.1},
+      {date:'5 lug', gClicks:0, gImpr:407, bClicks:0, bImpr:0, pos:4.9},
+    ],
+    w2: [
+      {date:'6 lug',  gClicks:3,  gImpr:308,  bClicks:0, bImpr:4,  pos:4.9},
+      {date:'7 lug',  gClicks:26, gImpr:1746, bClicks:1, bImpr:12, pos:5.1},
+      {date:'8 lug',  gClicks:30, gImpr:1042, bClicks:0, bImpr:8,  pos:5.5},
+      {date:'9 lug',  gClicks:10, gImpr:687,  bClicks:0, bImpr:3,  pos:5.5},
+      {date:'10 lug', gClicks:9,  gImpr:548,  bClicks:0, bImpr:6,  pos:7.9},
+      {date:'11 lug', gClicks:4,  gImpr:392,  bClicks:0, bImpr:3,  pos:5.3},
+      {date:'12 lug', gClicks:5,  gImpr:434,  bClicks:0, bImpr:2,  pos:6.3},
+    ],
+    w3: [
+      {date:'13 lug', gClicks:8, gImpr:368, bClicks:0, bImpr:3,  pos:5.2},
+      {date:'14 lug', gClicks:5, gImpr:348, bClicks:0, bImpr:2,  pos:5.3},
+      {date:'15 lug', gClicks:3, gImpr:309, bClicks:0, bImpr:17, pos:7.6},
+      {date:'16 lug', gClicks:4, gImpr:235, bClicks:0, bImpr:6,  pos:4.0},
+      {date:'17 lug', gClicks:6, gImpr:507, bClicks:0, bImpr:1,  pos:4.5},
+      {date:'18 lug', gClicks:1, gImpr:195, bClicks:0, bImpr:0,  pos:5.4},
+      {date:'19 lug', gClicks:0, gImpr:215, bClicks:0, bImpr:1,  pos:4.6},
+    ],
+    w4: [
+      {date:'20 lug', gClicks:2, gImpr:341, bClicks:1, bImpr:3, pos:5.3},
+      {date:'21 lug', gClicks:6, gImpr:245, bClicks:0, bImpr:0, pos:5.3},
+      {date:'22 lug', gClicks:4, gImpr:136, bClicks:0, bImpr:5, pos:6.1},
+      {date:'23 lug', gClicks:3, gImpr:214, bClicks:0, bImpr:3, pos:6.0},
+      {date:'24 lug', gClicks:3, gImpr:176, bClicks:1, bImpr:2, pos:6.4},
+      {date:'25 lug', gClicks:2, gImpr:111, bClicks:0, bImpr:0, pos:5.7},
+      {date:'26 lug', gClicks:4, gImpr:157, bClicks:0, bImpr:0, pos:5.7},
+    ],
+    w5: [
+      {date:'27 lug', gClicks:4, gImpr:572, bClicks:0, bImpr:6,  pos:4.7},
+      {date:'28 lug', gClicks:4, gImpr:150, bClicks:0, bImpr:12, pos:7.2},
+      {date:'29 lug', gClicks:4, gImpr:188, bClicks:0, bImpr:5,  pos:6.4},
+      {date:'30 lug', gClicks:4, gImpr:150, bClicks:0, bImpr:21, pos:6.6},
+      {date:'31 lug', gClicks:4, gImpr:122, bClicks:0, bImpr:7,  pos:7.1},
+      {date:'1 ago',  gClicks:1, gImpr:509, bClicks:0, bImpr:4,  pos:4.6},
+      {date:'2 ago',  gClicks:3, gImpr:173, bClicks:0, bImpr:0,  pos:6.9},
+    ],
+  };
+
+  const searchWeekly = [
+    {label:'29 giu–5 lug', gClicks:14, bClicks:1, gImpr:2771, bImpr:15},
+    {label:'6–12 lug',     gClicks:87, bClicks:1, gImpr:5157, bImpr:38},
+    {label:'13–19 lug',    gClicks:27, bClicks:0, gImpr:2177, bImpr:30},
+    {label:'20–26 lug',    gClicks:24, bClicks:2, gImpr:1380, bImpr:13},
+    {label:'27 lug–2 ago', gClicks:24, bClicks:0, gImpr:1864, bImpr:55},
+  ];
+
+  // ============ MINI HELPER SVG CHARTS ============
+  const NS = 'http://www.w3.org/2000/svg';
+  function el(tag, attrs) {
+    const e = document.createElementNS(NS, tag);
+    for (const k in attrs) e.setAttribute(k, attrs[k]);
+    return e;
+  }
+  function fmt(n) { return n.toLocaleString('it-IT'); }
+
+  // Single-series bar chart with direct value labels (accessibility: green/blue fail
+  // contrast-vs-surface at low opacity, so values are always labeled, never color-only)
+  function renderBarChart(svgId, data, valueKey, color, opts = {}) {
+    const svg = document.getElementById(svgId);
+    if (!svg) return;
+    svg.innerHTML = '';
+    const W = 600, H = opts.height || 190, padL = 36, padB = 24, padT = 14, padR = 10;
+    svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+    const innerW = W - padL - padR, innerH = H - padT - padB;
+    const max = Math.max(...data.map(d => d[valueKey])) * 1.15;
+    const n = data.length;
+    const gap = 10;
+    const barW = (innerW - gap * (n - 1)) / n;
+
+    // axis line
+    svg.appendChild(el('line', { class: 'axis-line', x1: padL, y1: H - padB, x2: W - padR, y2: H - padB }));
+
+    data.forEach((d, i) => {
+      const v = d[valueKey];
+      const h = max > 0 ? (v / max) * innerH : 0;
+      const x = padL + i * (barW + gap);
+      const y = H - padB - h;
+      const bar = el('rect', {
+        class: 'bar', x, y, width: barW, height: h, rx: 3, fill: color
+      });
+      const title = el('title', {});
+      title.textContent = `${d.label || d.date}: ${fmt(v)}`;
+      bar.appendChild(title);
+      svg.appendChild(bar);
+
+      svg.appendChild(el('text', {
+        class: 'bar-value', x: x + barW / 2, y: y - 5, 'text-anchor': 'middle'
+      })).textContent = fmt(v);
+
+      svg.appendChild(el('text', {
+        class: 'axis-label', x: x + barW / 2, y: H - 8, 'text-anchor': 'middle'
+      })).textContent = d.label || d.date;
+    });
+  }
+
+  // Two-series grouped bar chart (same unit/measure, e.g. Google clicks vs Bing clicks)
+  function renderGroupedBarChart(svgId, data, keyA, keyB, colorA, colorB) {
+    const svg = document.getElementById(svgId);
+    if (!svg) return;
+    svg.innerHTML = '';
+    const W = 600, H = 190, padL = 36, padB = 24, padT = 14, padR = 10;
+    svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+    const innerW = W - padL - padR, innerH = H - padT - padB;
+    const max = Math.max(...data.map(d => Math.max(d[keyA], d[keyB]))) * 1.2 || 1;
+    const n = data.length;
+    const groupGap = 14, barGap = 3;
+    const groupW = (innerW - groupGap * (n - 1)) / n;
+    const barW = (groupW - barGap) / 2;
+
+    svg.appendChild(el('line', { class: 'axis-line', x1: padL, y1: H - padB, x2: W - padR, y2: H - padB }));
+
+    data.forEach((d, i) => {
+      const gx = padL + i * (groupW + groupGap);
+      [[keyA, colorA], [keyB, colorB]].forEach(([key, color], j) => {
+        const v = d[key];
+        const h = (v / max) * innerH;
+        const x = gx + j * (barW + barGap);
+        const y = H - padB - h;
+        const bar = el('rect', { class: 'bar', x, y, width: barW, height: Math.max(h, v > 0 ? 1 : 0), rx: 2, fill: color });
+        const title = el('title', {});
+        title.textContent = `${d.label || d.date} — ${key === keyA ? 'Google' : 'Bing'}: ${fmt(v)}`;
+        bar.appendChild(title);
+        svg.appendChild(bar);
+        if (v > 0) {
+          svg.appendChild(el('text', {
+            class: 'bar-value', x: x + barW / 2, y: y - 4, 'text-anchor': 'middle', style: 'font-size:9px'
+          })).textContent = fmt(v);
+        }
+      });
+      svg.appendChild(el('text', {
+        class: 'axis-label', x: gx + groupW / 2, y: H - 8, 'text-anchor': 'middle'
+      })).textContent = d.label || d.date;
+    });
+  }
+
+  // Single-series line chart with dots + hover title
+  function renderLineChart(svgId, data, valueKey, color, opts = {}) {
+    const svg = document.getElementById(svgId);
+    if (!svg) return;
+    svg.innerHTML = '';
+    const W = 600, H = 190, padL = 46, padB = 24, padT = 16, padR = 14;
+    svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+    const innerW = W - padL - padR, innerH = H - padT - padB;
+    const dataMax = Math.max(...data.map(d => d[valueKey]));
+    const dataMin = Math.min(...data.map(d => d[valueKey]));
+    const max = dataMax * 1.15;
+    const n = data.length;
+    const stepX = n > 1 ? innerW / (n - 1) : 0;
+
+    svg.appendChild(el('line', { class: 'axis-line', x1: padL, y1: H - padB, x2: W - padR, y2: H - padB }));
+
+    // Y-axis reference gridlines + value labels (3 ticks: 0/min, metà, massimo)
+    const fmtTick = (v) => v >= 1000 ? Math.round(v).toLocaleString('it-IT') : (Number.isInteger(v) ? v : v.toFixed(1));
+    const tickVals = opts.invert ? [dataMin, (dataMin + dataMax) / 2, dataMax] : [0, max / 2, max];
+    tickVals.forEach(v => {
+      const frac = max > 0 ? (v / max) : 0;
+      const y = opts.invert ? (padT + frac * innerH) : (padT + innerH - frac * innerH);
+      svg.appendChild(el('line', {
+        x1: padL, y1: y, x2: W - padR, y2: y,
+        stroke: 'var(--border)', 'stroke-width': 1, 'stroke-dasharray': '2,3'
+      }));
+      svg.appendChild(el('text', {
+        class: 'axis-label', x: padL - 8, y: y + 3, 'text-anchor': 'end'
+      })).textContent = fmtTick(v);
+    });
+
+    // invert: lower raw value plots higher on screen (e.g. search position, where 1 = best)
+    const pts = data.map((d, i) => {
+      const x = padL + i * stepX;
+      const frac = max > 0 ? (d[valueKey] / max) * innerH : 0;
+      const y = opts.invert ? (padT + frac) : (padT + innerH - frac);
+      return [x, y];
+    });
+
+    // area
+    const areaPts = `${padL},${H - padB} ` + pts.map(p => p.join(',')).join(' ') + ` ${padL + (n-1)*stepX},${H - padB}`;
+    svg.appendChild(el('polygon', { class: 'line-area', points: areaPts, fill: color }));
+
+    // line
+    svg.appendChild(el('polyline', { class: 'line-path', points: pts.map(p => p.join(',')).join(' '), stroke: color }));
+
+    // dots + labels (thin out labels when there are many points, e.g. full-month view)
+    const labelEvery = n > 10 ? Math.ceil(n / 8) : 1;
+    data.forEach((d, i) => {
+      const [x, y] = pts[i];
+      const dot = el('circle', { class: 'line-dot', cx: x, cy: y, r: n > 10 ? 2.5 : 3.5, fill: color });
+      const title = el('title', {});
+      title.textContent = `${d.date}: ${fmt(d[valueKey])}`;
+      dot.appendChild(title);
+      svg.appendChild(dot);
+
+      if (i % labelEvery === 0 || i === n - 1) {
+        svg.appendChild(el('text', {
+          class: 'axis-label', x, y: H - 8, 'text-anchor': 'middle'
+        })).textContent = d.date.replace(' lug', '');
+      }
+    });
+  }
+
+  // ============ RENDER: confronto tra settimane (X) ============
+  function renderWeeklySocial() {
+    const green = getComputedStyle(document.documentElement).getPropertyValue('--logo-green').trim();
+    const blue = getComputedStyle(document.documentElement).getPropertyValue('--logo-blue').trim();
+    const red = getComputedStyle(document.documentElement).getPropertyValue('--logo-red').trim();
+
+    // Andamento nel mese, giorno per giorno (risponde a "come siamo cresciuti da inizio mese a ora")
+    const allDays = [...xDaily.w1, ...xDaily.w2, ...xDaily.w3, ...xDaily.w4, ...xDaily.w5];
+    renderLineChart('chart-monthly-social-impressions', allDays, 'impressions', green);
+    renderLineChart('chart-monthly-social-engagement', allDays, 'engagements', blue);
+
+    const engRateData = allDays.map(d => ({ date: d.date, engRate: d.impressions > 0 ? (d.engagements / d.impressions) * 100 : 0 }));
+    renderLineChart('chart-monthly-social-engrate', engRateData, 'engRate', red);
+  }
+
+  // ============ DATI STIMATI — Sito (WP Statistics, no export gratuito, ricostruiti dal grafico) ============
+  const siteDaily = [
+    {date:"29 giu", views:138, visitors:90}, {date:"30 giu", views:123, visitors:80},
+    {date:"1 lug", views:107, visitors:70}, {date:"2 lug", views:92, visitors:60},
+    {date:"3 lug", views:107, visitors:70}, {date:"4 lug", views:138, visitors:90},
+    {date:"5 lug", views:168, visitors:109}, {date:"6 lug", views:199, visitors:129},
+    {date:"7 lug", views:245, visitors:159}, {date:"8 lug", views:291, visitors:189},
+    {date:"9 lug", views:230, visitors:149}, {date:"10 lug", views:184, visitors:120},
+    {date:"11 lug", views:153, visitors:99}, {date:"12 lug", views:138, visitors:90},
+    {date:"13 lug", views:107, visitors:70}, {date:"14 lug", views:92, visitors:60},
+    {date:"15 lug", views:107, visitors:70}, {date:"16 lug", views:153, visitors:99},
+    {date:"17 lug", views:490, visitors:318}, {date:"18 lug", views:674, visitors:438},
+    {date:"19 lug", views:551, visitors:358}, {date:"20 lug", views:306, visitors:199},
+    {date:"21 lug", views:168, visitors:109}, {date:"22 lug", views:138, visitors:90},
+    {date:"23 lug", views:153, visitors:99}, {date:"24 lug", views:138, visitors:90},
+    {date:"25 lug", views:123, visitors:80}, {date:"26 lug", views:138, visitors:90},
+    {date:"27 lug", views:214, visitors:139}, {date:"28 lug", views:291, visitors:189},
+    {date:"29 lug", views:352, visitors:229}, {date:"30 lug", views:398, visitors:259},
+    {date:"31 lug", views:306, visitors:199}, {date:"1 ago", views:169, visitors:106},
+  ];
+
+  function renderSiteTrend() {
+    const navy = getComputedStyle(document.documentElement).getPropertyValue('--navy').trim();
+    const blue = getComputedStyle(document.documentElement).getPropertyValue('--accent-blue').trim();
+    renderLineChart('chart-site-views', siteDaily, 'views', navy);
+    renderLineChart('chart-site-visitors', siteDaily, 'visitors', blue);
+  }
+
+  // ============ RENDER: confronto tra settimane (Search) ============
+  function renderWeeklySearch() {
+    const blue = getComputedStyle(document.documentElement).getPropertyValue('--accent-blue').trim();
+    const red = getComputedStyle(document.documentElement).getPropertyValue('--logo-red').trim();
+    const allDays = [...searchDaily.w1, ...searchDaily.w2, ...searchDaily.w3, ...searchDaily.w4, ...searchDaily.w5];
+    renderLineChart('chart-monthly-search-clicks', allDays, 'gClicks', blue);
+    renderLineChart('chart-monthly-search-impressions', allDays, 'gImpr', blue);
+
+    renderLineChart('chart-monthly-search-position', allDays, 'pos', red, { invert: true });
+  }
+
+  // ============ RENDER: drill-down giornaliero (X + Search) ============
+  function renderDailyDrilldown(period) {
+    const data = xDaily[period];
+    const green = getComputedStyle(document.documentElement).getPropertyValue('--logo-green').trim();
+    renderLineChart('chart-daily-social', data, 'impressions', green);
+
+    const tbody = document.getElementById('social-table-body');
+    tbody.innerHTML = data.map(d =>
+      `<tr><td>${d.date}</td><td>${fmt(d.impressions)}</td><td>${fmt(d.engagements)}</td><td>${d.newFollows}</td><td>${d.unfollows}</td></tr>`
+    ).join('');
+
+    const totalImpr = data.reduce((s, d) => s + d.impressions, 0);
+    const peak = data.reduce((a, b) => b.impressions > a.impressions ? b : a);
+    const netFollowers = data.reduce((s, d) => s + d.newFollows - d.unfollows, 0);
+    document.getElementById('narrative-callout').innerHTML =
+      `<strong>${periodLabels[period]}:</strong> ${fmt(totalImpr)} impression totali su X, picco il ${peak.date} (${fmt(peak.impressions)} impression). Follower netti nella settimana: ${netFollowers >= 0 ? '+' : ''}${netFollowers}.`;
+
+    // Search — Google vs Bing, stessa settimana
+    const sData = searchDaily[period];
+    const blue = getComputedStyle(document.documentElement).getPropertyValue('--accent-blue').trim();
+    const red = getComputedStyle(document.documentElement).getPropertyValue('--logo-red').trim();
+    renderGroupedBarChart('chart-channels-bar', sData, 'gClicks', 'bClicks', blue, red);
+
+    document.getElementById('channels-table-body').innerHTML = sData.map(d =>
+      `<tr><td>${d.date}</td><td>${fmt(d.gClicks)}</td><td>${fmt(d.gImpr)}</td><td>${fmt(d.bClicks)}</td><td>${fmt(d.bImpr)}</td></tr>`
+    ).join('');
+  }
+
+  // ============ Selettore settimana ============
+  document.getElementById('periodSelector').addEventListener('click', (e) => {
+    const btn = e.target.closest('.period-btn');
+    if (!btn) return;
+    document.querySelectorAll('.period-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('periodLabel').textContent = periodLabels[btn.dataset.period];
+    renderDailyDrilldown(btn.dataset.period);
+  });
+
+  // Toggle grafico <-> tabella
+  document.querySelectorAll('[data-toggle-table]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const table = document.getElementById(btn.dataset.toggleTable);
+      table.classList.toggle('visible');
+      btn.textContent = table.classList.contains('visible') ? 'Vedi grafico' : 'Vedi come tabella';
+    });
+  });
+
+  // ============ Init ============
+  renderWeeklySocial();
+  renderWeeklySearch();
+  renderSiteTrend();
+  renderDailyDrilldown('w1');
+</script>
+
+</body>
+</html>
