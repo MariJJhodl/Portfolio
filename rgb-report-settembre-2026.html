@@ -1,0 +1,1419 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RGB Protocol on Bitcoin — Report Performance Settembre 2026 (parziale)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* Palette sito — da palette-grandezza-immagini.md */
+    --navy: #0F0F2E;
+    --bg: #F7FAFC;
+    --bg-alt: #EDF2F7;
+    --card: #FFFFFF;
+    --border: #E2E0F0;
+    --text-main: #1A202C;
+    --text-mid: #2D3748;
+    --text-secondary: #4A5568;
+    --text-light: #718096;
+    --accent-blue: #2B6CB0;
+    --accent-blue-dark: #215387;
+    --logo-red: #E85A3A;
+    --logo-green: #52C47A;
+    --logo-blue: #5B9BD5;
+    --status-good: #52C47A;
+    --status-warn: #E85A3A;
+    /* Identità per sezione/canale — vedi h2 .dot-lg / .dot-pair */
+    --channel-search: var(--accent-blue);
+    --channel-x: var(--logo-green);
+    --channel-site: #B8860B;
+    --channel-community: #8A63D2;
+    --channel-reddit: #FF4500;
+    /* Tint di sfondo per stati/pill/callout */
+    --tint-good: #EAF9F0;
+    --tint-warn: #FEF0ED;
+    --tint-info: #EAF1FA;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #12141C;
+      --bg-alt: #1B1E29;
+      --card: #1C1F2B;
+      --border: #30354A;
+      --text-main: #EDEFF5;
+      --text-mid: #C9CEDC;
+      --text-secondary: #A6ABC0;
+      --text-light: #7B8098;
+      --navy: #EDEFF5;
+      --accent-blue: #6AA9E0;
+      --accent-blue-dark: #4E8CC8;
+      --logo-red: #FF8A66;
+      --logo-green: #6FE0A0;
+      --logo-blue: #8FC3ED;
+      --status-good: #6FE0A0;
+      --status-warn: #FF8A66;
+      --channel-site: #E3B33F;
+      --channel-community: #B79CF0;
+      --channel-reddit: #FF7A50;
+      --tint-good: #16301F;
+      --tint-warn: #3A2118;
+      --tint-info: #16283D;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #12141C;
+    --bg-alt: #1B1E29;
+    --card: #1C1F2B;
+    --border: #30354A;
+    --text-main: #EDEFF5;
+    --text-mid: #C9CEDC;
+    --text-secondary: #A6ABC0;
+    --text-light: #7B8098;
+    --navy: #EDEFF5;
+    --accent-blue: #6AA9E0;
+    --accent-blue-dark: #4E8CC8;
+    --logo-red: #FF8A66;
+    --logo-green: #6FE0A0;
+    --logo-blue: #8FC3ED;
+    --status-good: #6FE0A0;
+    --status-warn: #FF8A66;
+    --channel-site: #E3B33F;
+    --channel-community: #B79CF0;
+    --channel-reddit: #FF7A50;
+    --tint-good: #16301F;
+    --tint-warn: #3A2118;
+    --tint-info: #16283D;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    font-family: 'DM Sans', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text-main);
+    line-height: 1.5;
+  }
+
+  .wrap {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 24px 80px;
+  }
+
+  /* ---------- Header ---------- */
+  header.page-header {
+    background: #0F0F2E;
+    color: #FFFFFF;
+    padding: 48px 24px 40px;
+    margin-bottom: 40px;
+  }
+  header.page-header .wrap { padding-bottom: 0; }
+  .eyebrow {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--logo-blue);
+    margin: 0 0 8px;
+  }
+  h1 {
+    font-size: 32px;
+    font-weight: 700;
+    margin: 0 0 8px;
+    letter-spacing: -0.01em;
+  }
+  .header-sub {
+    color: #B8B6D0;
+    font-size: 15px;
+    margin: 0;
+  }
+  .prev-report-link {
+    display: inline-block;
+    margin-top: 14px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #B8B6D0;
+    text-decoration: none;
+    border-bottom: 1px solid rgba(184,182,208,0.4);
+  }
+  .prev-report-link:hover { color: #FFFFFF; border-bottom-color: #FFFFFF; }
+  /* ---------- Index ---------- */
+  .toc {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 20px;
+    align-items: center;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 18px;
+    margin-bottom: 32px;
+    font-size: 13px;
+  }
+  .toc-label {
+    font-weight: 700;
+    color: var(--text-light);
+    text-transform: uppercase;
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    margin-right: 4px;
+  }
+  .toc a {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--text-main);
+    text-decoration: none;
+    font-weight: 600;
+  }
+  .toc a:hover { color: var(--accent-blue); }
+  .toc a .dot-lg { width: 8px; height: 8px; }
+
+  /* ---------- Section shell ---------- */
+  /* Rail colorato sul lato sinistro, alto quanto tutta la sezione — resta
+     visibile per l'intero scroll, non solo nell'istante in cui la incroci.
+     Colore impostato per sezione via --section-accent inline. Uso ::before invece
+     di border-left perché alcune sezioni (Search+X insieme) hanno un gradiente
+     a due colori, non un valore singolo valido per border-color. */
+  section {
+    margin-bottom: 48px;
+    position: relative;
+    padding-left: 20px;
+  }
+  section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 4px;
+    border-radius: 2px;
+    background: var(--section-accent, var(--border));
+  }
+  .section-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+  }
+  h2 {
+    font-size: 20px;
+    font-weight: 700;
+    margin: 0;
+    color: var(--navy);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  h2 .dot-lg { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+  h2 .dot-pair { display: inline-flex; gap: 3px; flex-shrink: 0; }
+  h2 .dot-pair span { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+  h3.channel-head {
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin: 0 0 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  h3.channel-head .dot { width: 8px; height: 8px; border-radius: 50%; }
+  .section-note {
+    font-size: 13px;
+    color: var(--text-light);
+    margin: 0;
+  }
+
+  /* ---------- Scorecard ---------- */
+  .scorecard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 14px;
+  }
+  .stat-tile {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px;
+  }
+  .stat-label {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--text-light);
+    margin: 0 0 8px;
+  }
+  .stat-value-row {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    margin-bottom: 4px;
+  }
+  .stat-value {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--navy);
+    font-variant-numeric: tabular-nums;
+  }
+  .stat-trend {
+    font-size: 12px;
+    font-weight: 600;
+    padding: 2px 7px;
+    border-radius: 100px;
+  }
+  .stat-trend.up { color: var(--status-good); background: var(--tint-good); }
+  .stat-trend.down { color: var(--status-warn); background: var(--tint-warn); }
+  .stat-trend.flat { color: var(--text-light); background: var(--bg-alt); }
+  .stat-caption {
+    font-size: 11px;
+    color: var(--text-light);
+    margin: 0;
+  }
+
+  /* ---------- Week selector ---------- */
+  .period-selector {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px;
+    margin-bottom: 20px;
+  }
+  .period-selector .label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin-right: 4px;
+  }
+  .period-btn {
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    background: var(--bg-alt);
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    padding: 7px 14px;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s, border-color 0.15s;
+  }
+  .period-btn:hover { border-color: var(--accent-blue); }
+  .period-btn.active {
+    background: #0F0F2E;
+    border-color: #0F0F2E;
+    color: #FFFFFF;
+  }
+  .period-current {
+    margin-left: auto;
+    font-size: 13px;
+    color: var(--text-light);
+  }
+  .period-current strong { color: var(--text-main); }
+
+  /* ---------- Chart card ---------- */
+  .chart-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+  }
+  .chart-card-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 14px;
+    flex-wrap: wrap;
+  }
+  .chart-title { font-size: 14px; font-weight: 700; margin: 0 0 3px; color: var(--text-main); }
+  .chart-subtitle { font-size: 12px; color: var(--text-light); margin: 0; }
+  .table-toggle {
+    font-family: inherit;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--accent-blue);
+    background: none;
+    border: 1px solid var(--accent-blue);
+    border-radius: 100px;
+    padding: 4px 10px;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .table-toggle:hover { background: var(--tint-info); }
+
+  .chart-svg {
+    width: 100%;
+    height: 150px;
+    display: block;
+    overflow: visible;
+    font-family: 'DM Sans', system-ui, sans-serif;
+  }
+  .chart-svg .axis-line { stroke: var(--border); stroke-width: 1; }
+  .chart-svg .axis-label { fill: var(--text-light); font-size: 9px; }
+  .chart-svg .line-path { fill: none; stroke-width: 2; }
+  .chart-svg .line-area { opacity: 0.12; }
+  .chart-svg .line-dot { cursor: default; }
+  .chart-svg .line-dot:hover { r: 5; }
+
+  .chart-grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    align-items: start;
+  }
+  @media (max-width: 720px) {
+    .chart-grid-2 { grid-template-columns: 1fr; }
+  }
+
+  /* Table view (hidden by default) */
+  .table-view {
+    display: none;
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12.5px;
+    margin-top: 4px;
+  }
+  .table-view.visible { display: table; }
+  .table-view th, .table-view td {
+    text-align: left;
+    padding: 6px 8px;
+    border-bottom: 1px solid var(--border);
+  }
+  .table-view th {
+    color: var(--text-secondary);
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 10px;
+    letter-spacing: 0.03em;
+    background: var(--bg-alt);
+  }
+  .table-view thead th:first-child { border-top-left-radius: 6px; }
+  .table-view thead th:last-child { border-top-right-radius: 6px; }
+  .table-view td.num { font-variant-numeric: tabular-nums; }
+  .pill {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 100px;
+  }
+  .pill.good { color: var(--status-good); background: var(--tint-good); }
+  .pill.warn { color: var(--status-warn); background: var(--tint-warn); }
+  .pill.new { color: var(--accent-blue); background: var(--tint-info); }
+
+  /* ---------- Macro grid (liste compatte: paesi, referrer, dispositivi) ---------- */
+  .macro-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 14px;
+  }
+  .macro-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px 18px;
+  }
+  .macro-card h3 {
+    font-size: 13px;
+    font-weight: 700;
+    margin: 0 0 10px;
+    color: var(--navy);
+  }
+  .macro-list { list-style: none; margin: 0; padding: 0; }
+  .macro-list li {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12.5px;
+    padding: 6px 0;
+    border-bottom: 1px solid var(--border);
+    color: var(--text-secondary);
+  }
+  .macro-list li:last-child { border-bottom: none; }
+  .macro-list .delta { font-size: 11px; font-weight: 600; margin-left: 6px; }
+  .macro-list .delta.up { color: var(--status-good); }
+  .macro-list .delta.down { color: var(--status-warn); }
+  .table-view .delta { font-size: 11px; font-weight: 600; margin-left: 6px; white-space: nowrap; }
+  .table-view .delta.up { color: var(--status-good); }
+  .table-view .delta.down { color: var(--status-warn); }
+
+  /* ---------- Narrative callout ---------- */
+  .callout {
+    border-left: 3px solid var(--accent-blue);
+    background: var(--tint-info);
+    border-radius: 0 8px 8px 0;
+    padding: 12px 16px;
+    margin-top: 12px;
+    font-size: 13.5px;
+    color: var(--text-secondary);
+  }
+  .callout strong { color: var(--text-main); }
+  .callout-title {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--accent-blue);
+    margin: 0 0 6px;
+  }
+  .callout.howto {
+    border-left-color: var(--border);
+    background: transparent;
+    color: var(--text-light);
+    font-size: 12px;
+    padding: 10px 16px;
+  }
+  .callout.howto strong { color: var(--text-secondary); }
+  .callout.good { border-left-color: var(--status-good); background: var(--tint-good); }
+  .callout.good .callout-title { color: var(--status-good); }
+  .callout.warn { border-left-color: var(--logo-red); background: var(--tint-warn); }
+  .callout.warn .callout-title { color: var(--logo-red); }
+
+  /* ---------- Collapsible detail (approfondimenti) ---------- */
+  details.callout summary {
+    cursor: pointer;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+  }
+  details.callout summary::-webkit-details-marker { display: none; }
+  details.callout summary .callout-title { margin: 0; }
+  details.callout summary::before {
+    content: '▸';
+    color: var(--text-light);
+    font-size: 11px;
+    transition: transform 0.15s;
+    flex-shrink: 0;
+  }
+  details.callout[open] summary::before { transform: rotate(90deg); }
+  details.callout[open] summary { margin-bottom: 8px; }
+  details.callout .detail-body { padding-top: 2px; }
+
+  /* ---------- Footer ---------- */
+  footer {
+    text-align: center;
+    font-size: 12px;
+    color: var(--text-light);
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+  }
+  /* ---------- Sezioni apribili/chiudibili ---------- */
+  .section-summary {
+    cursor: pointer;
+    list-style: none;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .section-summary::-webkit-details-marker { display: none; }
+  .section-summary .section-head { flex: 1; min-width: 0; }
+  .section-summary::after {
+    content: '▾';
+    color: var(--text-light);
+    font-size: 13px;
+    flex-shrink: 0;
+    margin-top: 4px;
+    transition: transform 0.15s;
+  }
+  details[open] > .section-summary::after { transform: rotate(180deg); }
+  details.section-toggle:not([open]) > .section-summary { margin-bottom: 0; }
+  .badge-partial {
+    display: inline-block;
+    vertical-align: middle;
+    margin-left: 10px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--logo-red);
+    background: rgba(232,90,58,0.15);
+    border: 1px solid rgba(232,90,58,0.5);
+    border-radius: 100px;
+    padding: 3px 10px;
+  }
+</style>
+</head>
+
+<body>
+
+<header class="page-header">
+  <div class="wrap">
+    <p class="eyebrow">RGB Protocol Association</p>
+    <h1>Report Performance — Settembre 2026 <span class="badge-partial">Parziale</span></h1>
+    <p class="header-sub">rgb.info + @RGB_Hub, 31 agosto – 20 settembre 2026 (3 settimane complete), confronto con agosto 2026 (3–30)</p>
+    <a class="prev-report-link" href="index-report-rgb.html" style="margin-right:20px;">⌂ Tutti i report</a>
+    <a class="prev-report-link" href="https://marijjhodl.github.io/Portfolio/rgb-report-agosto-2026.html">← Report Agosto 2026</a>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <nav class="toc">
+    <span class="toc-label">In questa pagina</span>
+    <a href="#scorecard"><span class="dot-lg" style="background:var(--navy);"></span>Il mese in breve</a>
+    <a href="#query-performance"><span class="dot-lg" style="background:var(--channel-search);"></span>Query performance</a>
+    <a href="#weekly-comparison"><span class="dot-lg" style="background:linear-gradient(180deg, var(--channel-search) 50%, var(--channel-x) 50%);"></span>Confronto settimane</a>
+    <a href="#daily-drilldown"><span class="dot-lg" style="background:linear-gradient(180deg, var(--channel-search) 50%, var(--channel-x) 50%);"></span>Dettaglio giornaliero</a>
+    <a href="#site-macro"><span class="dot-lg" style="background:var(--channel-site);"></span>Sito</a>
+    <a href="#community-calls"><span class="dot-lg" style="background:var(--channel-community);"></span>Community Call</a>
+    <a href="#reddit"><span class="dot-lg" style="background:var(--channel-reddit);"></span>Reddit</a>
+  </nav>
+
+  <!-- ================= SCORECARD (SEARCH + X) ================= -->
+  <section id="scorecard" style="--section-accent:var(--navy);">
+    <div class="section-head">
+      <h2>Il mese in breve</h2>
+      <p class="section-note">Settembre (31 ago – 20 set, parziale) vs agosto (3–30)</p>
+    </div>
+    <div class="scorecard-grid">
+      <div class="stat-tile">
+        <p class="stat-label">Click Search</p>
+        <div class="stat-value-row">
+          <span class="stat-value">75</span>
+          <span class="stat-trend up">▲ +19% /giorno</span>
+        </div>
+        <p class="stat-caption">in 21 giorni · 3,6/giorno vs 3,0 ad agosto (84 in 28 giorni)</p>
+      </div>
+      <div class="stat-tile">
+        <p class="stat-label">Impression Search</p>
+        <div class="stat-value-row">
+          <span class="stat-value">3.622</span>
+          <span class="stat-trend down">▼ −5% /giorno</span>
+        </div>
+        <p class="stat-caption">172/giorno vs 182 ad agosto (escluso il 12 ago, traffico bot); −22% senza l'esclusione</p>
+      </div>
+      <div class="stat-tile">
+        <p class="stat-label">Posizione — query brandizzate</p>
+        <div class="stat-value-row">
+          <span class="stat-value">1,62</span>
+          <span class="stat-trend up">▲ migliorata</span>
+        </div>
+        <p class="stat-caption">vs 1,81 ad agosto · media ponderata per impression, 4 query brand escluso "rgb protocol"</p>
+      </div>
+      <div class="stat-tile">
+        <p class="stat-label">Follower X</p>
+        <div class="stat-value-row">
+          <span class="stat-value">+51</span>
+          <span class="stat-trend down">▼ −49% /giorno</span>
+        </div>
+        <p class="stat-caption">@RGB_Hub, netti (88 nuovi − 37 unfollow, 31 ago–20 set) · 2,4/giorno vs 4,8 ad agosto (+133)</p>
+      </div>
+      <div class="stat-tile">
+        <p class="stat-label">Citazioni Copilot</p>
+        <div class="stat-value-row">
+          <span class="stat-value">20</span>
+          <span class="stat-trend up">▲ +56% /giorno</span>
+        </div>
+        <p class="stat-caption">1,0/giorno (31 ago–19 set) vs 0,64 ad agosto (18 in 28 giorni) · Bing Webmaster Tools</p>
+      </div>
+    </div>
+    <details class="callout warn">
+      <summary><span class="callout-title">Nota metodologica</span></summary>
+      <div class="detail-body">Il periodo è <strong>parziale: 21 giorni (31 ago – 20 set) contro i 28 di agosto</strong>, quindi i totali non sono confrontabili direttamente e le variazioni sono calcolate <strong>per giorno</strong>. Agosto include inoltre il 12 agosto (1.322 impression, zero clic, pattern da rank-tracking automatizzato): senza quel giorno la media agosto scende da 223 a 182 impression/giorno, ed è il confronto più corretto. Il CTR complessivo passa dall'1,35% di agosto al <strong>2,07%</strong> (1,67% ad agosto senza il 12). GSC non è falsificabile da bot per i clic, quindi il dato clic è affidabile. Nota sulle query: GSC riporta per nome solo <strong>28 dei 75 clic</strong> (37%), gli altri sono query anonimizzate — le analisi per query qui sotto coprono quindi solo una parte del totale.</div>
+    </details>
+    <details class="callout">
+      <summary><span class="callout-title">Bing — citazioni Copilot e ricerca organica</span></summary>
+      <div class="detail-body"><strong>Periodo Bing: 31 agosto – 19 settembre (20 giorni)</strong>, l'export non include il 20 e il 21. Le <strong>20 citazioni</strong> (18 ad agosto in 28 giorni) seguono lo stesso schema di luglio e agosto — quasi sempre zero con pochi picchi isolati: <strong>nessuna citazione nei primi 10 giorni</strong> (31 ago – 9 set), poi 3 il 10, 1 l'11, <strong>6 il 12</strong>, 1 il 17 e <strong>9 il 19 settembre (45% del totale)</strong>. I giorni con almeno una citazione sono 5 su 20 (4 su 28 ad agosto). Cambia però l'ampiezza: il 12 e il 19 settembre le citazioni riguardano <strong>3 pagine diverse</strong> ciascuno, mentre i picchi di agosto (8 citazioni il 25 e il 27) erano su una pagina sola. Non copre ChatGPT, Claude o Perplexity, solo Copilot via Bing, e il file non indica quali pagine sono citate.<br><br>Il 10 e il 19 settembre sono anche i giorni in cui X ha avuto i picchi del periodo (walkthrough wdk-rgb-lightning il 10; 17.032 impression il 19): può essere una coincidenza, ma è lo stesso pattern già notato ad agosto con il post Tether/WDK, quindi vale la pena osservarlo. Ricerca organica Bing: <strong>2 clic e 277 impression</strong> (1 clic e 269 impression ad agosto in 28 giorni; 14 impression/giorno contro 10). Volumi ancora troppo piccoli per costruirci conclusioni.</div>
+    </details>
+  </section>
+
+  <!-- ================= QUERY PERFORMANCE ================= -->
+  <section id="query-performance" style="--section-accent:var(--channel-search);">
+   <details class="section-toggle" open>
+    <summary class="section-summary">
+    <div class="section-head">
+      <h2><span class="dot-lg" style="background:var(--channel-search);"></span>Query performance</h2>
+      <p class="section-note">Dove siamo migliorati, dove siamo scesi — query per query, non solo la media</p>
+    </div>
+    </summary>
+
+    <div class="chart-card" style="margin-bottom:16px;">
+      <p class="chart-title" style="margin-bottom:12px;">Posizione media per query — agosto vs settembre</p>
+      <table class="table-view visible">
+        <thead><tr><th>Query</th><th>Agosto</th><th>Settembre</th><th>Variazione</th><th>Nota</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>rgb protocol bitcoin</td>
+            <td class="num">2,18</td>
+            <td class="num">1,80</td>
+            <td><span class="pill good">▲ migliorata</span></td>
+            <td>Solo 5 impression, 0 clic — volume troppo basso per conclusioni</td>
+          </tr>
+          <tr>
+            <td>what is rgb protocol bitcoin</td>
+            <td class="num">2,00</td>
+            <td class="num">—</td>
+            <td><span class="pill new">● assente</span></td>
+            <td>Non compare nel periodo (8 impression ad agosto)</td>
+          </tr>
+          <tr>
+            <td>rgb protocol association</td>
+            <td class="num">2,38</td>
+            <td class="num">3,14</td>
+            <td><span class="pill warn">▼ peggiorata</span></td>
+            <td>7 impression, 0 clic — ancora in prima pagina, volume trascurabile</td>
+          </tr>
+          <tr>
+            <td>rgb bitcoin</td>
+            <td class="num">1,52</td>
+            <td class="num">1,45</td>
+            <td><span class="pill good">▲ migliorata</span></td>
+            <td>10 clic su 38 impression (CTR 26%) vs 9 su 48 ad agosto</td>
+          </tr>
+          <tr>
+            <td>bitcoin rgb</td>
+            <td class="num">2,11</td>
+            <td class="num">1,33</td>
+            <td><span class="pill good">▲ migliorata</span></td>
+            <td>3 clic su 18 impression</td>
+          </tr>
+          <tr>
+            <td><strong>rgb protocol</strong></td>
+            <td class="num">6,98</td>
+            <td class="num">1,25</td>
+            <td><span class="pill good">▲ recuperata</span></td>
+            <td><strong>14 clic su 40 impression (CTR 35%)</strong> vs 7 su 63 ad agosto</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <details class="callout good" open>
+      <summary><span class="callout-title">"rgb protocol" è tornata in cima — era il ricontrollo previsto per fine settembre</span></summary>
+      <div class="detail-body">Ad agosto era l'unica query in calo (posizione 3,72 → 6,98), attribuita ad ambiguità del termine, Google Spam Update del 18-21 agosto e variabilità geografica. A settembre è <strong>a 1,25 con 14 clic e CTR 35%</strong>: è ora la query che porta più clic in assoluto (nel periodo 14 dei 28 clic attribuiti a una query per nome). Coerente con l'ipotesi che il calo fosse legato all'aggiornamento e non a un problema del sito. Da confermare con un ulteriore controllo a ottobre, dato il volume ancora basso (40 impression).</div>
+    </details>
+
+    <details class="callout warn">
+      <summary><span class="callout-title">Unica nota negativa: "rgb protocol association" e query informative a bassa posizione</span></summary>
+      <div class="detail-body">"rgb protocol association" scende da 2,38 a 3,14 e "what is rgb protocol bitcoin" non compare più, ma i volumi sono di 7-8 impression: nessun allarme. Più interessante l'ampio gruppo di query informative <strong>con impression ma zero clic</strong>: "rgb lightning" (40 impression, posizione 4,4), "rgb network" (20, 4,3), "rgb stash" (16, 4,7). Sono ricerche che intercettano il sito ma non convertono in visita — probabile effetto AI Overview.</div>
+    </details>
+
+    <details class="callout">
+      <summary><span class="callout-title">Query nuove ed emergenti (segnali sui contenuti)</span></summary>
+      <div class="detail-body">Query non presenti nel report di agosto e legate a contenuti recenti: <strong>"kaleidoswap"</strong> (10 impression, pos. 7,2), <strong>"wdk demo"</strong> (5, pos. 14,8) e <strong>"tether wdk"</strong> (2, pos. 17), <strong>"what is client-side proving"</strong> (7, pos. 5,4), <strong>"rgb stash"</strong> (16), <strong>"rc11"</strong> (2), <strong>"tapret"</strong> (1), <strong>"bitmask wallet"</strong> (2), <strong>"iris wallet"</strong> (1) e query in cinese <strong>"wendingbi"</strong> (稳定币, 5 impression, pos. 18,4). Da notare "site:rgb.info" (58 impression, pos. 30): ricerca di controllo dell'indicizzazione, non traffico reale.</div>
+    </details>
+    <details class="callout">
+      <summary><span class="callout-title">Google Generative AI Features — prima rilevazione (nessun confronto con agosto)</span></summary>
+      <div class="detail-body">Nel periodo rgb.info compare con <strong>630 impression nelle funzionalità AI di Google</strong>, circa il 17% delle impression totali (3.622). Il report GSC dedicato non riporta i clic, quindi non è possibile calcolare un CTR. Andamento settimanale: 236 (31 ago–6 set), 183 (7–13), 211 (14–20). La <strong>homepage concentra 388 impression (62%)</strong>, seguita da <em>What is RGB Protocol</em> (50), <em>FAQ</em> (45), <em>Client-side validation</em> (29), <em>Glossary</em> (21) e <em>How RGB works</em> (20): le pagine pillar sono quelle che le AI usano come fonte. Geografia: USA 135, Italia 37, India 30, Regno Unito 24, Canada 23. Ad agosto questo report non è stato esportato: settembre diventa il punto di partenza per i confronti futuri.</div>
+    </details>
+   </details>
+  </section>
+
+  <!-- ================= CONFRONTO TRA SETTIMANE (SEARCH + X) ================= -->
+  <section id="weekly-comparison" style="--section-accent:linear-gradient(180deg, var(--channel-search) 50%, var(--channel-x) 50%);">
+   <details class="section-toggle" open>
+    <summary class="section-summary">
+    <div class="section-head">
+      <h2><span class="dot-pair"><span style="background:var(--channel-search);"></span><span style="background:var(--channel-x);"></span></span>Confronto tra le settimane di settembre</h2>
+      <p class="section-note">3 settimane complete (31 ago–6 set, 7–13, 14–20 settembre)</p>
+    </div>
+    </summary>
+    <details class="callout howto">
+      <summary>Come si legge / glossario</summary>
+      <div class="detail-body">
+        <p style="margin:0 0 8px;">I grafici mostrano l'andamento <strong>giorno per giorno</strong>. Per i totali settimana per settimana, guarda le <strong>tabelle</strong> sotto ogni grafico.</p>
+        <ul style="margin:0; padding-left:18px; columns:2; column-gap:24px;">
+          <li><strong>Impression</strong>: quante volte è comparso</li>
+          <li><strong>Click</strong>: visite reali dalla ricerca</li>
+          <li><strong>CTR</strong>: click ÷ impression</li>
+          <li><strong>Posizione media</strong>: 1 = primo risultato</li>
+          <li><strong>Engagement (X)</strong>: like + repost + risposte + click</li>
+          <li><strong>Eng. rate (X)</strong>: engagement ÷ impression</li>
+        </ul>
+      </div>
+    </details>
+
+    <div class="chart-grid-2">
+
+      <div class="chart-card">
+        <h3 class="channel-head" style="color:var(--accent-blue);"><span class="dot" style="background:var(--accent-blue);"></span>Search (Google)</h3>
+        <p class="chart-subtitle" style="margin:0 0 4px;font-weight:600;color:var(--text-secondary);">Click</p>
+        <svg class="chart-svg" id="chart-monthly-search-clicks"></svg>
+        <p class="chart-subtitle" style="margin:12px 0 4px;font-weight:600;color:var(--text-secondary);">Impression</p>
+        <svg class="chart-svg" id="chart-monthly-search-impressions"></svg>
+        <p class="chart-subtitle" style="margin:12px 0 4px;font-weight:600;color:var(--text-secondary);">Posizione media (più in alto = meglio)</p>
+        <svg class="chart-svg" id="chart-monthly-search-position"></svg>
+
+        <table class="table-view visible" style="margin-top:12px;">
+          <thead><tr><th>Sett.</th><th>Click</th><th>Impr.</th><th>CTR</th><th>Pos.</th></tr></thead>
+          <tbody id="weekly-search-table-body"></tbody>
+        </table>
+
+        <details class="callout good">
+          <summary><span class="callout-title">Settimana migliore: 14-20 set</span></summary>
+          <div class="detail-body">28 clic con solo 1.025 impression: <strong>CTR 2,73%</strong>, il più alto delle tre settimane (31 ago–6 set: 29 clic e 2,03%; 7–13 set: 18 clic e 1,54%). Le impression scendono ogni settimana (1.429 → 1.168 → 1.025) mentre i clic restano stabili: il sito compare meno ma viene scelto più spesso. Il picco è il <strong>18 settembre: 7 clic su 125 impression (CTR 5,6%)</strong>, giorno di pubblicazione dell'articolo Bitcoin Asia — ma la pagina dell'articolo ha solo 5 impression e 0 clic, quindi i clic sono arrivati dalla homepage/query brand, non dall'articolo: possibile effetto della condivisione su Telegram, non provato.</div>
+        </details>
+        <details class="callout">
+          <summary><span class="callout-title">Anomalie: nessun picco tipo 12 agosto</span></summary>
+          <div class="detail-body">Il massimo giornaliero è di 319 impression (4 set), nessun giorno supera 2× la mediana (~161): <strong>non ci sono picchi anomali da traffico automatizzato</strong> come il 12 agosto (1.322). Coerente con la quota desktop scesa dall'83% al 76% delle impression. Unica stranezza: il 17 settembre ha posizione media 10,9 (contro ~5) con 6 clic e 187 impression — probabilmente una query poco posizionata con molte impression, da tenere d'occhio; il giorno dopo la posizione torna a 4,8.</div>
+        </details>
+        <details class="callout">
+          <summary><span class="callout-title">Eventi del periodo e effetto su Search (proxy engagement)</span></summary>
+          <div class="detail-body">
+            <table class="table-view visible" style="margin-bottom:8px;">
+              <thead><tr><th>Data</th><th>Evento</th><th>Clic giorno</th><th>Impr. giorno</th><th>Giorno dopo</th></tr></thead>
+              <tbody>
+                <tr><td>1 set</td><td>Articolo <em>wdk-rgb-lightning Architecture</em> (EN+ZH) condiviso su Telegram; post di Gioele su X</td><td class="num">6</td><td class="num">144</td><td class="num">4 clic / 269 impr.</td></tr>
+                <tr><td>14 set</td><td>Articolo <em>Business Case for USDT on Bitcoin</em> (Utexo) condiviso su Telegram</td><td class="num">3</td><td class="num">146</td><td class="num">4 clic / 210 impr.</td></tr>
+                <tr><td>18 set</td><td>Articolo <em>Pragmatic Maximalism</em> (Bitcoin Asia, EN+ZH) su Telegram EN e poi ZH</td><td class="num">7</td><td class="num">125</td><td class="num">2 clic / 96 impr.</td></tr>
+              </tbody>
+            </table>
+            La media del periodo è di 3,6 clic e 172 impression al giorno: il 1 e il 18 settembre superano la media dei clic (+68% e +96%), il 14 è sotto (−16%). Il segnale è debole e va letto con prudenza — Search misura la ricerca, non l'engagement da Telegram/X, che si vede meglio in <strong>WP Statistics</strong> (referrer t.co, t.me, weixin110) e sui dati X. Le pagine dei nuovi articoli hanno pochissima visibilità dopo 3 settimane: <em>wdk-rgb-lightning-architecture</em> 23 impression (pos. 9,0), <em>usdt-on-bitcoin-utexo</em> 20 (pos. 4,8), <em>pragmatic-maximalism</em> 5, <em>rgb-tether-hackathon-agentic-dollars</em> 4, tutte con 0 clic; la versione cinese dell'articolo WDK 2 impression (pos. 40).
+          </div>
+        </details>
+      </div>
+
+      <div class="chart-card">
+        <h3 class="channel-head" style="color:var(--logo-green);"><span class="dot" style="background:var(--logo-green);"></span>X (@RGB_Hub)</h3>
+        <p class="chart-subtitle" style="margin:0 0 4px;font-weight:600;color:var(--text-secondary);">Impression</p>
+        <svg class="chart-svg" id="chart-monthly-social-impressions"></svg>
+        <p class="chart-subtitle" style="margin:12px 0 4px;font-weight:600;color:var(--text-secondary);">Engagement</p>
+        <svg class="chart-svg" id="chart-monthly-social-engagement"></svg>
+
+        <table class="table-view visible" style="margin-top:12px;">
+          <thead><tr><th>Sett.</th><th>Impr.</th><th>Eng.</th><th>Rate</th><th>Follower</th></tr></thead>
+          <tbody id="weekly-x-table-body"></tbody>
+        </table>
+
+        <details class="callout good">
+          <summary><span class="callout-title">Settimana migliore: 7-13 set per qualità, 14-20 set per reach</span></summary>
+          <div class="detail-body"><strong>7–13 set</strong> ha l'engagement rate più alto (<strong>4,25%</strong>: 433 engagement su 10.185 impression), trainato dal post sul walkthrough wdk-rgb-lightning del 10 settembre (559 engagement, 7,7%). <strong>14–20 set</strong> ha il massimo di reach (31.870 impression) e di engagement assoluto (444), ma il rate è il più basso (1,39%): il <strong>19 settembre da solo vale 17.032 impression</strong> (il 35% dell'intero periodo e il 53% di quella settimana), quasi tutte dal post RGB Bytes sull'anchor del 15 settembre, non da contenuti del 19.</div>
+        </details>
+        <details class="callout warn">
+          <summary><span class="callout-title">Settimana più debole: 31 ago–6 set — sette giorni senza post</span></summary>
+          <div class="detail-body">6.661 impression, engagement rate 1,74% e un solo contenuto pubblicato (2 settembre, un link senza testo). Dal 3 al 9 settembre <strong>@RGB_Hub non ha pubblicato nulla</strong>: le impression giornaliere scendono a 74–608 (mediana del periodo 1.732) e il 6, 7 e 9 settembre gli unfollow superano i nuovi follower. I post (incluse risposte e post con solo link) sono 12 in 21 giorni (0,57/giorno) contro 25 in 28 ad agosto (0,89/giorno, −36%): la reach media giornaliera regge (2.320 vs 2.355 impression/giorno, −1%) solo grazie a un singolo post.</div>
+        </details>
+        <details class="callout">
+          <summary><span class="callout-title">Top 5 post del periodo</span></summary>
+          <div class="detail-body">
+            <table class="table-view visible" style="margin-bottom:8px;">
+              <thead><tr><th>Data</th><th>Impr.</th><th>Contenuto</th></tr></thead>
+              <tbody>
+                <tr><td>15 set</td><td class="num">18.575</td><td>RGB Bytes: l'anchor (159 eng., 0,9%; 24 click sul link)</td></tr>
+                <tr><td>10 set</td><td class="num">7.254</td><td>Blog: walkthrough wdk-rgb-lightning, CTO Utexo (559 eng., 7,7%; 34 click)</td></tr>
+                <tr><td>13 set</td><td class="num">2.516</td><td>Blog: BiHelix, livello applicativo (142 eng., 5,6%; 21 click)</td></tr>
+                <tr><td>11 set</td><td class="num">1.701</td><td>RGB Bytes: Multi Protocol Commitments (106 eng., 6,2%; 9 click)</td></tr>
+                <tr><td>19 set</td><td class="num">1.700</td><td>Annuncio community call cinese del 23 settembre (65 eng., 3,8%)</td></tr>
+              </tbody>
+            </table>
+            <strong>Concentrazione:</strong> il post del 15 settembre da solo è il 50% delle impression di tutti i post del periodo (18.575 su 36.729); il secondo, il walkthrough di Utexo, porta il 41% degli engagement (559 su 1.360). <strong>Qualità:</strong> il post più efficace per engagement rate è l'Ecosystem Spotlight sul panel Bitcoin Asia del 18 settembre (<strong>10,5%</strong>, 130 engagement su 1.244 impression, 36 visite al profilo — il massimo del periodo); il link all'articolo è nella prima risposta, dove il post-risposta ottiene 9 click su 166 impression (5,4%), contro lo 0,1–0,8% degli altri post con click sul link (es. annuncio hackathon del 14 set: 4 click su 1.119). Nota: la colonna "New follows" a livello di post (es. 73 per il post del 10 settembre) somma più del totale dell'account (88 nel periodo, 7 il 10 settembre), quindi l'attribuzione per post si sovrappone e non la uso.
+          </div>
+        </details>
+        <details class="callout">
+          <summary><span class="callout-title">Confronto con agosto: meno post, più conversazione, meno follower</span></summary>
+          <div class="detail-body">Per giorno rispetto ad agosto: impression 2.320 vs 2.355 (−1%), engagement 47 vs 50 (−6%), engagement rate 2,04% vs 2,13%. <strong>Risposte +65%</strong> (134 nel periodo, di cui 56 il 10 settembre), repost +21%, ma mi piace −10%, <strong>visite al profilo −40%</strong> (116 vs 258), click sui link dei post −44% (101 vs 242) e <strong>follower netti −49%</strong> (+51 vs +133). Il calo dei follower coincide con la frequenza di pubblicazione più bassa e con l'assenza di un picco come quelli di agosto (community call Zucco/BiHelix, post Tether/WDK); il giorno migliore del periodo per follower è il 2 settembre (+8, X Space di Ron).</div>
+        </details>
+      </div>
+
+    </div>
+   </details>
+  </section>
+
+  <!-- ================= DRILL-DOWN GIORNALIERO PER SETTIMANA ================= -->
+  <section id="daily-drilldown" style="--section-accent:linear-gradient(180deg, var(--channel-search) 50%, var(--channel-x) 50%);">
+   <details class="section-toggle">
+    <summary class="section-summary">
+    <div class="section-head">
+      <h2><span class="dot-pair"><span style="background:var(--channel-search);"></span><span style="background:var(--channel-x);"></span></span>Dettaglio giornaliero di una settimana</h2>
+      <p class="section-note">Scegli una settimana — aggiorna entrambi i grafici</p>
+    </div>
+    </summary>
+    <div class="period-selector" id="periodSelector">
+      <span class="label">Settimana:</span>
+      <!-- pulsanti generati da periodLabels (script) -->
+      <span class="period-current">Attiva: <strong id="periodLabel"></strong></span>
+    </div>
+
+    <div class="chart-grid-2">
+      <div class="chart-card">
+        <div class="chart-card-head">
+          <div>
+            <p class="chart-title" style="color:var(--accent-blue);">Search — click</p>
+          </div>
+          <button class="table-toggle" data-toggle-table="daily-table">Tabella</button>
+        </div>
+        <svg class="chart-svg" id="chart-daily-clicks"></svg>
+        <table class="table-view" id="daily-table">
+          <thead><tr><th>Giorno</th><th>Click</th><th>Impr.</th><th>CTR</th><th>Pos.</th></tr></thead>
+          <tbody id="daily-table-body"></tbody>
+        </table>
+        <details class="callout" style="margin-top:12px;">
+          <summary><span class="callout-title">Riepilogo settimana</span></summary>
+          <div class="detail-body" id="narrative-callout"></div>
+        </details>
+      </div>
+
+      <div class="chart-card">
+        <div class="chart-card-head">
+          <div>
+            <p class="chart-title" style="color:var(--logo-green);">X — impression</p>
+          </div>
+          <button class="table-toggle" data-toggle-table="social-table">Tabella</button>
+        </div>
+        <svg class="chart-svg" id="chart-daily-social"></svg>
+        <table class="table-view" id="social-table">
+          <thead><tr><th>Data</th><th>Impr.</th><th>Eng.</th><th>+F</th><th>−F</th></tr></thead>
+          <tbody id="social-table-body"></tbody>
+        </table>
+        <details class="callout" style="margin-top:12px;">
+          <summary><span class="callout-title">Riepilogo settimana</span></summary>
+          <div class="detail-body" id="narrative-callout-social"></div>
+        </details>
+      </div>
+    </div>
+   </details>
+  </section>
+
+  <!-- ================= SITO — PANORAMICA (WP STATISTICS) ================= -->
+  <section id="site-macro" style="--section-accent:var(--channel-site);">
+   <details class="section-toggle" open>
+    <summary class="section-summary">
+    <div class="section-head">
+      <h2><span class="dot-lg" style="background:var(--channel-site);"></span>Sito — panoramica del periodo</h2>
+      <p class="section-note">WP Statistics · 31 agosto – 21 settembre (mattina), confronto con agosto (aggregato, non filtrabile per settimana)</p>
+    </div>
+    </summary>
+
+    <div class="chart-card" style="margin-bottom:16px;">
+      <p class="chart-title">Andamento visite nel periodo (31 ago – 21 set)</p>
+      <p class="chart-subtitle" style="margin:0 0 4px;font-weight:600;color:var(--text-secondary);">Views</p>
+      <p class="section-note" style="margin:0 0 4px;">Pagine visualizzate in totale, anche più volte dallo stesso visitatore</p>
+      <svg class="chart-svg" id="chart-site-views"></svg>
+      <p class="chart-subtitle" style="margin:12px 0 4px;font-weight:600;color:var(--text-secondary);">Visitatori</p>
+      <p class="section-note" style="margin:0 0 4px;">Persone uniche, indipendentemente da quante pagine hanno visto</p>
+      <svg class="chart-svg" id="chart-site-visitors"></svg>
+      <p class="section-note" style="margin-top:10px;">⚠️ <strong>Stima approssimativa</strong>, non dati esatti: il piano gratuito di WP Statistics non offre un export giornaliero, solo un grafico immagine. Questa serie è ricostruita leggendo la forma di quel grafico e facendola coincidere con i totali reali del periodo (2.432 visitatori, 3.211 views); i valori del 20 settembre (73 visitatori, 98 views) e del 21 (17 e 20, giorno parziale) combaciano con le cifre "Yesterday/Today" di WP Statistics, il che indica una ricostruzione affidabile. I valori esatti giorno per giorno restano comunque una ricostruzione plausibile.</p>
+    </div>
+
+    <div class="scorecard-grid" style="margin-bottom:16px;">
+      <div class="stat-tile">
+        <p class="stat-label">Visitatori</p>
+        <div class="stat-value-row">
+          <span class="stat-value">2.432</span>
+          <span class="stat-trend up">▲ +22% /giorno</span>
+        </div>
+        <p class="stat-caption">115/giorno (21 giorni completi) vs 95 ad agosto · WP Statistics: +15,6% vs il periodo precedente di pari durata</p>
+      </div>
+      <div class="stat-tile">
+        <p class="stat-label">Views</p>
+        <div class="stat-value-row">
+          <span class="stat-value">3.211</span>
+          <span class="stat-trend up">▲ +15% /giorno</span>
+        </div>
+        <p class="stat-caption">152/giorno vs 132 ad agosto · WP Statistics: +9,9% vs il periodo precedente di pari durata</p>
+      </div>
+    </div>
+
+    <details class="callout good" open>
+      <summary><span class="callout-title">Traffico stabile e senza picchi: l'unico rialzo è il 1–4 settembre, con l'articolo WDK</span></summary>
+      <div class="detail-body">A differenza di agosto (picco netto del 27-28 con il post Tether/WDK) settembre è una linea piatta: 70-160 visitatori al giorno (media ~115), senza picchi. L'unico rialzo è <strong>1–4 settembre</strong> (147-161 visitatori/giorno contro una media di ~115), che coincide con la pubblicazione e la condivisione di <strong>"Inside the wdk-rgb-lightning Architecture"</strong>: Telegram EN+ZH il 1 settembre e post di Gioele su X. L'articolo è il contenuto più letto del periodo con <strong>277 views</strong> (8,6% di tutte le views del sito), oltre 4 volte il secondo articolo (61) — pur avendo su Search solo 23 impression e 0 clic (vedi sezione Google): il traffico arriva quindi da social e condivisioni, non dalla ricerca. Nessun rialzo visibile né il 14 settembre (articolo Utexo su Telegram) né il 18 (Bitcoin Asia), ma i due articoli sono recenti (13 e 34 views).</div>
+    </details>
+
+    <details class="callout good">
+      <summary><span class="callout-title">Geografia e qualità del traffico: Hong Kong, USA, WeChat e bot</span></summary>
+      <div class="detail-body">
+        <p style="margin:0 0 10px;"><strong>Geografia.</strong> Per giorno rispetto ad agosto: <strong>Hong Kong 610 visitatori (+112%/giorno)</strong> diventa il primo Paese (era terzo), Singapore 497 (+14%), Cina 296 (+11%, di cui 198 da Pechino), <strong>Stati Uniti 340 (−16%)</strong>, Italia 69 (+44%). Hong Kong + Singapore + Cina valgono ora il <strong>58% dei visitatori</strong> (48% ad agosto, 28% a luglio); per continente Asia 68%, Nord America 15%, Europa 12%. Il trend USA in calo/Asia in crescita emerso ad agosto prosegue, ma il salto di Hong Kong (589 visitatori dalla sola città) va letto con la cautela indicata più sotto (paragrafo Traffico bot). Sui soli articoli l'ordine è Singapore 233, Hong Kong 155, USA 137, Cina 101, India 42.</p>
+        <p style="margin:0 0 10px;"><strong>WeChat.</strong> Ad agosto <strong>weixin110.qq.com</strong> compariva per la prima volta tra i top 5 referrer (38 visitatori) e <strong>WeChat</strong> tra i browser (81, 3,1%): ipotesi di crescita da passaparola cinese. A settembre né l'uno né l'altro compaiono nelle prime posizioni (referrer: google.com 236, t.co 200, rgbprotocol.org 16, chatgpt.com 8, web.telegram.org 7; browser: Chrome 74%, Mobile Safari 10%, Chrome Mobile 5%, Twitter 3%). Il traffico cinese resta comunque alto (296 visitatori): non arriva più da WeChat ma probabilmente da accesso diretto/Telegram. Il segnale WeChat di agosto sembra quindi un evento isolato, non un canale stabile.</p>
+        <p style="margin:0;"><strong>Traffico bot.</strong> Né GSC né WP Statistics mostrano picchi anomali come quello del 12 agosto. Restano due elementi da tenere d'occhio: la <strong>bounce rate è 86,6%</strong> (in rosso in WP Statistics, +2,4%), e la quota desktop è salita al <strong>78% dei visitatori (contro il 68% di agosto)</strong>, con Chrome al 74% (63% ad agosto). Con Hong Kong e Singapore — sedi tipiche di data center — in cima alle località, non è possibile distinguere il traffico reale dalla parte automatizzata: WP Statistics free non filtra i bot in modo affidabile (vedi il bug di bot-tracking scoperto a luglio). La conferma più solida resta il confronto con GSC, dove il Paese con più impression sono ancora gli USA.</p>
+      </div>
+    </details>
+    <details class="callout">
+      <summary><span class="callout-title">Fonti di traffico: X supera Google sugli articoli, ChatGPT compare</span></summary>
+      <div class="detail-body">Sul sito nel complesso i <strong>visitatori da referral sono 535 (+23% vs periodo precedente)</strong>: motori di ricerca 277 (+39%, di cui Google 243, ChatGPT 17, DuckDuckGo 7) e social 205 (+36%, di cui X 200, LinkedIn 3, Reddit 2). Per giorno, google.com (+35%) e t.co (+30%) crescono in modo simile. Guardando solo gli <strong>articoli</strong> però il rapporto si ribalta: <strong>t.co 141 referral contro google.com 68</strong> — X porta il doppio di Google. Da web.telegram.org solo 7 visitatori sul sito e 6 sugli articoli: il canale Telegram condiviso pesa poco in termini di click tracciati, ma molte condivisioni Telegram non passano referrer e finiscono come traffico diretto. ChatGPT: 17 visitatori come motore di ricerca (8 come dominio referrer, i due widget contano diversamente).</div>
+    </details>
+    <details class="callout">
+      <summary><span class="callout-title">Articoli più letti ed eventi del periodo</span></summary>
+      <div class="detail-body">
+        <table class="table-view visible" style="margin-bottom:8px;">
+          <thead><tr><th>Articolo</th><th>Views</th><th>Evento collegato</th></tr></thead>
+          <tbody>
+            <tr><td>Inside the wdk-rgb-lightning Architecture (Renat Skitsan)</td><td class="num">277</td><td>1 set: Telegram EN+ZH + post Gioele su X</td></tr>
+            <tr><td>RGB Lightning Is Now in Tether's WDK</td><td class="num">61</td><td>Pubblicato il 28 ago (articolo di agosto)</td></tr>
+            <tr><td>BiHelix: Building RGB Protocol's Application Layer</td><td class="num">58</td><td>—</td></tr>
+            <tr><td>Inside Utexo's RGB Stack</td><td class="num">36</td><td>—</td></tr>
+            <tr><td>UniSat Is the Next Launch Partner for USDT on Bitcoin</td><td class="num">35</td><td>—</td></tr>
+            <tr><td>Pragmatic Maximalism (Bitcoin Asia), EN / ZH</td><td class="num">34 / 3</td><td>18 set: Telegram EN e poi ZH — 4 giorni di vita</td></tr>
+            <tr><td>Hackathon con Tether come main sponsor, EN / ZH</td><td class="num">16 / 1</td><td>Pubblicato il 17 set (dal log) — 5 giorni di vita</td></tr>
+            <tr><td>"Betting Stablecoins Future on RGB" (probabile articolo Utexo del 14 set)</td><td class="num">13</td><td>14 set: Telegram EN</td></tr>
+          </tbody>
+        </table>
+        14 contenuti pubblicati nel periodo (+16,7%); i contenuti hanno generato 974 visitatori e 1,16K views (40% e 36% del totale del sito). Per categoria: Articles 544 view, Updates 193, Talks 137, Videos 135, Featured 89. Il titolo WordPress "Betting Stablecoins Future on RGB" non coincide con quello riportato nel file eventi ("The Business Case for USDT on Bitcoin"): l'abbinamento è un'ipotesi da verificare.
+      </div>
+    </details>
+    <div class="macro-grid" style="margin-top:16px;">
+      <div class="macro-card">
+        <h3>Pagine più visitate</h3>
+        <ul class="macro-list">
+          <li><span>Home</span><span>607 <span class="delta up">▲ +5%/gg</span></span></li>
+          <li><span>Inside the wdk-rgb-lightning Architecture</span><span>277 <span class="delta up">● nuovo in top 5</span></span></li>
+          <li><span>Blog &amp; Media</span><span>149 <span class="delta down">▼ −12%/gg</span></span></li>
+          <li><span>Wallets</span><span>76 <span class="delta up">▲ +14%/gg</span></span></li>
+          <li><span>Introduction</span><span>69 <span class="delta up">● nuovo in top 5</span></span></li>
+        </ul>
+        <p class="section-note" style="margin-top:8px;">Variazione per giorno vs agosto (22 giorni con il 21 parziale vs 28), stessa pagina. "Nuovo in top 5" = non era tra le prime 5 ad agosto.</p>
+      </div>
+      <div class="macro-card">
+        <h3>Top Paesi</h3>
+        <ul class="macro-list">
+          <li><span>Hong Kong</span><span>610 <span class="delta up">▲ +112%/gg</span></span></li>
+          <li><span>Singapore</span><span>497 <span class="delta up">▲ +14%/gg</span></span></li>
+          <li><span>Stati Uniti</span><span>340 <span class="delta down">▼ −16%/gg</span></span></li>
+          <li><span>Cina</span><span>296 <span class="delta up">▲ +11%/gg</span></span></li>
+          <li><span>Italia</span><span>69 <span class="delta up">▲ +44%/gg</span></span></li>
+        </ul>
+        <p class="section-note" style="margin-top:8px;">Variazione per giorno vs agosto (22 giorni con il 21 parziale vs 28), stesso paese.</p>
+      </div>
+      <div class="macro-card">
+        <h3>Top Referrer</h3>
+        <ul class="macro-list">
+          <li><span>google.com</span><span>236 <span class="delta up">▲ +35%/gg</span></span></li>
+          <li><span>t.co (X)</span><span>200 <span class="delta up">▲ +30%/gg</span></span></li>
+          <li><span>rgbprotocol.org</span><span>16 <span class="delta up">▲ +104%/gg</span></span></li>
+          <li><span>chatgpt.com</span><span>8 <span class="delta up">● nuovo in top 5</span></span></li>
+          <li><span>web.telegram.org</span><span>7 <span class="delta up">● nuovo in top 5</span></span></li>
+        </ul>
+        <p class="section-note" style="margin-top:8px;">Variazione per giorno vs agosto (22 giorni con il 21 parziale vs 28), stesso dominio. weixin110.qq.com (38 ad agosto) esce dai primi 5.</p>
+      </div>
+      <div class="macro-card">
+        <h3>Dispositivi</h3>
+        <ul class="macro-list">
+          <li><span>Desktop</span><span>1,9K (78%)</span></li>
+          <li><span>Smartphone</span><span>517 (21,3%)</span></li>
+          <li><span>Tablet + altro</span><span>19 (0,8%)</span></li>
+        </ul>
+      </div>
+    </div>
+    <p class="section-note" style="margin-top:10px;">Fonte: WP Statistics (Overview, Visitor Insights, Geographic, Referrals, Page/Content/Category Analytics; 31 ago – 21 set 2026) — dati aggregati, non filtrabili per settimana nel piano gratuito.</p>
+   </details>
+  </section>
+
+  <!-- ================= COMMUNITY CALL ================= -->
+  <section id="community-calls" style="--section-accent:var(--channel-community);">
+   <details class="section-toggle" open>
+    <summary class="section-summary">
+    <div class="section-head">
+      <h2><span class="dot-lg" style="background:var(--channel-community);"></span>Community Call — crescita follower</h2>
+      <p class="section-note">Snapshot follower (X + Telegram) rilevato a ogni community call, EN e ZH in ordine cronologico — stesso account X (@RGB_Hub) e stesso gruppo Telegram EN condivisi da entrambe le serie</p>
+    </div>
+    </summary>
+
+    <div class="chart-grid-2" style="margin-bottom:16px;">
+      <div class="chart-card" style="overflow-x:auto;">
+        <p class="chart-title">Call in inglese</p>
+        <table class="table-view visible">
+          <thead>
+            <tr>
+              <th>Data</th>
+              <th>Call</th>
+              <th>Views</th>
+              <th>X</th>
+              <th>TG EN</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>31 lug</td><td>Utexo</td><td>X:667 / TG:2</td><td>~2.900</td><td>~2.060</td></tr>
+            <tr><td>14 ago</td><td>RGBTC (Zucco)</td><td>X:227 / TG:4</td><td>~3.019 <span class="delta up">▲+119</span></td><td>~2.100 <span class="delta up">▲+40</span></td></tr>
+            <tr style="opacity:.7;"><td>21 set*</td><td>Nessuna call EN a settembre — solo snapshot</td><td>—</td><td>~3.102 <span class="delta up">▲+83</span></td><td>2.137 <span class="delta up">▲+37</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="chart-card" style="overflow-x:auto;">
+        <p class="chart-title">Call in cinese (X Space)</p>
+        <table class="table-view visible">
+          <thead>
+            <tr>
+              <th>Data</th>
+              <th>Call</th>
+              <th>Views</th>
+              <th>X</th>
+              <th>TG EN</th>
+              <th>TG ZH</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>12 ago</td><td>BiHelix</td><td>40+</td><td>2.895</td><td>2.102</td><td>91</td></tr>
+            <tr><td>2 set</td><td>Client-side validation (Ron)</td><td>28+</td><td>3.063 <span class="delta up">▲+168</span></td><td>2.123 <span class="delta up">▲+21</span></td><td>112 <span class="delta up">▲+21 (+23%)</span></td></tr>
+            <tr style="opacity:.7;"><td>21 set*</td><td>Snapshot (call del 16 set annullata)</td><td>—</td><td>~3.102 <span class="delta up">▲+39</span></td><td>2.137 <span class="delta up">▲+14</span></td><td>126 <span class="delta up">▲+14 (+12,5%)</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <p class="section-note" style="margin-bottom:16px;">Delta calcolato rispetto alla riga precedente nella stessa tabella. Nel periodo si è tenuta <strong>una sola call</strong> (ZH, 2 settembre); quella cinese del 16 settembre è stata annullata e sostituita da una call con Zhu (CTO BiHelix) il 23 settembre, fuori dal periodo. <strong>Nessuna call in inglese dal 14 agosto</strong>. *21 settembre = snapshot dei membri dei gruppi Telegram (forniti da MariJ); X = 3.063 (2 set) + follower netti dal 3 al 20 settembre (+39, X Analytics): <strong>stima</strong>, non include il 21 settembre né il dato reale.</p>
+
+    <details class="callout good">
+      <summary><span class="callout-title">Crescita rallentata ovunque: ZH ancora la più veloce in %, EN quasi ferma</span></summary>
+      <div class="detail-body">Crescita in rallentamento su tutti i canali, in coincidenza con poche call.
+        <ul style="margin:8px 0 0; padding-left:18px;">
+          <li><strong>Telegram ZH:</strong> 126 membri (+38% dal 12 agosto), il più veloce in percentuale ma in frenata (1,0 → 0,7 al giorno).</li>
+          <li><strong>Telegram EN:</strong> 2.137 membri, circa +1 al giorno (28 a luglio).</li>
+          <li><strong>X:</strong> ~3.100 follower (stima), +39 dal 2 settembre.</li>
+          <li><strong>Call:</strong> una sola a settembre (28+ presenti) e nessuna in inglese da 38 giorni. Ipotesi: le call sono il motore della crescita, da verificare il 23 settembre.</li>
+        </ul></div>
+    </details>
+
+    <p class="section-note" style="margin-top:10px;">Fonte: Community Calls Calendar.xlsx — snapshot follower registrati manualmente alla data di ciascuna call.</p>
+   </details>
+  </section>
+
+  <!-- ================= REDDIT ================= -->
+  <section id="reddit" style="--section-accent:var(--channel-reddit);">
+   <details class="section-toggle" open>
+    <summary class="section-summary">
+    <div class="section-head">
+      <h2><span class="dot-lg" style="background:var(--channel-reddit);"></span>Reddit — r/RGB_Bitcoin</h2>
+      <p class="section-note">Reddit Mod Tools · finestra "ultimi 30 giorni" (~23 agosto – 21 settembre), non filtrabile su range custom nel piano gratuito</p>
+    </div>
+    </summary>
+
+    <div class="scorecard-grid" style="margin-bottom:16px;">
+      <div class="stat-tile">
+        <p class="stat-label">Visualizzazioni</p>
+        <div class="stat-value-row">
+          <span class="stat-value">339</span>
+          <span class="stat-trend up">▲ +288</span>
+        </div>
+        <p class="stat-caption">2 media giornaliera visitatori unici, 25 visitatori settimanali (18 ad agosto)</p>
+      </div>
+      <div class="stat-tile">
+        <p class="stat-label">Membri</p>
+        <div class="stat-value-row">
+          <span class="stat-value">42</span>
+          <span class="stat-trend up">▲ +36</span>
+        </div>
+        <p class="stat-caption">36 partecipano, 0 hanno abbandonato · erano 22 al 1 settembre (+20)</p>
+      </div>
+      <div class="stat-tile">
+        <p class="stat-label">Post pubblicati</p>
+        <div class="stat-value-row">
+          <span class="stat-value">1</span>
+          <span class="stat-trend down">▼ −6</span>
+        </div>
+        <p class="stat-caption">1 rimosso</p>
+      </div>
+      <div class="stat-tile">
+        <p class="stat-label">Commenti pubblicati</p>
+        <div class="stat-value-row">
+          <span class="stat-value">0</span>
+          <span class="stat-trend down">▼ −2</span>
+        </div>
+        <p class="stat-caption">0 rimossi</p>
+      </div>
+    </div>
+
+    <details class="callout good" open>
+      <summary><span class="callout-title">Membri raddoppiati, ma senza attività: 1 post (rimosso) e 0 commenti</span></summary>
+      <div class="detail-body">I membri passano da <strong>22 (1 settembre) a 42</strong> (+20 in tre settimane, contro +17 in tutto agosto), e 36 sono "partecipanti" senza nessun abbandono. Ma sul subreddit l'attività è quasi nulla: <strong>un solo post nel periodo, e rimosso</strong>, zero commenti (−6 post e −2 commenti rispetto ai 30 giorni precedenti). La crescita non viene quindi dai contenuti pubblicati ma da spinte esterne, coerentemente con quanto già visto ad agosto (invito nel gruppo Telegram board/soci). Da verificare in coda di moderazione perché il post è stato rimosso (filtro automatico per account nuovo?): se fosse un filtro anti-spam sarebbe proprio il problema che lo status Approved User su r/RGB_Bitcoin deve risolvere.</div>
+    </details>
+    <details class="callout">
+      <summary><span class="callout-title">Nota metodologica — finestra temporale, sovrapposizione con agosto e limiti dei grafici</span></summary>
+      <div class="detail-body">La finestra "ultimi 30 giorni" copre circa <strong>23 agosto – 21 settembre</strong>, più ampia del periodo del report (31 agosto – 20 settembre) e <strong>sovrapposta di circa 10 giorni</strong> a quella del report di agosto (1 agosto – 1 settembre): le 339 visualizzazioni non vanno sommate alle 210 di agosto, e la variazione "+288" è rispetto ai 30 giorni prima (~24 luglio – 22 agosto, 51 visualizzazioni). Il dato più affidabile è il totale membri, cumulativo: 22 → 42.<br><br>Nei PDF esportati i grafici sono tagliati in basso: l'asse dei giorni non è leggibile e le barre sotto ~20 non si vedono, quindi le date esatte dei picchi non sono ricostruibili. Dalle barre visibili risulta comunque che <strong>tre giornate concentrano circa 260 delle 339 visite (~77%)</strong> — due consecutive da circa 72 e 95 visite, una da circa 93 — e che i visitatori unici (media 2 al giorno, ~60 nel periodo) si concentrano in quelle due giornate consecutive (circa 17 e 43): la giornata da 93 visite ha invece pochissimi visitatori unici, quindi poche persone che tornano molte volte. Il grafico dei membri mostra due giornate con circa 11 iscrizioni ciascuna, e nessun disiscritto. Se serve l'analisi giornaliera, va rifatto lo screenshot con il grafico completo (scorrendo la pagina fino all'asse delle date).</div>
+    </details>
+
+    <p class="section-note" style="margin-top:10px;">Fonte: Reddit Mod Tools (Statistiche, ultimi 30 giorni; PDF Visite, Unici, Membri del 21 settembre) — nessun export dati grezzi disponibile dal piano gratuito.</p>
+   </details>
+  </section>
+
+  <footer>
+    Report generato per RGB Protocol Association — performance settembre 2026 (parziale, 31 agosto – 20 settembre)
+  </footer>
+
+</div>
+
+<script>
+  // ============ SETTIMANE DEL REPORT ============
+  // Unica fonte per etichette e pulsanti. Aggiungere una chiave (w4, ...) per estendere il report.
+  const periodLabels = {
+    w1: "31 ago – 6 set",
+    w2: "7 – 13 set",
+    w3: "14 – 20 set",
+  };
+  const periodShort = { w1: "31 ago–6 set", w2: "7–13 set", w3: "14–20 set" };
+
+  // ============ DATI — DA INSERIRE ============
+  // Fonte: Grafico.csv (GSC, Performance on Search), export 21 settembre 2026, tipo di ricerca Web
+  const searchDaily = {
+    w1: [
+      {date:'31 ago', clicks:5, impr:174, pos:9.2},
+      {date:'1 set', clicks:6, impr:144, pos:5.1},
+      {date:'2 set', clicks:4, impr:269, pos:4.2},
+      {date:'3 set', clicks:4, impr:219, pos:5.4},
+      {date:'4 set', clicks:5, impr:319, pos:4.6},
+      {date:'5 set', clicks:2, impr:143, pos:7.3},
+      {date:'6 set', clicks:3, impr:161, pos:5.1},
+    ],
+    w2: [
+      {date:'7 set', clicks:3, impr:212, pos:4.2},
+      {date:'8 set', clicks:3, impr:157, pos:5.4},
+      {date:'9 set', clicks:3, impr:276, pos:4.5},
+      {date:'10 set', clicks:5, impr:177, pos:4.1},
+      {date:'11 set', clicks:0, impr:133, pos:4.8},
+      {date:'12 set', clicks:3, impr:114, pos:5.1},
+      {date:'13 set', clicks:1, impr:99, pos:4.3},
+    ],
+    w3: [
+      {date:'14 set', clicks:3, impr:146, pos:4.5},
+      {date:'15 set', clicks:4, impr:210, pos:4},
+      {date:'16 set', clicks:3, impr:168, pos:5.2},
+      {date:'17 set', clicks:6, impr:187, pos:10.9},
+      {date:'18 set', clicks:7, impr:125, pos:4.8},
+      {date:'19 set', clicks:2, impr:96, pos:3.9},
+      {date:'20 set', clicks:3, impr:93, pos:5.1},
+    ],
+  };
+  // Fonte: account_overview_analytics.csv (X Analytics), export 21 settembre 2026 (31 ago – 20 set)
+  const xDaily = {
+    w1: [
+      {date:'31 ago', impressions:887, engagements:15, newFollows:4, unfollows:2},
+      {date:'1 set', impressions:2321, engagements:46, newFollows:5, unfollows:2},
+      {date:'2 set', impressions:1801, engagements:46, newFollows:8, unfollows:1},
+      {date:'3 set', impressions:608, engagements:6, newFollows:5, unfollows:1},
+      {date:'4 set', impressions:606, engagements:2, newFollows:4, unfollows:2},
+      {date:'5 set', impressions:249, engagements:1, newFollows:3, unfollows:0},
+      {date:'6 set', impressions:189, engagements:0, newFollows:0, unfollows:4},
+    ],
+    w2: [
+      {date:'7 set', impressions:242, engagements:1, newFollows:3, unfollows:4},
+      {date:'8 set', impressions:74, engagements:0, newFollows:3, unfollows:0},
+      {date:'9 set', impressions:135, engagements:2, newFollows:2, unfollows:4},
+      {date:'10 set', impressions:2643, engagements:234, newFollows:7, unfollows:1},
+      {date:'11 set', impressions:3575, engagements:114, newFollows:5, unfollows:1},
+      {date:'12 set', impressions:1104, engagements:24, newFollows:3, unfollows:1},
+      {date:'13 set', impressions:2412, engagements:58, newFollows:5, unfollows:1},
+    ],
+    w3: [
+      {date:'14 set', impressions:4345, engagements:92, newFollows:3, unfollows:2},
+      {date:'15 set', impressions:1732, engagements:40, newFollows:3, unfollows:1},
+      {date:'16 set', impressions:1988, engagements:41, newFollows:2, unfollows:2},
+      {date:'17 set', impressions:312, engagements:5, newFollows:3, unfollows:1},
+      {date:'18 set', impressions:2124, engagements:126, newFollows:5, unfollows:2},
+      {date:'19 set', impressions:17032, engagements:116, newFollows:8, unfollows:4},
+      {date:'20 set', impressions:4337, engagements:24, newFollows:7, unfollows:1},
+    ],
+  };
+  // Forma letta dal grafico "Traffic Trends" (Visitor Insights, 31 ago – 21 set), scalata per coincidere
+  // con i totali reali (2.432 visitatori, 3.211 views). 21 set è parziale (dati di mattina: 17 visitatori, 20 views).
+  const siteDaily = [
+    {date:'31 ago', visitors:110, views:126}, {date:'1 set', visitors:147, views:175},
+    {date:'2 set', visitors:160, views:190}, {date:'3 set', visitors:161, views:199},
+    {date:'4 set', visitors:160, views:232}, {date:'5 set', visitors:116, views:160},
+    {date:'6 set', visitors:119, views:141}, {date:'7 set', visitors:103, views:143},
+    {date:'8 set', visitors:105, views:127}, {date:'9 set', visitors:119, views:196},
+    {date:'10 set', visitors:115, views:160}, {date:'11 set', visitors:111, views:136},
+    {date:'12 set', visitors:116, views:146}, {date:'13 set', visitors:111, views:141},
+    {date:'14 set', visitors:107, views:153}, {date:'15 set', visitors:99, views:127},
+    {date:'16 set', visitors:81, views:127}, {date:'17 set', visitors:117, views:146},
+    {date:'18 set', visitors:108, views:144}, {date:'19 set', visitors:78, views:124},
+    {date:'20 set', visitors:72, views:98}, {date:'21 set', visitors:17, views:20},
+  ];
+
+  // ============ MINI HELPER SVG CHARTS ============
+  const NS = 'http://www.w3.org/2000/svg';
+  function el(tag, attrs) {
+    const e = document.createElementNS(NS, tag);
+    for (const k in attrs) e.setAttribute(k, attrs[k]);
+    return e;
+  }
+  function fmt(n) { return String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, '.'); }
+  const cssVar = (name) => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+
+  // Single-series line chart with dots + hover title. Con dati vuoti mostra solo lo stato "non ancora inseriti".
+  function renderLineChart(svgId, data, valueKey, color, opts = {}) {
+    const svg = document.getElementById(svgId);
+    if (!svg) return;
+    svg.innerHTML = '';
+    const W = 600, H = 150, padL = 44, padB = 20, padT = 14, padR = 12;
+    svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+    const innerW = W - padL - padR, innerH = H - padT - padB;
+    svg.appendChild(el('line', { class: 'axis-line', x1: padL, y1: H - padB, x2: W - padR, y2: H - padB }));
+
+    if (!data.length) {
+      svg.appendChild(el('text', {
+        class: 'axis-label', x: W / 2, y: H / 2, 'text-anchor': 'middle'
+      })).textContent = 'Dati non ancora inseriti';
+      return;
+    }
+
+    const dataMax = Math.max(...data.map(d => d[valueKey]));
+    const dataMin = Math.min(...data.map(d => d[valueKey]));
+    const max = dataMax * 1.15;
+    const n = data.length;
+    const stepX = n > 1 ? innerW / (n - 1) : 0;
+
+    const fmtTick = (v) => v >= 1000 ? fmt(v) : (Number.isInteger(v) ? v : v.toFixed(1));
+    const tickVals = opts.invert ? [dataMin, (dataMin + dataMax) / 2, dataMax] : [0, max / 2, max];
+    tickVals.forEach(v => {
+      const frac = max > 0 ? (v / max) : 0;
+      const y = opts.invert ? (padT + frac * innerH) : (padT + innerH - frac * innerH);
+      svg.appendChild(el('line', {
+        x1: padL, y1: y, x2: W - padR, y2: y,
+        stroke: 'var(--border)', 'stroke-width': 1, 'stroke-dasharray': '2,3'
+      }));
+      svg.appendChild(el('text', {
+        class: 'axis-label', x: padL - 6, y: y + 3, 'text-anchor': 'end'
+      })).textContent = fmtTick(v);
+    });
+
+    const pts = data.map((d, i) => {
+      const x = padL + i * stepX;
+      const frac = max > 0 ? (d[valueKey] / max) * innerH : 0;
+      const y = opts.invert ? (padT + frac) : (padT + innerH - frac);
+      return [x, y];
+    });
+
+    const areaPts = `${padL},${H - padB} ` + pts.map(p => p.join(',')).join(' ') + ` ${padL + (n-1)*stepX},${H - padB}`;
+    svg.appendChild(el('polygon', { class: 'line-area', points: areaPts, fill: color }));
+    svg.appendChild(el('polyline', { class: 'line-path', points: pts.map(p => p.join(',')).join(' '), stroke: color }));
+
+    const labelEvery = n > 10 ? Math.ceil(n / 8) : 1;
+    data.forEach((d, i) => {
+      const [x, y] = pts[i];
+      const dot = el('circle', { class: 'line-dot', cx: x, cy: y, r: n > 10 ? 2.2 : 3, fill: color });
+      const title = el('title', {});
+      title.textContent = `${d.date}: ${fmt(d[valueKey])}`;
+      dot.appendChild(title);
+      svg.appendChild(dot);
+
+      if (i % labelEvery === 0 || i === n - 1) {
+        svg.appendChild(el('text', {
+          class: 'axis-label', x, y: H - 6, 'text-anchor': 'middle'
+        })).textContent = d.date.replace(/ (ago|set)$/, '');
+      }
+    });
+  }
+
+  const flatten = (obj) => Object.values(obj).flat();
+  const emptyRow = (cols) => `<tr>${'<td class="num">—</td>'.repeat(cols)}</tr>`;
+
+  // ============ RENDER: confronto tra settimane ============
+  function renderWeeklyCharts() {
+    const blue = cssVar('--accent-blue'), red = cssVar('--logo-red');
+    const green = cssVar('--logo-green'), gblue = cssVar('--logo-blue');
+
+    const allSearchDays = flatten(searchDaily);
+    renderLineChart('chart-monthly-search-clicks', allSearchDays, 'clicks', blue);
+    renderLineChart('chart-monthly-search-impressions', allSearchDays, 'impr', blue);
+    renderLineChart('chart-monthly-search-position', allSearchDays, 'pos', red, { invert: true });
+
+    const allXDays = flatten(xDaily);
+    renderLineChart('chart-monthly-social-impressions', allXDays, 'impressions', green);
+    renderLineChart('chart-monthly-social-engagement', allXDays, 'engagements', gblue);
+
+    // Tabelle riepilogo per settimana (una riga per settimana; valori "—" finché mancano i dati)
+    document.getElementById('weekly-search-table-body').innerHTML = Object.keys(periodLabels).map(k => {
+      const d = searchDaily[k];
+      if (!d.length) return `<tr><td>${periodShort[k]}</td>${'<td class="num">—</td>'.repeat(4)}</tr>`;
+      const clicks = d.reduce((s, x) => s + x.clicks, 0), impr = d.reduce((s, x) => s + x.impr, 0);
+      const pos = (d.reduce((s, x) => s + x.pos, 0) / d.length).toFixed(1);
+      const ctr = impr > 0 ? (clicks / impr * 100).toFixed(2).replace('.', ',') + '%' : '0%';
+      return `<tr><td>${periodShort[k]}</td><td class="num">${fmt(clicks)}</td><td class="num">${fmt(impr)}</td><td class="num">${ctr}</td><td class="num">${pos}</td></tr>`;
+    }).join('');
+
+    document.getElementById('weekly-x-table-body').innerHTML = Object.keys(periodLabels).map(k => {
+      const d = xDaily[k];
+      if (!d.length) return `<tr><td>${periodShort[k]}</td>${'<td class="num">—</td>'.repeat(4)}</tr>`;
+      const impr = d.reduce((s, x) => s + x.impressions, 0), eng = d.reduce((s, x) => s + x.engagements, 0);
+      const net = d.reduce((s, x) => s + x.newFollows - x.unfollows, 0);
+      const rate = impr > 0 ? (eng / impr * 100).toFixed(2).replace('.', ',') + '%' : '0%';
+      return `<tr><td>${periodShort[k]}</td><td class="num">${fmt(impr)}</td><td class="num">${fmt(eng)}</td><td class="num">${rate}</td><td class="num">${net >= 0 ? '+' : ''}${net}</td></tr>`;
+    }).join('');
+  }
+
+  // ============ RENDER: andamento sito (WP Statistics) ============
+  function renderSiteTrend() {
+    renderLineChart('chart-site-views', siteDaily, 'views', cssVar('--navy'));
+    renderLineChart('chart-site-visitors', siteDaily, 'visitors', cssVar('--accent-blue'));
+  }
+
+  // ============ RENDER: drill-down giornaliero (entrambi i canali) ============
+  function renderDailyDrilldown(period) {
+    const blue = cssVar('--accent-blue'), green = cssVar('--logo-green');
+
+    // Search
+    const sData = searchDaily[period];
+    renderLineChart('chart-daily-clicks', sData, 'clicks', blue);
+    document.getElementById('daily-table-body').innerHTML = sData.length
+      ? sData.map(d => {
+          const ctr = d.impr > 0 ? ((d.clicks / d.impr) * 100).toFixed(2) + '%' : '0%';
+          return `<tr><td>${d.date}</td><td class="num">${fmt(d.clicks)}</td><td class="num">${fmt(d.impr)}</td><td class="num">${ctr}</td><td class="num">${d.pos}</td></tr>`;
+        }).join('')
+      : emptyRow(5);
+    if (sData.length) {
+      const sClicks = sData.reduce((s, d) => s + d.clicks, 0);
+      const sImpr = sData.reduce((s, d) => s + d.impr, 0);
+      const sAvgPos = (sData.reduce((s, d) => s + d.pos, 0) / sData.length).toFixed(1);
+      const sPeak = sData.reduce((a, b) => b.clicks > a.clicks ? b : a);
+      document.getElementById('narrative-callout').innerHTML =
+        `<strong>${periodLabels[period]}:</strong> ${fmt(sClicks)} click, ${fmt(sImpr)} impression, posizione media ${sAvgPos}. Top: ${sPeak.date} (${sPeak.clicks} click).`;
+    } else {
+      document.getElementById('narrative-callout').innerHTML = `<strong>${periodLabels[period]}:</strong> dati non ancora inseriti.`;
+    }
+
+    // X
+    const xData = xDaily[period];
+    renderLineChart('chart-daily-social', xData, 'impressions', green);
+    document.getElementById('social-table-body').innerHTML = xData.length
+      ? xData.map(d =>
+          `<tr><td>${d.date}</td><td class="num">${fmt(d.impressions)}</td><td class="num">${fmt(d.engagements)}</td><td class="num">${d.newFollows}</td><td class="num">${d.unfollows}</td></tr>`
+        ).join('')
+      : emptyRow(5);
+    if (xData.length) {
+      const xImpr = xData.reduce((s, d) => s + d.impressions, 0);
+      const xPeak = xData.reduce((a, b) => b.impressions > a.impressions ? b : a);
+      const xNet = xData.reduce((s, d) => s + d.newFollows - d.unfollows, 0);
+      document.getElementById('narrative-callout-social').innerHTML =
+        `<strong>${periodLabels[period]}:</strong> ${fmt(xImpr)} impression, picco ${xPeak.date} (${fmt(xPeak.impressions)}). Follower netti: ${xNet >= 0 ? '+' : ''}${xNet}.`;
+    } else {
+      document.getElementById('narrative-callout-social').innerHTML = `<strong>${periodLabels[period]}:</strong> dati non ancora inseriti.`;
+    }
+  }
+
+  // ============ Selettore settimana (unico, controlla entrambi i canali) ============
+  const selector = document.getElementById('periodSelector');
+  const currentLabel = document.getElementById('periodLabel');
+  Object.keys(periodLabels).forEach((k, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'period-btn' + (i === 0 ? ' active' : '');
+    btn.dataset.period = k;
+    btn.textContent = periodLabels[k];
+    selector.insertBefore(btn, currentLabel.parentElement);
+  });
+  currentLabel.textContent = periodLabels[Object.keys(periodLabels)[0]];
+
+  selector.addEventListener('click', (e) => {
+    const btn = e.target.closest('.period-btn');
+    if (!btn) return;
+    selector.querySelectorAll('.period-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentLabel.textContent = periodLabels[btn.dataset.period];
+    renderDailyDrilldown(btn.dataset.period);
+  });
+
+  // Toggle grafico <-> tabella
+  document.querySelectorAll('[data-toggle-table]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const table = document.getElementById(btn.dataset.toggleTable);
+      table.classList.toggle('visible');
+      btn.textContent = table.classList.contains('visible') ? 'Nascondi' : 'Tabella';
+    });
+  });
+
+  // ============ Init ============
+  renderWeeklyCharts();
+  renderDailyDrilldown(Object.keys(periodLabels)[0]);
+  renderSiteTrend();
+</script>
+</body>
+</html>

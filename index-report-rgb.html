@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RGB Protocol on Bitcoin — Report Performance</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* Palette sito — da palette-grandezza-immagini.md */
+    --navy: #0F0F2E;
+    --bg: #F7FAFC;
+    --bg-alt: #EDF2F7;
+    --card: #FFFFFF;
+    --border: #E2E0F0;
+    --text-main: #1A202C;
+    --text-mid: #2D3748;
+    --text-secondary: #4A5568;
+    --text-light: #718096;
+    --accent-blue: #2B6CB0;
+    --accent-blue-dark: #215387;
+    --logo-red: #E85A3A;
+    --logo-green: #52C47A;
+    --logo-blue: #5B9BD5;
+    --status-good: #52C47A;
+    --status-warn: #E85A3A;
+    /* Identità per sezione/canale — vedi h2 .dot-lg / .dot-pair */
+    --channel-search: var(--accent-blue);
+    --channel-x: var(--logo-green);
+    --channel-site: #B8860B;
+    --channel-community: #8A63D2;
+    --channel-reddit: #FF4500;
+    /* Tint di sfondo per stati/pill/callout */
+    --tint-good: #EAF9F0;
+    --tint-warn: #FEF0ED;
+    --tint-info: #EAF1FA;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #12141C;
+      --bg-alt: #1B1E29;
+      --card: #1C1F2B;
+      --border: #30354A;
+      --text-main: #EDEFF5;
+      --text-mid: #C9CEDC;
+      --text-secondary: #A6ABC0;
+      --text-light: #7B8098;
+      --navy: #EDEFF5;
+      --accent-blue: #6AA9E0;
+      --accent-blue-dark: #4E8CC8;
+      --logo-red: #FF8A66;
+      --logo-green: #6FE0A0;
+      --logo-blue: #8FC3ED;
+      --status-good: #6FE0A0;
+      --status-warn: #FF8A66;
+      --channel-site: #E3B33F;
+      --channel-community: #B79CF0;
+      --channel-reddit: #FF7A50;
+      --tint-good: #16301F;
+      --tint-warn: #3A2118;
+      --tint-info: #16283D;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #12141C;
+    --bg-alt: #1B1E29;
+    --card: #1C1F2B;
+    --border: #30354A;
+    --text-main: #EDEFF5;
+    --text-mid: #C9CEDC;
+    --text-secondary: #A6ABC0;
+    --text-light: #7B8098;
+    --navy: #EDEFF5;
+    --accent-blue: #6AA9E0;
+    --accent-blue-dark: #4E8CC8;
+    --logo-red: #FF8A66;
+    --logo-green: #6FE0A0;
+    --logo-blue: #8FC3ED;
+    --status-good: #6FE0A0;
+    --status-warn: #FF8A66;
+    --channel-site: #E3B33F;
+    --channel-community: #B79CF0;
+    --channel-reddit: #FF7A50;
+    --tint-good: #16301F;
+    --tint-warn: #3A2118;
+    --tint-info: #16283D;
+  }
+
+  
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: 'DM Sans', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text-main);
+    line-height: 1.5;
+  }
+  .wrap { max-width: 1100px; margin: 0 auto; padding: 0 24px 80px; }
+
+  header.page-header {
+    background: #0F0F2E;
+    color: #FFFFFF;
+    padding: 48px 24px 40px;
+    margin-bottom: 40px;
+  }
+  header.page-header .wrap { padding-bottom: 0; }
+  .eyebrow {
+    font-size: 13px; font-weight: 600; letter-spacing: 0.06em;
+    text-transform: uppercase; color: var(--logo-blue); margin: 0 0 8px;
+  }
+  h1 { font-size: 32px; font-weight: 700; margin: 0 0 8px; letter-spacing: -0.01em; }
+  .header-sub { color: #B8B6D0; font-size: 15px; margin: 0; max-width: 720px; }
+
+  .section-title {
+    font-size: 13px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.04em; color: var(--text-light); margin: 0 0 14px;
+  }
+
+  .report-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 18px;
+  }
+  a.report-card {
+    display: flex;
+    flex-direction: column;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-top: 4px solid var(--card-accent, var(--border));
+    border-radius: 12px;
+    padding: 22px;
+    color: inherit;
+    text-decoration: none;
+    transition: border-color 0.15s, transform 0.15s;
+  }
+  a.report-card:hover { border-color: var(--accent-blue); border-top-color: var(--card-accent, var(--border)); transform: translateY(-2px); }
+  a.report-card:focus-visible { outline: 2px solid var(--accent-blue); outline-offset: 2px; }
+  .card-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 6px; }
+  .card-month { font-size: 22px; font-weight: 700; color: var(--navy); margin: 0; }
+  .pill {
+    display: inline-block; font-size: 11px; font-weight: 700;
+    padding: 2px 9px; border-radius: 100px; white-space: nowrap;
+  }
+  .pill.done { color: var(--status-good); background: var(--tint-good); }
+  .pill.partial { color: var(--status-warn); background: var(--tint-warn); }
+  .card-period { font-size: 13px; color: var(--text-light); margin: 0 0 16px; }
+  .card-stats {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 10px 14px;
+    margin: 0 0 16px; padding: 14px 0;
+    border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+  }
+  .card-stat dt { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-light); margin: 0 0 2px; }
+  .card-stat dd { font-size: 18px; font-weight: 700; color: var(--navy); margin: 0; font-variant-numeric: tabular-nums; }
+  .card-note { font-size: 13px; color: var(--text-secondary); margin: 0 0 16px; flex: 1; }
+  .card-cta { font-size: 13px; font-weight: 700; color: var(--accent-blue); }
+  a.report-card:hover .card-cta { text-decoration: underline; }
+
+  .sources {
+    margin-top: 40px; padding-top: 20px; border-top: 1px solid var(--border);
+    font-size: 13px; color: var(--text-light);
+  }
+  footer {
+    text-align: center; font-size: 12px; color: var(--text-light);
+    padding-top: 24px; margin-top: 32px; border-top: 1px solid var(--border);
+  }
+</style>
+</head>
+<body>
+
+<header class="page-header">
+  <div class="wrap">
+    <p class="eyebrow">RGB Protocol Association</p>
+    <h1>Report Performance</h1>
+    <p class="header-sub">Report mensili su rgb.info e @RGB_Hub: Search (Google, Bing), X, sito, community call e Reddit. Dal più recente al più vecchio.</p>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <p class="section-title">Report mensili</p>
+  <div class="report-grid">
+
+    <a class="report-card" href="rgb-report-settembre-2026.html" style="--card-accent:var(--logo-red);">
+      <div class="card-top">
+        <h2 class="card-month">Settembre 2026</h2>
+        <span class="pill partial">In corso · parziale</span>
+      </div>
+      <p class="card-period">31 agosto – 20 settembre 2026 · 3 settimane complete</p>
+      <dl class="card-stats">
+        <div class="card-stat"><dt>Click Search</dt><dd>75</dd></div>
+        <div class="card-stat"><dt>Visitatori sito</dt><dd>2.432</dd></div>
+        <div class="card-stat"><dt>Follower X</dt><dd>+51</dd></div>
+        <div class="card-stat"><dt>Citazioni Copilot</dt><dd>20</dd></div>
+      </dl>
+      <p class="card-note">Compilati Google Search, sito, X, Bing e Reddit; community call da inserire. Confronto con agosto.</p>
+      <span class="card-cta">Apri il report →</span>
+    </a>
+
+    <a class="report-card" href="rgb-report-agosto-2026.html" style="--card-accent:var(--logo-green);">
+      <div class="card-top">
+        <h2 class="card-month">Agosto 2026</h2>
+        <span class="pill done">Completo</span>
+      </div>
+      <p class="card-period">3 – 30 agosto 2026 · 4 settimane</p>
+      <dl class="card-stats">
+        <div class="card-stat"><dt>Click Search</dt><dd>84</dd></div>
+        <div class="card-stat"><dt>Visitatori sito</dt><dd>2.648</dd></div>
+        <div class="card-stat"><dt>Follower X</dt><dd>+133</dd></div>
+        <div class="card-stat"><dt>Citazioni Copilot</dt><dd>18</dd></div>
+      </dl>
+      <p class="card-note">Confronto con luglio: calo Search concentrato sulla query "rgb protocol", traffico in calo dagli USA e in crescita da Asia e Cina.</p>
+      <span class="card-cta">Apri il report →</span>
+    </a>
+
+    <a class="report-card" href="rgb-report-luglio-2026.html" style="--card-accent:var(--logo-blue);">
+      <div class="card-top">
+        <h2 class="card-month">Luglio 2026</h2>
+        <span class="pill done">Completo</span>
+      </div>
+      <p class="card-period">29 giugno – 2 agosto 2026 · 5 settimane</p>
+      <dl class="card-stats">
+        <div class="card-stat"><dt>Click Search</dt><dd>180</dd></div>
+        <div class="card-stat"><dt>Visitatori sito</dt><dd>4.795</dd></div>
+        <div class="card-stat"><dt>Follower X</dt><dd>+536</dd></div>
+        <div class="card-stat"><dt>Citazioni Copilot</dt><dd>70</dd></div>
+      </dl>
+      <p class="card-note">Report sulle prime 5 settimane di dati: trend calcolato tra prima e ultima settimana, senza mese precedente per il confronto.</p>
+      <span class="card-cta">Apri il report →</span>
+    </a>
+
+  </div>
+
+  <p class="sources">Fonti: Google Search Console, Bing Webmaster Tools, X Analytics, WP Statistics, Reddit Mod Tools, Community Calls Calendar.</p>
+
+  <footer>
+    Report generati per RGB Protocol Association
+  </footer>
+
+</div>
+
+</body>
+</html>
