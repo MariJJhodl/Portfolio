@@ -1,0 +1,1741 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RGB Protocol on Bitcoin — Report Performance Ottobre 2026 (parziale)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* Palette sito — da palette-grandezza-immagini.md */
+    --navy: #0F0F2E;
+    --bg: #F7FAFC;
+    --bg-alt: #EDF2F7;
+    --card: #FFFFFF;
+    --border: #E2E0F0;
+    --text-main: #1A202C;
+    --text-mid: #2D3748;
+    --text-secondary: #4A5568;
+    --text-light: #718096;
+    --accent-blue: #2B6CB0;
+    --accent-blue-dark: #215387;
+    --logo-red: #E85A3A;
+    --logo-green: #52C47A;
+    --logo-blue: #5B9BD5;
+    --status-good: #52C47A;
+    --status-warn: #E85A3A;
+    /* Identità per sezione/canale — vedi h2 .dot-lg / .dot-pair */
+    --channel-search: var(--accent-blue);
+    --channel-x: var(--logo-green);
+    --channel-site: #B8860B;
+    --channel-community: #8A63D2;
+    --channel-reddit: #FF4500;
+    /* Tint di sfondo per stati/pill/callout */
+    --tint-good: #EAF9F0;
+    --tint-warn: #FEF0ED;
+    --tint-info: #EAF1FA;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #12141C;
+      --bg-alt: #1B1E29;
+      --card: #1C1F2B;
+      --border: #30354A;
+      --text-main: #EDEFF5;
+      --text-mid: #C9CEDC;
+      --text-secondary: #A6ABC0;
+      --text-light: #7B8098;
+      --navy: #EDEFF5;
+      --accent-blue: #6AA9E0;
+      --accent-blue-dark: #4E8CC8;
+      --logo-red: #FF8A66;
+      --logo-green: #6FE0A0;
+      --logo-blue: #8FC3ED;
+      --status-good: #6FE0A0;
+      --status-warn: #FF8A66;
+      --channel-site: #E3B33F;
+      --channel-community: #B79CF0;
+      --channel-reddit: #FF7A50;
+      --tint-good: #16301F;
+      --tint-warn: #3A2118;
+      --tint-info: #16283D;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #12141C;
+    --bg-alt: #1B1E29;
+    --card: #1C1F2B;
+    --border: #30354A;
+    --text-main: #EDEFF5;
+    --text-mid: #C9CEDC;
+    --text-secondary: #A6ABC0;
+    --text-light: #7B8098;
+    --navy: #EDEFF5;
+    --accent-blue: #6AA9E0;
+    --accent-blue-dark: #4E8CC8;
+    --logo-red: #FF8A66;
+    --logo-green: #6FE0A0;
+    --logo-blue: #8FC3ED;
+    --status-good: #6FE0A0;
+    --status-warn: #FF8A66;
+    --channel-site: #E3B33F;
+    --channel-community: #B79CF0;
+    --channel-reddit: #FF7A50;
+    --tint-good: #16301F;
+    --tint-warn: #3A2118;
+    --tint-info: #16283D;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    font-family: 'DM Sans', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text-main);
+    line-height: 1.5;
+  }
+
+  .wrap {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 24px 80px;
+  }
+
+  /* ---------- Header ---------- */
+  header.page-header {
+    background: #0F0F2E;
+    color: #FFFFFF;
+    padding: 48px 24px 40px;
+    margin-bottom: 40px;
+  }
+  header.page-header .wrap { padding-bottom: 0; }
+  .eyebrow {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--logo-blue);
+    margin: 0 0 8px;
+  }
+  h1 {
+    font-size: 32px;
+    font-weight: 700;
+    margin: 0 0 8px;
+    letter-spacing: -0.01em;
+  }
+  .header-sub {
+    color: #B8B6D0;
+    font-size: 15px;
+    margin: 0;
+  }
+  .prev-report-link {
+    display: inline-block;
+    margin-top: 14px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #B8B6D0;
+    text-decoration: none;
+    border-bottom: 1px solid rgba(184,182,208,0.4);
+  }
+  .prev-report-link:hover { color: #FFFFFF; border-bottom-color: #FFFFFF; }
+  /* ---------- Index ---------- */
+  .toc {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 20px;
+    align-items: center;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 18px;
+    margin-bottom: 32px;
+    font-size: 13px;
+  }
+  .toc-label {
+    font-weight: 700;
+    color: var(--text-light);
+    text-transform: uppercase;
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    margin-right: 4px;
+  }
+  .toc a {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--text-main);
+    text-decoration: none;
+    font-weight: 600;
+  }
+  .toc a:hover { color: var(--accent-blue); }
+  .toc a .dot-lg { width: 8px; height: 8px; }
+
+  /* ---------- Section shell ---------- */
+  /* Rail colorato sul lato sinistro, alto quanto tutta la sezione — resta
+     visibile per l'intero scroll, non solo nell'istante in cui la incroci.
+     Colore impostato per sezione via --section-accent inline. Uso ::before invece
+     di border-left perché alcune sezioni (Search+X insieme) hanno un gradiente
+     a due colori, non un valore singolo valido per border-color. */
+  section {
+    margin-bottom: 48px;
+    position: relative;
+    padding-left: 20px;
+  }
+  section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 4px;
+    border-radius: 2px;
+    background: var(--section-accent, var(--border));
+  }
+  .section-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+  }
+  h2 {
+    font-size: 20px;
+    font-weight: 700;
+    margin: 0;
+    color: var(--navy);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  h2 .dot-lg { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+  h2 .dot-pair { display: inline-flex; gap: 3px; flex-shrink: 0; }
+  h2 .dot-pair span { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+  h3.channel-head {
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin: 0 0 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  h3.channel-head .dot { width: 8px; height: 8px; border-radius: 50%; }
+  .section-note {
+    font-size: 13px;
+    color: var(--text-light);
+    margin: 0;
+  }
+
+  /* ---------- Scorecard ---------- */
+  .scorecard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 14px;
+  }
+  .stat-tile {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px;
+  }
+  .stat-label {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--text-light);
+    margin: 0 0 8px;
+  }
+  .stat-value-row {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    margin-bottom: 4px;
+  }
+  .stat-value {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--navy);
+    font-variant-numeric: tabular-nums;
+  }
+  .stat-trend {
+    font-size: 12px;
+    font-weight: 600;
+    padding: 2px 7px;
+    border-radius: 100px;
+  }
+  .stat-trend.up { color: var(--status-good); background: var(--tint-good); }
+  .stat-trend.down { color: var(--status-warn); background: var(--tint-warn); }
+  .stat-trend.flat { color: var(--text-light); background: var(--bg-alt); }
+  .stat-caption {
+    font-size: 11px;
+    color: var(--text-light);
+    margin: 0;
+  }
+
+  /* ---------- Week selector ---------- */
+  .period-selector {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px;
+    margin-bottom: 20px;
+  }
+  .period-selector .label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin-right: 4px;
+  }
+  .period-btn {
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    background: var(--bg-alt);
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    padding: 7px 14px;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s, border-color 0.15s;
+  }
+  .period-btn:hover { border-color: var(--accent-blue); }
+  .period-btn.active {
+    background: #0F0F2E;
+    border-color: #0F0F2E;
+    color: #FFFFFF;
+  }
+  .period-current {
+    margin-left: auto;
+    font-size: 13px;
+    color: var(--text-light);
+  }
+  .period-current strong { color: var(--text-main); }
+
+  /* ---------- Chart card ---------- */
+  .chart-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+  }
+  .chart-card-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 14px;
+    flex-wrap: wrap;
+  }
+  .chart-title { font-size: 14px; font-weight: 700; margin: 0 0 3px; color: var(--text-main); }
+  .chart-subtitle { font-size: 12px; color: var(--text-light); margin: 0; }
+  .table-toggle {
+    font-family: inherit;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--accent-blue);
+    background: none;
+    border: 1px solid var(--accent-blue);
+    border-radius: 100px;
+    padding: 4px 10px;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .table-toggle:hover { background: var(--tint-info); }
+
+  .chart-svg {
+    width: 100%;
+    height: 150px;
+    display: block;
+    overflow: visible;
+    font-family: 'DM Sans', system-ui, sans-serif;
+  }
+  .chart-svg .axis-line { stroke: var(--border); stroke-width: 1; }
+  .chart-svg .axis-label { fill: var(--text-light); font-size: 9px; }
+  .chart-svg .line-path { fill: none; stroke-width: 2; }
+  .chart-svg .line-area { opacity: 0.12; }
+  .chart-svg .line-dot { cursor: default; }
+  .chart-svg .line-dot:hover { r: 5; }
+
+  .chart-grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    align-items: start;
+  }
+  @media (max-width: 720px) {
+    .chart-grid-2 { grid-template-columns: 1fr; }
+  }
+
+  /* Table view (hidden by default) */
+  .table-view {
+    display: none;
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12.5px;
+    margin-top: 4px;
+  }
+  .table-view.visible { display: table; }
+  .table-view th, .table-view td {
+    text-align: left;
+    padding: 6px 8px;
+    border-bottom: 1px solid var(--border);
+  }
+  .table-view th {
+    color: var(--text-secondary);
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 10px;
+    letter-spacing: 0.03em;
+    background: var(--bg-alt);
+  }
+  .table-view thead th:first-child { border-top-left-radius: 6px; }
+  .table-view thead th:last-child { border-top-right-radius: 6px; }
+  .table-view td.num { font-variant-numeric: tabular-nums; }
+  .pill {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 100px;
+  }
+  .pill.good { color: var(--status-good); background: var(--tint-good); }
+  .pill.warn { color: var(--status-warn); background: var(--tint-warn); }
+  .pill.new { color: var(--accent-blue); background: var(--tint-info); }
+
+  /* ---------- Macro grid (liste compatte: paesi, referrer, dispositivi) ---------- */
+  .macro-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 14px;
+  }
+  .macro-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px 18px;
+  }
+  .macro-card h3 {
+    font-size: 13px;
+    font-weight: 700;
+    margin: 0 0 10px;
+    color: var(--navy);
+  }
+  .macro-list { list-style: none; margin: 0; padding: 0; }
+  .macro-list li {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12.5px;
+    padding: 6px 0;
+    border-bottom: 1px solid var(--border);
+    color: var(--text-secondary);
+  }
+  .macro-list li:last-child { border-bottom: none; }
+  .macro-list .delta { font-size: 11px; font-weight: 600; margin-left: 6px; }
+  .macro-list .delta.up { color: var(--status-good); }
+  .macro-list .delta.down { color: var(--status-warn); }
+  .table-view .delta { font-size: 11px; font-weight: 600; margin-left: 6px; white-space: nowrap; }
+  .table-view .delta.up { color: var(--status-good); }
+  .table-view .delta.down { color: var(--status-warn); }
+
+  /* ---------- Narrative callout ---------- */
+  .callout {
+    border-left: 3px solid var(--accent-blue);
+    background: var(--tint-info);
+    border-radius: 0 8px 8px 0;
+    padding: 12px 16px;
+    margin-top: 12px;
+    font-size: 13.5px;
+    color: var(--text-secondary);
+  }
+  .callout strong { color: var(--text-main); }
+  .callout-title {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--accent-blue);
+    margin: 0 0 6px;
+  }
+  .callout.howto {
+    border-left-color: var(--border);
+    background: transparent;
+    color: var(--text-light);
+    font-size: 12px;
+    padding: 10px 16px;
+  }
+  .callout.howto strong { color: var(--text-secondary); }
+  .callout.good { border-left-color: var(--status-good); background: var(--tint-good); }
+  .callout.good .callout-title { color: var(--status-good); }
+  .callout.warn { border-left-color: var(--logo-red); background: var(--tint-warn); }
+  .callout.warn .callout-title { color: var(--logo-red); }
+
+  /* ---------- Collapsible detail (approfondimenti) ---------- */
+  details.callout summary {
+    cursor: pointer;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+  }
+  details.callout summary::-webkit-details-marker { display: none; }
+  details.callout summary .callout-title { margin: 0; }
+  details.callout summary::before {
+    content: '▸';
+    color: var(--text-light);
+    font-size: 11px;
+    transition: transform 0.15s;
+    flex-shrink: 0;
+  }
+  details.callout[open] summary::before { transform: rotate(90deg); }
+  details.callout[open] summary { margin-bottom: 8px; }
+  details.callout .detail-body { padding-top: 2px; }
+
+  /* ---------- Footer ---------- */
+  footer {
+    text-align: center;
+    font-size: 12px;
+    color: var(--text-light);
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+  }
+  /* ---------- Sezioni apribili/chiudibili ---------- */
+  .section-summary {
+    cursor: pointer;
+    list-style: none;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .section-summary::-webkit-details-marker { display: none; }
+  .section-summary .section-head { flex: 1; min-width: 0; }
+  .section-summary::after {
+    content: '▾';
+    color: var(--text-light);
+    font-size: 13px;
+    flex-shrink: 0;
+    margin-top: 4px;
+    transition: transform 0.15s;
+  }
+  details[open] > .section-summary::after { transform: rotate(180deg); }
+  details.section-toggle:not([open]) > .section-summary { margin-bottom: 0; }
+  .badge-partial {
+    display: inline-block;
+    vertical-align: middle;
+    margin-left: 10px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--logo-red);
+    background: rgba(232,90,58,0.15);
+    border: 1px solid rgba(232,90,58,0.5);
+    border-radius: 100px;
+    padding: 3px 10px;
+  }
+  /* Tab dei due canali (RGB Hub / Association) */
+  .report-tabs {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    max-width: 1100px;
+    margin: 20px auto 0;
+    padding: 0 20px;
+  }
+  .report-tab {
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text-secondary);
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-bottom: 3px solid transparent;
+    border-radius: 10px 10px 0 0;
+    padding: 10px 18px;
+    cursor: pointer;
+    transition: color 0.15s, border-color 0.15s;
+  }
+  .report-tab:hover { color: var(--text-main); }
+  .report-tab[aria-selected="true"] { color: var(--text-main); border-bottom-color: var(--logo-red); }
+  .report-tab[data-tab="association"][aria-selected="true"] { border-bottom-color: var(--logo-blue); }
+  .report-tab .tab-sub { font-weight: 500; color: var(--text-light); margin-left: 6px; }
+  .tab-panel[hidden] { display: none; }
+</style>
+</head>
+
+<body>
+
+<header class="page-header">
+  <div class="wrap">
+    <p class="eyebrow">RGB Protocol Association</p>
+    <h1>Report Performance — Ottobre 2026 <span class="badge-partial">Parziale</span></h1>
+    <p class="header-sub">rgb.info + @RGB_Bitcoin (ex @RGB_Hub) e rgbprotocol.org + @RGBAssociation, 28 settembre – 4 ottobre 2026 (prima settimana, 7 giorni), confronto con la settimana 21–27 settembre e con la media giornaliera di settembre (31 ago – 27 set)</p>
+    <a class="prev-report-link" href="index-report-rgb.html" style="margin-right:20px;">⌂ Tutti i report</a>
+    <a class="prev-report-link" href="https://marijjhodl.github.io/Portfolio/rgb-report-settembre-2026.html">← Report Settembre 2026</a>
+  </div>
+</header>
+
+<div class="report-tabs" role="tablist" aria-label="Canali del report">
+  <button class="report-tab" role="tab" data-tab="hub" id="tab-hub" aria-controls="panel-hub" aria-selected="true">RGB Hub<span class="tab-sub">rgb.info</span></button>
+  <button class="report-tab" role="tab" data-tab="association" id="tab-association" aria-controls="panel-association" aria-selected="false">Association<span class="tab-sub">rgbprotocol.org</span></button>
+</div>
+
+<div class="wrap tab-panel" id="panel-hub">
+
+  <nav class="toc">
+    <span class="toc-label">In questa pagina</span>
+    <a href="#scorecard"><span class="dot-lg" style="background:var(--navy);"></span>La settimana in breve</a>
+    <a href="#query-performance"><span class="dot-lg" style="background:var(--channel-search);"></span>Query performance</a>
+    <a href="#weekly-comparison"><span class="dot-lg" style="background:linear-gradient(180deg, var(--channel-search) 50%, var(--channel-x) 50%);"></span>Settimane</a>
+    <a href="#daily-drilldown"><span class="dot-lg" style="background:linear-gradient(180deg, var(--channel-search) 50%, var(--channel-x) 50%);"></span>Dettaglio giornaliero</a>
+    <a href="#site-macro"><span class="dot-lg" style="background:var(--channel-site);"></span>Sito</a>
+    <a href="#community-calls"><span class="dot-lg" style="background:var(--channel-community);"></span>Community Call</a>
+    <a href="#reddit"><span class="dot-lg" style="background:var(--channel-reddit);"></span>Reddit</a>
+  </nav>
+
+  <!-- ================= SCORECARD (SEARCH + X) ================= -->
+  <section id="scorecard" style="--section-accent:var(--navy);">
+    <div class="section-head">
+      <h2>La settimana in breve</h2>
+      <p class="section-note">28 set – 4 ott (7 giorni) vs 21–27 set (7 giorni) · media giornaliera di settembre come riferimento</p>
+    </div>
+    <div class="scorecard-grid">
+      <div class="stat-tile">
+        <p class="stat-label">Click Search</p>
+        <div class="stat-value-row">
+          <span class="stat-value">52</span>
+          <span class="stat-trend up">▲ +6%</span>
+        </div>
+        <p class="stat-caption">vs 49 nella settimana 21–27 set · 7,4/giorno vs 4,5 a settembre · CTR 4,70% (3,83% la settimana prima)</p>
+      </div>
+      <div class="stat-tile">
+        <p class="stat-label">Impression Search</p>
+        <div class="stat-value-row">
+          <span class="stat-value">1.107</span>
+          <span class="stat-trend down">▼ −14%</span>
+        </div>
+        <p class="stat-caption">vs 1.280 nella settimana 21–27 set (gonfiata dal trend USDT del 24) · 158/giorno vs 176 a settembre</p>
+      </div>
+      <div class="stat-tile">
+        <p class="stat-label">Posizione — query brandizzate</p>
+        <div class="stat-value-row">
+          <span class="stat-value">1,70</span>
+          <span class="stat-trend down">▼ da 1,50</span>
+        </div>
+        <p class="stat-caption">vs 1,50 a settembre · media ponderata per impression, 4 query brand escluso "rgb protocol" · solo 56 impression, dato poco stabile</p>
+      </div>
+      <div class="stat-tile">
+        <p class="stat-label">Follower X</p>
+        <div class="stat-value-row">
+          <span class="stat-value">+232</span>
+          <span class="stat-trend up">▲ +127%</span>
+        </div>
+        <p class="stat-caption">@RGB_Bitcoin, netti (251 nuovi − 19 unfollow) vs +102 nella settimana 21–27 set · 176 nuovi il solo 4 ottobre, in gran parte account automatici o di bassa qualità (vedi sezione X)</p>
+      </div>
+      <div class="stat-tile">
+        <p class="stat-label">Citazioni Copilot</p>
+        <div class="stat-value-row">
+          <span class="stat-value">10</span>
+          <span class="stat-trend up">● in linea</span>
+        </div>
+        <p class="stat-caption">in 6 giorni (28 set – 3 ott; il 4 ottobre non è ancora nell'export) vs 11 nella settimana 21–27 set · 3 giorni con almeno una citazione · Bing Webmaster Tools</p>
+      </div>
+    </div>
+    <details class="callout warn">
+      <summary><span class="callout-title">Nota metodologica</span></summary>
+      <div class="detail-body">Il report è <strong>parziale: copre la prima settimana di ottobre, 28 settembre – 4 ottobre (7 giorni)</strong>. Il 28–30 settembre rientra qui perché il report di settembre si chiude al 27. Con una sola settimana i confronti sono due: con la <strong>settimana precedente (21–27 settembre)</strong>, a parità di durata, e con la <strong>media giornaliera di settembre</strong> (31 ago – 27 set, 28 giorni). Su 7 giorni i volumi per singola query sono piccoli: le variazioni di posizione vanno lette come indicazione, non come tendenza. GSC riporta per nome solo <strong>18 dei 52 clic</strong> (35%), gli altri sono query anonimizzate. Il 3 ottobre l'account X ha cambiato handle e nome: da <strong>@RGB_Hub</strong> a <strong>@RGB_Bitcoin</strong>, nome "RGB Protocol"; i dati sono dello stesso account.</div>
+    </details>
+    <details class="callout">
+      <summary><span class="callout-title">Bing — citazioni Copilot e ricerca organica</span></summary>
+      <div class="detail-body"><strong>Periodo Bing: 28 settembre – 3 ottobre (6 giorni)</strong>, il 4 ottobre non è ancora nell'export. Le <strong>10 citazioni</strong> seguono lo schema dei mesi scorsi, con pochi picchi isolati: <strong>5 il 29 settembre</strong> (1 pagina), <strong>4 il 2 ottobre</strong> (2 pagine) e 1 il 3 ottobre; zero negli altri tre giorni. Dopo sei giorni a zero (23–28 settembre) le citazioni riprendono. Il 2 ottobre è anche il giorno migliore su Google (15 clic) e quello con più impression nelle funzionalità AI di Google (83). Non copre ChatGPT, Claude o Perplexity, solo Copilot via Bing, e il file non indica quali pagine sono citate. Ricerca organica Bing: <strong>0 clic e 40 impression</strong> in 6 giorni (6,7 al giorno contro 15 a settembre), in crescita dentro la settimana (da 3 il 28 settembre a 13 il 3 ottobre). Volumi troppo piccoli per costruirci conclusioni.</div>
+    </details>
+  </section>
+
+  <!-- ================= QUERY PERFORMANCE ================= -->
+  <section id="query-performance" style="--section-accent:var(--channel-search);">
+   <details class="section-toggle" open>
+    <summary class="section-summary">
+    <div class="section-head">
+      <h2><span class="dot-lg" style="background:var(--channel-search);"></span>Query performance</h2>
+      <p class="section-note">Dove siamo migliorati, dove siamo scesi — query per query, non solo la media</p>
+    </div>
+    </summary>
+
+    <div class="chart-card" style="margin-bottom:16px;">
+      <p class="chart-title" style="margin-bottom:12px;">Posizione media per query — settembre (4 settimane) vs 28 set – 4 ott (1 settimana)</p>
+      <table class="table-view visible">
+        <thead><tr><th>Query</th><th>Settembre</th><th>28 set – 4 ott</th><th>Variazione</th><th>Nota</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>rgb protocol bitcoin</td>
+            <td class="num">1,43</td>
+            <td class="num">1,00</td>
+            <td><span class="pill good">▲ migliorata</span></td>
+            <td>2 clic su 6 impression (CTR 33%) — volume basso</td>
+          </tr>
+          <tr>
+            <td>rgb protocol association</td>
+            <td class="num">2,89</td>
+            <td class="num">3,00</td>
+            <td><span class="pill warn">▼ stabile, in lieve calo</span></td>
+            <td>12 impression, 0 clic — più impression in una settimana che in tutto settembre (9)</td>
+          </tr>
+          <tr>
+            <td>rgb bitcoin</td>
+            <td class="num">1,41</td>
+            <td class="num">1,31</td>
+            <td><span class="pill good">▲ migliorata</span></td>
+            <td>4 clic su 26 impression (CTR 15%)</td>
+          </tr>
+          <tr>
+            <td>bitcoin rgb</td>
+            <td class="num">1,30</td>
+            <td class="num">1,58</td>
+            <td><span class="pill warn">▼ peggiorata</span></td>
+            <td>5 clic su 12 impression (CTR 42%) — resta tra primo e secondo risultato</td>
+          </tr>
+          <tr>
+            <td><strong>rgb protocol</strong></td>
+            <td class="num">1,23</td>
+            <td class="num">1,05</td>
+            <td><span class="pill good">▲ migliorata</span></td>
+            <td><strong>6 clic su 19 impression (CTR 32%)</strong> — la query con più clic anche in questa settimana</td>
+          </tr>
+          <tr>
+            <td>rgb lightning</td>
+            <td class="num">4,2</td>
+            <td class="num">3,94</td>
+            <td><span class="pill good">▲ migliorata</span></td>
+            <td>18 impression, 0 clic — ancora nessuna visita</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <details class="callout good">
+      <summary><span class="callout-title">"rgb protocol" confermata in prima posizione: era il controllo previsto per ottobre</span></summary>
+      <div class="detail-body">Il report di settembre chiedeva di ricontrollare a ottobre la query "rgb protocol", scesa a 6,98 ad agosto e risalita a 1,23 a settembre. Nella prima settimana di ottobre è a <strong>1,05 con 6 clic e CTR 32%</strong>: il recupero tiene. Le cinque query di brand con clic ("rgb protocol", "bitcoin rgb", "rgb bitcoin", "rgb protocol bitcoin", "rgb info") portano tutti i 18 clic attribuiti per nome, e sono tutte tra la posizione 1,0 e 1,6. La homepage raccoglie <strong>36 dei 52 clic</strong> (CTR 8,0%, posizione 3,3).</div>
+    </details>
+
+    <details class="callout warn">
+      <summary><span class="callout-title">Query informative con impression ma senza clic</span></summary>
+      <div class="detail-body">"rgb lightning" resta la query informativa più vista e senza clic (<strong>18 impression, posizione 3,9</strong>; 61 impression e zero clic in tutto settembre). La pagina <em>RGB &amp; Lightning Network</em> ottiene comunque 2 clic su 24 impression (posizione 7,6) da altre query. Seguono "rgb protocol association" (12, pos. 3,0), "rgb++" (9, pos. 9,1), "rgb network" (7, pos. 2,9) e "rgb stash" (5, pos. 3,4). La revisione di titolo e meta description della pagina su Lightning, proposta nel report di settembre, resta da fare. La media ponderata delle query di brand passa da 1,50 a 1,70 solo perché "rgb protocol association" (posizione 3,0) pesa di più sul totale: le altre tre restano tra 1,0 e 1,6.</div>
+    </details>
+
+    <details class="callout">
+      <summary><span class="callout-title">Pagine e query legate ai contenuti recenti</span></summary>
+      <div class="detail-body">Tra gli articoli, l'unico con clic resta <em>rgb-tether-hackathon-agentic-dollars</em> (<strong>3 clic su 10 impression, CTR 30%</strong>, posizione 2,7), insieme alla versione cinese dell'articolo su BiHelix (3 clic su 7) e all'articolo sul lancio di Iris Wallet desktop (1 su 3). Gli articoli pubblicati in settimana hanno ancora poca visibilità: <em>rgb-on-liquid-kaleidoswap-simplicity</em> 13 impression (pos. 9,2), <em>issue-assets-on-bitcoin-btchel-2026</em> 4 (pos. 19, online dal 2 ottobre). Crescono le impression di <em>stablecoin-summit-lugano</em> (17, pos. 8,5; 6 a fine settembre). La pagina <em>Projects</em> (ristrutturata il 2 ottobre) ha 2 clic su 28 impression. Query da segnalare: "tether wdk" (6 impression, pos. 14), "bihelix" (5, pos. 8,4), "rgb stash" (5, dopo il post RGB Bytes del 28 settembre), "tether usdt tetherbacked utexo bitcoin" (2, pos. 3), "wendingbi" (3, pos. 28). "site:rgb.info" (7 impression) è una ricerca di controllo dell'indicizzazione, non traffico reale.</div>
+    </details>
+    <details class="callout">
+      <summary><span class="callout-title">Google Generative AI Features — 376 impression, in lieve crescita</span></summary>
+      <div class="detail-body">Nella settimana rgb.info compare con <strong>376 impression nelle funzionalità AI di Google</strong>, contro 363 nella settimana 21–27 settembre (+4%) e una media di 250 a settimana a settembre. Il report GSC dedicato non riporta i clic. Massimo il <strong>2 ottobre (83)</strong>, lo stesso giorno del massimo di clic su Search (15): è il giorno dell'annuncio di Utexo sulla licenza commerciale di Tether e della pubblicazione dell'articolo su BTCHEL 2026. La <strong>homepage concentra 252 impression (67%)</strong>, seguita da <em>What is RGB Protocol</em> (46), <em>Use cases</em> (19), <em>FAQ</em> (18), <em>Technical guide</em> (16), <em>Developer tools</em> e <em>How RGB works</em> (12). Geografia: USA 59, Italia 40, India 25, Regno Unito 18, Australia 17, Hong Kong 14. Dispositivi: computer 265, mobile 109.</div>
+    </details>
+   </details>
+  </section>
+
+  <!-- ================= SETTIMANE (SEARCH + X) ================= -->
+  <section id="weekly-comparison" style="--section-accent:linear-gradient(180deg, var(--channel-search) 50%, var(--channel-x) 50%);">
+   <details class="section-toggle" open>
+    <summary class="section-summary">
+    <div class="section-head">
+      <h2><span class="dot-pair"><span style="background:var(--channel-search);"></span><span style="background:var(--channel-x);"></span></span>Le settimane di ottobre</h2>
+      <p class="section-note">Prima settimana (28 set – 4 ott); nelle tabelle la settimana 21–27 settembre come riferimento</p>
+    </div>
+    </summary>
+    <details class="callout howto">
+      <summary>Come si legge / glossario</summary>
+      <div class="detail-body">
+        <p style="margin:0 0 8px;">I grafici mostrano l'andamento <strong>giorno per giorno</strong>. Per i totali settimana per settimana, guarda le <strong>tabelle</strong> sotto ogni grafico.</p>
+        <ul style="margin:0; padding-left:18px; columns:2; column-gap:24px;">
+          <li><strong>Impression</strong>: quante volte è comparso</li>
+          <li><strong>Click</strong>: visite reali dalla ricerca</li>
+          <li><strong>CTR</strong>: click ÷ impression</li>
+          <li><strong>Posizione media</strong>: 1 = primo risultato</li>
+          <li><strong>Engagement (X)</strong>: like + repost + risposte + click</li>
+          <li><strong>Eng. rate (X)</strong>: engagement ÷ impression</li>
+        </ul>
+      </div>
+    </details>
+
+    <div class="chart-grid-2">
+
+      <div class="chart-card">
+        <h3 class="channel-head" style="color:var(--accent-blue);"><span class="dot" style="background:var(--accent-blue);"></span>Search (Google)</h3>
+        <p class="chart-subtitle" style="margin:0 0 4px;font-weight:600;color:var(--text-secondary);">Click</p>
+        <svg class="chart-svg" id="chart-monthly-search-clicks"></svg>
+        <p class="chart-subtitle" style="margin:12px 0 4px;font-weight:600;color:var(--text-secondary);">Impression</p>
+        <svg class="chart-svg" id="chart-monthly-search-impressions"></svg>
+        <p class="chart-subtitle" style="margin:12px 0 4px;font-weight:600;color:var(--text-secondary);">Posizione media (più in alto = meglio)</p>
+        <svg class="chart-svg" id="chart-monthly-search-position"></svg>
+
+        <table class="table-view visible" style="margin-top:12px;">
+          <thead><tr><th>Sett.</th><th>Click</th><th>Impr.</th><th>CTR</th><th>Pos.</th></tr></thead>
+          <tbody id="weekly-search-table-body"></tbody>
+        </table>
+
+        <details class="callout good">
+          <summary><span class="callout-title">Più clic con meno impression: CTR al 4,70%, il più alto finora</span></summary>
+          <div class="detail-body"><strong>52 clic su 1.107 impression, CTR 4,70%</strong>, contro 49 clic su 1.280 (3,83%) nella settimana 21–27 settembre, che era la migliore di settembre. I clic al giorno salgono a 7,4 (4,5 la media di settembre). Il giorno migliore è il <strong>2 ottobre: 15 clic, 214 impression, CTR 7,01%, posizione 4,1</strong>, il massimo di clic in un giorno dall'inizio di settembre (12 il 25 settembre). Quel giorno coincidono l'annuncio di Utexo sulla licenza commerciale di Tether per emettere USDT, l'articolo su BTCHEL 2026, la nuova pagina Projects e i post sull'hackathon (Utexo co-sponsor, last call). Come a fine settembre, la crescita passa dalla homepage e dalle query di brand, non dalle pagine dei nuovi articoli.</div>
+        </details>
+        <details class="callout">
+          <summary><span class="callout-title">Anomalie: nessun picco da traffico automatizzato</span></summary>
+          <div class="detail-body">Il massimo giornaliero è di 214 impression (2 ottobre) e il minimo di 103 (4 ottobre, domenica): nessun giorno supera 1,5× la mediana (148). Le 212 impression del 30 settembre hanno il CTR più basso della settimana (2,36%, 5 clic). La posizione media sale sopra 6 il 1 ottobre (6,1) e il 3 ottobre (6,4), giorni in cui compaiono più query a bassa posizione; negli altri giorni resta tra 4,1 e 4,7.</div>
+        </details>
+        <details class="callout">
+          <summary><span class="callout-title">Eventi del periodo e effetto su Search (proxy engagement)</span></summary>
+          <div class="detail-body">
+            <table class="table-view visible" style="margin-bottom:8px;">
+              <thead><tr><th>Data</th><th>Evento</th><th>Clic giorno</th><th>Impr. giorno</th><th>Giorno dopo</th></tr></thead>
+              <tbody>
+                <tr><td>28 set</td><td>RGB Bytes sullo stash (X)</td><td class="num">8</td><td class="num">149</td><td class="num">7 clic / 148 impr.</td></tr>
+                <tr><td>29 set</td><td>Sito: categoria Education, tab Education nel blog, barra di ricerca (EN+ZH)</td><td class="num">7</td><td class="num">148</td><td class="num">5 clic / 212 impr.</td></tr>
+                <tr><td>30 set</td><td>Articolo <em>RGB on Liquid</em> (KaleidoSwap, EN+ZH) e post di lancio su X; community call EN sull'hackathon; hackathon sul sito del Politecnico di Torino</td><td class="num">5</td><td class="num">212</td><td class="num">7 clic / 141 impr.</td></tr>
+                <tr><td>1 ott</td><td>Annuncio della community call "Presenting RGBMap" (X, Telegram EN e ZH)</td><td class="num">7</td><td class="num">141</td><td class="num">15 clic / 214 impr.</td></tr>
+                <tr><td>2 ott</td><td>Utexo annuncia la licenza commerciale di Tether per USDT; articolo <em>BTCHEL 2026</em> (EN+ZH); nuova pagina Projects con RGBMap; Utexo co-sponsor dell'hackathon e last call</td><td class="num">15</td><td class="num">214</td><td class="num">6 clic / 140 impr.</td></tr>
+                <tr><td>3 ott</td><td>Cambio di handle su X (@RGB_Hub → @RGB_Bitcoin); post su X per l'articolo BTCHEL 2026</td><td class="num">6</td><td class="num">140</td><td class="num">4 clic / 103 impr.</td></tr>
+              </tbody>
+            </table>
+            La media della settimana è di 7,4 clic e 158 impression al giorno. Il <strong>2 ottobre</strong> è l'unico giorno nettamente sopra la media (15 clic, il doppio): con più eventi nello stesso giorno non è possibile attribuire l'effetto a uno solo, ma il precedente del 24 settembre (trend USDT su Bitcoin) indica che le notizie su Tether e Utexo muovono le ricerche di brand. Il 30 settembre (articolo RGB on Liquid, community call) porta più impression (212) ma non più clic. Search misura la ricerca, non l'engagement da Telegram e X, che si vede meglio nei referrer di <strong>WP Statistics</strong> e nei dati X.</div>
+        </details>
+      </div>
+
+      <div class="chart-card">
+        <h3 class="channel-head" style="color:var(--logo-green);"><span class="dot" style="background:var(--logo-green);"></span>X (@RGB_Bitcoin, ex @RGB_Hub)</h3>
+        <p class="chart-subtitle" style="margin:0 0 4px;font-weight:600;color:var(--text-secondary);">Impression</p>
+        <svg class="chart-svg" id="chart-monthly-social-impressions"></svg>
+        <p class="chart-subtitle" style="margin:12px 0 4px;font-weight:600;color:var(--text-secondary);">Engagement</p>
+        <svg class="chart-svg" id="chart-monthly-social-engagement"></svg>
+
+        <table class="table-view visible" style="margin-top:12px;">
+          <thead><tr><th>Sett.</th><th>Impr.</th><th>Eng.</th><th>Rate</th><th>Follower</th></tr></thead>
+          <tbody id="weekly-x-table-body"></tbody>
+        </table>
+
+        <details class="callout good">
+          <summary><span class="callout-title">+232 follower netti in una settimana, ma i 176 del 4 ottobre sono in gran parte account di bassa qualità</span></summary>
+          <div class="detail-body"><strong>+232 follower netti</strong> (251 nuovi, 19 unfollow), contro +102 nella settimana 21–27 settembre; crescono anche impression (<strong>25.658, +35%</strong>) ed engagement (<strong>691, +48%</strong>). Fino al 3 ottobre i nuovi follower sono 7–23 al giorno; <strong>176 arrivano il 4 ottobre</strong>, giorno senza post e con sole 14 visite al profilo. Dal controllo sui 129 follower più recenti, in gran parte <strong>non sono organici</strong>: handle generati in automatico, cacciatori di airdrop, account senza legame con Bitcoin. Causa probabile, non confermata: il cambio di handle del 3 ottobre e i post promozionali di terzi su Utexo e Tether che taggano @RGB_Bitcoin. Da ricontrollare la prossima settimana (possibile aumento degli unfollow).</div>
+        </details>
+        <details class="callout">
+          <summary><span class="callout-title">Giorni migliori: 29 e 30 settembre per impression, 3 ottobre per engagement</span></summary>
+          <div class="detail-body"><strong>29 e 30 settembre</strong> superano le 6.000 impression al giorno (6.094 e 6.086): sono i giorni dei post sui nuovi progetti dell'ecosistema, dell'annuncio e della diretta della community call sull'hackathon e del post di lancio dell'articolo RGB on Liquid. Il <strong>3 ottobre</strong> ha l'engagement più alto (217, di cui 35 risposte e 118 like) con 3.373 impression: lo porta quasi tutto il post sul cambio di handle. I giorni più deboli sono il 2 ottobre (1.859 impression; nell'export risultano solo due risposte) e il 4 ottobre (2.146, nessun post). In settimana l'account ha pubblicato <strong>18 contenuti</strong> (13 post, compresi quelli con il solo link, e 5 risposte ad altri account), contro i 19 della settimana precedente.</div>
+        </details>
+        <details class="callout">
+          <summary><span class="callout-title">Top 5 post del periodo</span></summary>
+          <div class="detail-body">
+            <table class="table-view visible" style="margin-bottom:8px;">
+              <thead><tr><th>Data</th><th>Impr.</th><th>Contenuto</th></tr></thead>
+              <tbody>
+                <tr><td>30 set</td><td class="num">3.113</td><td>Ecosystem Spotlight: KaleidoSwap, RGB on Liquid (93 eng., 3,0%; link nella risposta, 11 click)</td></tr>
+                <tr><td>28 set</td><td class="num">2.863</td><td>RGB Bytes: lo stash (103 eng., 3,6%; link nella risposta, 10 click)</td></tr>
+                <tr><td>3 ott</td><td class="num">2.586</td><td>Blog: recap BTCHEL 2026, "$307 billion in stablecoins" (147 eng., 5,7%; 23 click sul link)</td></tr>
+                <tr><td>29 set</td><td class="num">1.729</td><td>Annuncio della community call sull'hackathon (67 eng., 3,9%)</td></tr>
+                <tr><td>3 ott</td><td class="num">1.636</td><td>Cambio di handle e nome: @RGB_Bitcoin, "RGB Protocol" (255 eng., 15,6%; 66 visite al profilo, 31 risposte)</td></tr>
+              </tbody>
+            </table>
+            <strong>Distribuzione:</strong> le impression sono meno concentrate che a settembre: il primo post vale il 15% delle impression di tutti i post della settimana (3.113 su 20.648), contro il 36% del post sull'anchor del 15 settembre. <strong>Qualità:</strong> il post sul cambio di handle ha l'engagement rate più alto (<strong>15,6%</strong>) e porta da solo il 41% delle visite al profilo generate dai post (66 su 159); seguono l'annuncio della call con RGBMap del 1 ottobre (6,0%, 88 engagement su 1.461 impression) e il recap di BTCHEL (5,7%). <strong>Link:</strong> 53 click sui link in settimana; il recap di BTCHEL, con il link nel testo del post, ne ottiene 23, contro 10–11 dei link messi nella prima risposta (stash, RGB on Liquid). Nota: la colonna "New follows" a livello di post somma 12 contro 251 nuovi follower dell'account, quindi quasi tutta la crescita non è attribuibile a un singolo post.
+          </div>
+        </details>
+        <details class="callout">
+          <summary><span class="callout-title">Confronto con la media di settembre</span></summary>
+          <div class="detail-body">Per giorno, rispetto a settembre (28 giorni): impression 3.665 contro 2.419 (+52%), engagement 99 contro 52 (+89%), engagement rate 2,69% contro 2,16%, risposte ricevute 9,6 contro 5,6 (+72%), visite al profilo 15,9 contro 7,4 (+115%), follower netti 33 contro 5,5. I click sui link dei post sono 7,6 al giorno contro 5,6 (+36%), in recupero dopo il calo di settembre.</div>
+        </details>
+      </div>
+
+    </div>
+   </details>
+  </section>
+
+  <!-- ================= DRILL-DOWN GIORNALIERO PER SETTIMANA ================= -->
+  <section id="daily-drilldown" style="--section-accent:linear-gradient(180deg, var(--channel-search) 50%, var(--channel-x) 50%);">
+   <details class="section-toggle">
+    <summary class="section-summary">
+    <div class="section-head">
+      <h2><span class="dot-pair"><span style="background:var(--channel-search);"></span><span style="background:var(--channel-x);"></span></span>Dettaglio giornaliero di una settimana</h2>
+      <p class="section-note">Scegli una settimana — aggiorna entrambi i grafici</p>
+    </div>
+    </summary>
+    <div class="period-selector" id="periodSelector">
+      <span class="label">Settimana:</span>
+      <!-- pulsanti generati da periodLabels (script) -->
+      <span class="period-current">Attiva: <strong id="periodLabel"></strong></span>
+    </div>
+
+    <div class="chart-grid-2">
+      <div class="chart-card">
+        <div class="chart-card-head">
+          <div>
+            <p class="chart-title" style="color:var(--accent-blue);">Search — click</p>
+          </div>
+          <button class="table-toggle" data-toggle-table="daily-table">Tabella</button>
+        </div>
+        <svg class="chart-svg" id="chart-daily-clicks"></svg>
+        <table class="table-view" id="daily-table">
+          <thead><tr><th>Giorno</th><th>Click</th><th>Impr.</th><th>CTR</th><th>Pos.</th></tr></thead>
+          <tbody id="daily-table-body"></tbody>
+        </table>
+        <details class="callout" style="margin-top:12px;">
+          <summary><span class="callout-title">Riepilogo settimana</span></summary>
+          <div class="detail-body" id="narrative-callout"></div>
+        </details>
+      </div>
+
+      <div class="chart-card">
+        <div class="chart-card-head">
+          <div>
+            <p class="chart-title" style="color:var(--logo-green);">X — impression</p>
+          </div>
+          <button class="table-toggle" data-toggle-table="social-table">Tabella</button>
+        </div>
+        <svg class="chart-svg" id="chart-daily-social"></svg>
+        <table class="table-view" id="social-table">
+          <thead><tr><th>Data</th><th>Impr.</th><th>Eng.</th><th>+F</th><th>−F</th></tr></thead>
+          <tbody id="social-table-body"></tbody>
+        </table>
+        <details class="callout" style="margin-top:12px;">
+          <summary><span class="callout-title">Riepilogo settimana</span></summary>
+          <div class="detail-body" id="narrative-callout-social"></div>
+        </details>
+      </div>
+    </div>
+   </details>
+  </section>
+
+  <!-- ================= SITO — PANORAMICA (WP STATISTICS) ================= -->
+  <section id="site-macro" style="--section-accent:var(--channel-site);">
+   <details class="section-toggle" open>
+    <summary class="section-summary">
+    <div class="section-head">
+      <h2><span class="dot-lg" style="background:var(--channel-site);"></span>Sito — panoramica del periodo</h2>
+      <p class="section-note">WP Statistics · 28 settembre – 4 ottobre (7 giorni), confronto con settembre (aggregato, non filtrabile per settimana)</p>
+    </div>
+    </summary>
+
+    <div class="chart-card" style="margin-bottom:16px;">
+      <p class="chart-title">Andamento visite nel periodo (28 set – 4 ott)</p>
+      <p class="chart-subtitle" style="margin:0 0 4px;font-weight:600;color:var(--text-secondary);">Views</p>
+      <p class="section-note" style="margin:0 0 4px;">Pagine visualizzate in totale, anche più volte dallo stesso visitatore</p>
+      <svg class="chart-svg" id="chart-site-views"></svg>
+      <p class="chart-subtitle" style="margin:12px 0 4px;font-weight:600;color:var(--text-secondary);">Visitatori</p>
+      <p class="section-note" style="margin:0 0 4px;">Persone uniche, indipendentemente da quante pagine hanno visto</p>
+      <svg class="chart-svg" id="chart-site-visitors"></svg>
+      <p class="section-note" style="margin-top:10px;">⚠️ <strong>Stima approssimativa</strong>, non dati esatti: il piano gratuito di WP Statistics non offre un export giornaliero, solo un grafico immagine. Questa serie è ricostruita leggendo la forma di quel grafico e facendola coincidere con i totali reali: 1.046 visitatori e 1.523 views nei 7 giorni completi (28 set – 4 ott), di cui 174 e 227 il 4 ottobre (dato esatto). I totali sono esatti, i valori giorno per giorno sono una ricostruzione plausibile.</p>
+    </div>
+
+    <div class="scorecard-grid" style="margin-bottom:16px;">
+      <div class="stat-tile">
+        <p class="stat-label">Visitatori (7 giorni completi)</p>
+        <div class="stat-value-row">
+          <span class="stat-value">1.046</span>
+          <span class="stat-trend up">▲ +46,7%</span>
+        </div>
+        <p class="stat-caption">28 set – 4 ott vs i 7 giorni precedenti (WP Statistics) · 149/giorno vs 111 a settembre (+34%)</p>
+      </div>
+      <div class="stat-tile">
+        <p class="stat-label">Views (7 giorni completi)</p>
+        <div class="stat-value-row">
+          <span class="stat-value">1.523</span>
+          <span class="stat-trend up">▲ +42,9%</span>
+        </div>
+        <p class="stat-caption">28 set – 4 ott vs i 7 giorni precedenti (WP Statistics) · 218/giorno vs 152 a settembre (+43%)</p>
+      </div>
+      <div class="stat-tile">
+        <p class="stat-label">Visitatori da referral</p>
+        <div class="stat-value-row">
+          <span class="stat-value">329</span>
+          <span class="stat-trend up">▲ +40%</span>
+        </div>
+        <p class="stat-caption">vs il periodo precedente di pari durata (WP Statistics) · X 140, Google 130, ChatGPT 13 · t.co primo referrer</p>
+      </div>
+    </div>
+
+    <details class="callout good">
+      <summary><span class="callout-title">La settimana più forte finora: tre giorni sopra le 250 views</span></summary>
+      <div class="detail-body">Dopo il rialzo del 22–28 settembre (766 visitatori, 1.120 views) il sito sale ancora.
+        <ul style="margin:8px 0 0; padding-left:18px;">
+          <li><strong>30 settembre e 1 ottobre</strong> (circa 258 e 238 views): articolo RGB on Liquid con il post di lancio su X, community call sull'hackathon, annuncio dell'hackathon sul sito del Politecnico di Torino, annuncio della call con RGBMap.</li>
+          <li><strong>3 ottobre</strong> (circa 253 views, 184 visitatori, il massimo di visitatori): cambio di handle su X e post sul recap di BTCHEL 2026 (23 click sul link).</li>
+          <li><strong>4 ottobre</strong> (174 visitatori, 227 views, dato esatto): domenica senza post, lo stesso giorno dei 176 nuovi follower su X. Il sito resta ben sopra la media di settembre (111 e 152).</li>
+          <li><strong>Cosa cresce</strong>: home (380 views, +64% al giorno) e soprattutto la pagina <strong>Projects</strong> (137 views nella settimana contro 127 in tutto settembre), ristrutturata il 2 ottobre con il nuovo layout a card e RGBMap.</li>
+        </ul></div>
+    </details>
+
+    <details class="callout good">
+      <summary><span class="callout-title">Geografia e qualità del traffico: Stati Uniti secondi, Asia al 60%</span></summary>
+      <div class="detail-body">
+        <ul style="margin:0; padding-left:18px;">
+          <li><strong>Paesi</strong> (per giorno vs settembre): Singapore 220 (+34%), primo Paese; <strong>Stati Uniti 195 (+58%)</strong>, secondi (terzi a settembre); Hong Kong 179 (+1%); Cina 148 (+48%); Italia 55 (+96%).</li>
+          <li><strong>Peso dell'Asia</strong>: Hong Kong + Singapore + Cina = <strong>50% dei visitatori</strong> (54% a settembre). Per continente: Asia 60,2% (65%), Nord America 20,2% (17%), Europa 15,3% (14%).</li>
+          <li><strong>Stati Uniti</strong>: continua la ripresa iniziata a fine settembre; sono anche il primo Paese tra i visitatori arrivati da un referrer (112 su 329). California 39, Virginia 21 (di cui 18 da Ashburn, sede di data center).</li>
+          <li><strong>Città</strong>: Singapore 162, Hong Kong 152, Pechino 71, Tokyo 22.</li>
+          <li><strong>Bot</strong>: nessun picco anomalo. Bounce rate 81,2% (84,8% a settembre), desktop 75,6% (77,5%), Chrome 69,7% (73%): tutti e tre gli indicatori migliorano di poco. Con Singapore e Hong Kong in cima, WP Statistics free non permette di separare il traffico reale da quello automatizzato; il riferimento più solido resta GSC, dove il primo Paese per impression sono gli USA (401) e il primo per clic l'Italia (6).</li>
+        </ul>
+      </div>
+    </details>
+    <details class="callout">
+      <summary><span class="callout-title">Fonti di traffico: X supera Google come primo referrer</span></summary>
+      <div class="detail-body">
+        <ul style="margin:0; padding-left:18px;">
+          <li><strong>Visitatori da referral: 329 (+40%</strong> vs il periodo precedente di pari durata), di cui motori di ricerca 161 (Google 130, ChatGPT 13, Brave 10) e social 142 (X 140, Facebook 2).</li>
+          <li><strong>X</strong>: t.co è il primo referrer (139) davanti a google.com (126); a settembre l'ordine era inverso (256 contro 359). I visitatori dai social passano da 56 a 142 rispetto al periodo precedente.</li>
+          <li><strong>Vs settembre</strong> (per giorno): t.co +116%, google.com +40%, rgbprotocol.org +92%.</li>
+          <li><strong>AI</strong>: ChatGPT 13 visitatori nella settimana (29 in tutto settembre).</li>
+          <li><strong>Solo articoli</strong>: dai motori di ricerca 58 visitatori (Google 51, ChatGPT 4, DuckDuckGo 2).</li>
+          <li><strong>Telegram</strong>: non compare tra i primi referrer del periodo, perché molte condivisioni non passano referrer e risultano traffico diretto.</li>
+        </ul></div>
+    </details>
+    <details class="callout">
+      <summary><span class="callout-title">Articoli più letti ed eventi del periodo</span></summary>
+      <div class="detail-body">
+        <table class="table-view visible" style="margin-bottom:8px;">
+          <thead><tr><th>Articolo</th><th>Views</th><th>Evento collegato</th></tr></thead>
+          <tbody>
+            <tr><td>What You Can Issue on Bitcoin Today: Birkan Kayadibi at BTCHEL 2026, EN / ZH</td><td class="num">46 / 7</td><td>Pubblicato il 2 ott; post su X il 3 ott (23 click sul link)</td></tr>
+            <tr><td>RGB on Lightning: What's Coming Next</td><td class="num">27</td><td>Articolo dei mesi scorsi, nessun evento collegato nel periodo</td></tr>
+            <tr><td>Inside the wdk-rgb-lightning Architecture (Renat Skitsan)</td><td class="num">26</td><td>Articolo più letto di settembre (301 views)</td></tr>
+            <tr><td>Hackathon con Tether come main sponsor</td><td class="num">26</td><td>Post sull'hackathon (premi, Politecnico, Utexo co-sponsor, last call)</td></tr>
+            <tr><td>RGB on Liquid: Inside KaleidoSwap's Simplicity Proof of Concept, EN / ZH</td><td class="num">18 / 2</td><td>Pubblicato il 30 set; post di lancio su X (3.113 impression, 11 click sul link nella risposta)</td></tr>
+          </tbody>
+        </table>
+        4 contenuti pubblicati nel periodo (2 articoli, EN e ZH); i contenuti hanno generato 377 visitatori e 441 views (35% e 28% del totale del sito; +38% e +37% vs il periodo precedente). Per categoria: Updates 152 views, <strong>Education 150</strong> (categoria creata il 29 settembre, già al livello di Articles), Articles 149, Videos 47, Featured 44. Il post di lancio di RGB on Liquid è il più visto della settimana su X, ma l'articolo ha 18 views: le impression su X non si traducono in letture quando il link è nella prima risposta.
+      </div>
+    </details>
+    <div class="macro-grid" style="margin-top:16px;">
+      <div class="macro-card">
+        <h3>Pagine più visitate</h3>
+        <ul class="macro-list">
+          <li><span>Home</span><span>380 <span class="delta up">▲ +64%/gg</span></span></li>
+          <li><span>Projects (ex Wallets)</span><span>137 <span class="delta up">▲ ×4,3/gg</span></span></li>
+          <li><span>Blog &amp; Media</span><span>55 <span class="delta up">▲ +12%/gg</span></span></li>
+          <li><span>What You Can Issue on Bitcoin Today (BTCHEL 2026)</span><span>46 <span class="delta up">● nuovo in top 5</span></span></li>
+          <li><span>RGB &amp; Lightning Network</span><span>45 <span class="delta up">▲ +71%/gg</span></span></li>
+        </ul>
+        <p class="section-note" style="margin-top:8px;">Variazione per giorno vs settembre (7 giorni vs 29), stessa pagina. Seguono Get started (40), Introduction (37) e la home cinese (32).</p>
+      </div>
+      <div class="macro-card">
+        <h3>Top Paesi</h3>
+        <ul class="macro-list">
+          <li><span>Singapore</span><span>220 <span class="delta up">▲ +34%/gg</span></span></li>
+          <li><span>Stati Uniti</span><span>195 <span class="delta up">▲ +58%/gg</span></span></li>
+          <li><span>Hong Kong</span><span>179 <span class="delta up">▲ +1%/gg</span></span></li>
+          <li><span>Cina</span><span>148 <span class="delta up">▲ +48%/gg</span></span></li>
+          <li><span>Italia</span><span>55 <span class="delta up">▲ +96%/gg</span></span></li>
+        </ul>
+        <p class="section-note" style="margin-top:8px;">Variazione per giorno vs settembre (7 giorni vs 29), stesso paese.</p>
+      </div>
+      <div class="macro-card">
+        <h3>Top Referrer</h3>
+        <ul class="macro-list">
+          <li><span>t.co (X)</span><span>139 <span class="delta up">▲ +116%/gg</span></span></li>
+          <li><span>google.com</span><span>126 <span class="delta up">▲ +40%/gg</span></span></li>
+          <li><span>rgbprotocol.org</span><span>13 <span class="delta up">▲ +92%/gg</span></span></li>
+          <li><span>search.brave.com</span><span>10 <span class="delta up">● nuovo in top 5</span></span></li>
+          <li><span>duckduckgo.com</span><span>6 <span class="delta up">▲ +84%/gg</span></span></li>
+        </ul>
+        <p class="section-note" style="margin-top:8px;">Variazione per giorno vs settembre (7 giorni vs 29), stesso dominio. Valori da Visitor Insights e Referrals: il widget "Top Referring" della pagina Overview mostra ancora il periodo 31 ago – 21 set. chatgpt.com (10 a settembre) esce dai primi 5 domini, ma ChatGPT conta 13 visitatori tra i motori di ricerca.</p>
+      </div>
+      <div class="macro-card">
+        <h3>Dispositivi</h3>
+        <ul class="macro-list">
+          <li><span>Desktop</span><span>822 (75,6%)</span></li>
+          <li><span>Smartphone</span><span>261 (24,0%)</span></li>
+          <li><span>Tablet + altro</span><span>4 (0,4%)</span></li>
+        </ul>
+      </div>
+    </div>
+    <p class="section-note" style="margin-top:10px;">Fonte: WP Statistics (Overview, Visitor Insights, Geographic, Referrals, Page/Content/Category Analytics; export del 5 ottobre) — dati aggregati, non filtrabili per settimana nel piano gratuito. Visitatori e views totali sono dei 7 giorni 28 set – 4 ott. Gli elenchi per pagina, Paese, referrer e dispositivo vengono dall'export, che comprende anche la mattina del 5 ottobre (41 visitatori e 50 views, il 3,8% del totale): le variazioni per giorno sono calcolate su 7 giorni dopo aver tolto quella quota in proporzione. Il 28 settembre è compreso anche nella sezione Sito del report di settembre (31 ago – 28 set): i due periodi non vanno sommati.</p>
+   </details>
+  </section>
+
+  <!-- ================= COMMUNITY CALL ================= -->
+  <section id="community-calls" style="--section-accent:var(--channel-community);">
+   <details class="section-toggle" open>
+    <summary class="section-summary">
+    <div class="section-head">
+      <h2><span class="dot-lg" style="background:var(--channel-community);"></span>Community Call — crescita follower</h2>
+      <p class="section-note">Snapshot follower (X + Telegram) rilevato a ogni community call, EN e ZH in ordine cronologico — stesso account X (@RGB_Bitcoin, ex @RGB_Hub) e stesso gruppo Telegram EN condivisi da entrambe le serie</p>
+    </div>
+    </summary>
+
+    <div class="chart-grid-2" style="margin-bottom:16px;">
+      <div class="chart-card" style="overflow-x:auto;">
+        <p class="chart-title">Call in inglese</p>
+        <table class="table-view visible">
+          <thead>
+            <tr>
+              <th>Data</th>
+              <th>Call</th>
+              <th>Views</th>
+              <th>X</th>
+              <th>TG EN</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>14 ago</td><td>RGBTC (Zucco)</td><td>X:227 / TG:4</td><td>~3.019</td><td>~2.100</td></tr>
+            <tr style="opacity:.7;"><td>29 set*</td><td>Snapshot del report di settembre</td><td>—</td><td>~3.160 <span class="delta up">▲+141</span></td><td>2.148 <span class="delta up">▲+48</span></td></tr>
+            <tr><td>30 set</td><td>Presenting the Hackathon (Farenga, Visconti)</td><td>X: 17 live</td><td>~3.182 <span class="delta up">▲+22</span></td><td>2.147 <span class="delta down">▼−1</span></td></tr>
+            <tr style="opacity:.7;"><td>5 ott*</td><td>Snapshot, 5 giorni dopo la call (prossima call EN: RGBMap, 7 ott)</td><td>—</td><td>~3.393 <span class="delta up">▲+211</span></td><td>2.156 <span class="delta up">▲+9</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="chart-card" style="overflow-x:auto;">
+        <p class="chart-title">Call in cinese (X Space)</p>
+        <table class="table-view visible">
+          <thead>
+            <tr>
+              <th>Data</th>
+              <th>Call</th>
+              <th>Views</th>
+              <th>X</th>
+              <th>TG EN</th>
+              <th>TG ZH</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>23 set</td><td>Single-use seals (Zhu, CTO BiHelix)</td><td>23</td><td>3.080</td><td>2.137</td><td>126</td></tr>
+            <tr style="opacity:.7;"><td>29 set*</td><td>Snapshot, 6 giorni dopo la call</td><td>—</td><td>~3.160 <span class="delta up">▲+80</span></td><td>2.148 <span class="delta up">▲+11</span></td><td>137 <span class="delta up">▲+11 (+8,7%)</span></td></tr>
+            <tr style="opacity:.7;"><td>5 ott*</td><td>Snapshot (prossima call ZH: 14 ott, BlockTempo)</td><td>—</td><td>~3.393 <span class="delta up">▲+233</span></td><td>2.156 <span class="delta up">▲+8</span></td><td>137 <span class="delta">= 0</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <p class="section-note" style="margin-bottom:16px;">Delta calcolato rispetto alla riga precedente nella stessa tabella. Nel periodo si è tenuta <strong>una call in inglese</strong>, "Presenting the Hackathon" del 30 settembre (la prima dal 14 agosto), e nessuna call in cinese. *29 settembre = snapshot del report di settembre. *5 ottobre = membri Telegram forniti da MariJ; X = ~3.182 (calendario delle call, 30 settembre) + follower netti dal 1 al 4 ottobre (+211, X Analytics): <strong>stima</strong>.</p>
+
+    <details class="callout good">
+      <summary><span class="callout-title">Dopo la call del 30 settembre: X accelera, Telegram EN cresce poco, Telegram ZH fermo</span></summary>
+      <div class="detail-body">
+        <ul style="margin:0; padding-left:18px;">
+          <li><strong>Call EN del 30 settembre</strong> (hackathon, condotta da Birk con Filippo Farenga di BLOX Turin e Luca Visconti di BitPolito): 17 presenti in diretta su X. Il post della diretta ha 1.582 impression e quello di annuncio del 29 settembre 1.729.</li>
+          <li><strong>Telegram EN:</strong> 2.156 membri, <strong>+9 in 5 giorni</strong> dopo la call (1,8 al giorno, lo stesso ritmo di fine settembre). La call in inglese non cambia il passo del gruppo.</li>
+          <li><strong>Telegram ZH:</strong> 137 membri, <strong>fermo dal 29 settembre</strong>. Dopo la call con Zhu erano arrivati 11 iscritti in 6 giorni; senza call in cinese (la prossima è il 14 ottobre) il gruppo non cresce: conferma che gli iscritti arrivano con le call.</li>
+          <li><strong>X:</strong> circa 3.393 follower, <strong>+211 in 4 giorni</strong> (stima da X Analytics), di cui 170 netti il 4 ottobre: crescita non legata alle call e composta in gran parte da account di bassa qualità (vedi sezione X).</li>
+        </ul></div>
+    </details>
+
+    <p class="section-note" style="margin-top:10px;">Fonte: Community Calls Calendar.xlsx — snapshot follower registrati manualmente alla data di ciascuna call; snapshot Telegram del 5 ottobre fornito da MariJ.</p>
+   </details>
+  </section>
+
+  <!-- ================= REDDIT ================= -->
+  <section id="reddit" style="--section-accent:var(--channel-reddit);">
+   <details class="section-toggle" open>
+    <summary class="section-summary">
+    <div class="section-head">
+      <h2><span class="dot-lg" style="background:var(--channel-reddit);"></span>Reddit — r/RGB_Bitcoin</h2>
+      <p class="section-note">Reddit Mod Tools · dati non ancora rilevati per questo periodo</p>
+    </div>
+    </summary>
+
+    <details class="callout warn">
+      <summary><span class="callout-title">Sezione da compilare</span></summary>
+      <div class="detail-body">Per la settimana 28 settembre – 4 ottobre non sono ancora disponibili gli screenshot di Reddit Mod Tools (visite, membri, attività). Ultimo rilevamento, nel report di settembre: 42 membri (fermi dal 14 settembre), 170 visualizzazioni negli ultimi 30 giorni, un solo post pubblicato e rimosso.</div>
+    </details>
+   </details>
+  </section>
+
+  <footer>
+    Report generato per RGB Protocol Association — performance ottobre 2026 (parziale, 28 settembre – 4 ottobre)
+  </footer>
+
+</div>
+
+<div class="wrap tab-panel" id="panel-association" hidden>
+
+  <nav class="toc">
+    <span class="toc-label">In questa pagina</span>
+    <a href="#assoc-scorecard"><span class="dot-lg" style="background:var(--logo-blue);"></span>La settimana in breve</a>
+    <a href="#assoc-search"><span class="dot-lg" style="background:var(--channel-search);"></span>Search</a>
+    <a href="#assoc-x"><span class="dot-lg" style="background:var(--channel-x);"></span>X</a>
+    <a href="#assoc-site"><span class="dot-lg" style="background:var(--channel-site);"></span>Sito</a>
+    <a href="#assoc-events"><span class="dot-lg" style="background:var(--channel-community);"></span>Comunicati ed eventi</a>
+  </nav>
+
+  <!-- ================= ASSOCIATION — SCORECARD ================= -->
+  <section id="assoc-scorecard" style="--section-accent:var(--logo-blue);">
+    <div class="section-head">
+      <h2>La settimana in breve — Association</h2>
+      <p class="section-note">rgbprotocol.org + @RGBAssociation · 28 set – 4 ott · prima rilevazione, senza confronto con i mesi precedenti</p>
+    </div>
+    <div class="scorecard-grid">
+      <div class="stat-tile">
+        <p class="stat-label">Visitatori sito</p>
+        <div class="stat-value-row">
+          <span class="stat-value">1.423</span>
+          <span class="stat-trend up">▲ +31%</span>
+        </div>
+        <p class="stat-caption">28 set – 4 ott vs i 7 giorni precedenti (WP Statistics) · 1.589 views (+22,7%) · più visitatori di rgb.info (1.046)</p>
+      </div>
+      <div class="stat-tile">
+        <p class="stat-label">Pagina dell'hackathon</p>
+        <div class="stat-value-row">
+          <span class="stat-value">1.324</span>
+          <span class="stat-trend up">● 82% delle views</span>
+        </div>
+        <p class="stat-caption">views di <em>Agentic Dollars on Bitcoin Hackathon</em> · la home è seconda con 109</p>
+      </div>
+      <div class="stat-tile">
+        <p class="stat-label">Follower X</p>
+        <div class="stat-value-row">
+          <span class="stat-value">+44</span>
+          <span class="stat-trend up">● 6 giorni</span>
+        </div>
+        <p class="stat-caption">@RGBAssociation, netti (55 nuovi − 11 unfollow), 29 set – 4 ott · il 28 settembre non è nell'export</p>
+      </div>
+      <div class="stat-tile">
+        <p class="stat-label">Impression X</p>
+        <div class="stat-value-row">
+          <span class="stat-value">11.474</span>
+          <span class="stat-trend up">● 4,65% eng.</span>
+        </div>
+        <p class="stat-caption">29 set – 4 ott · 534 engagement · engagement rate quasi doppio rispetto a @RGB_Bitcoin (2,69%)</p>
+      </div>
+      <div class="stat-tile">
+        <p class="stat-label">Citazioni Copilot</p>
+        <div class="stat-value-row">
+          <span class="stat-value">7</span>
+          <span class="stat-trend up">● 1 giorno</span>
+        </div>
+        <p class="stat-caption">tutte il 29 settembre, su 2 pagine (28 set – 3 ott) · Bing Webmaster Tools</p>
+      </div>
+    </div>
+
+    <div class="chart-card" style="margin:16px 0;">
+      <p class="chart-title" style="margin-bottom:12px;">I due canali a confronto — 28 set – 4 ott</p>
+      <table class="table-view visible">
+        <thead><tr><th>Metrica</th><th>RGB Hub · rgb.info + @RGB_Bitcoin</th><th>Association · rgbprotocol.org + @RGBAssociation</th></tr></thead>
+        <tbody>
+          <tr><td>Visitatori sito (7 giorni)</td><td class="num">1.046</td><td class="num">1.423</td></tr>
+          <tr><td>Views sito (7 giorni)</td><td class="num">1.523</td><td class="num">1.589</td></tr>
+          <tr><td>Primo referrer</td><td>t.co (139)</td><td>instagram.com (840)</td></tr>
+          <tr><td>Primo Paese</td><td>Singapore (220)</td><td>Italia (1.128)</td></tr>
+          <tr><td>Dispositivo prevalente</td><td>Desktop (75,6%)</td><td>Smartphone (82,7% con i phablet)</td></tr>
+          <tr><td>Impression X</td><td class="num">25.658</td><td class="num">11.474*</td></tr>
+          <tr><td>Engagement rate X</td><td class="num">2,69%</td><td class="num">4,65%*</td></tr>
+          <tr><td>Follower X netti</td><td class="num">+232</td><td class="num">+44*</td></tr>
+          <tr><td>Citazioni Copilot (28 set – 3 ott)</td><td class="num">10</td><td class="num">7</td></tr>
+          <tr><td>Clic Google</td><td class="num">52</td><td class="num">non ancora disponibile</td></tr>
+        </tbody>
+      </table>
+      <p class="section-note" style="margin-top:8px;">*X dell'Association: 6 giorni (29 set – 4 ott), perché l'export giornaliero parte dal 29 settembre.</p>
+    </div>
+
+    <details class="callout warn">
+      <summary><span class="callout-title">Nota metodologica</span></summary>
+      <div class="detail-body">È la <strong>prima rilevazione</strong> per i canali dell'Association: mancano i dati dei mesi precedenti, quindi gli unici confronti disponibili sono quelli calcolati da WP Statistics sul periodo precedente e quello con i canali RGB Hub nella stessa settimana. <strong>X</strong>: l'export giornaliero copre 29 settembre – 5 ottobre; qui sono usati i 6 giorni completi 29 settembre – 4 ottobre, mentre l'elenco dei post copre 28 settembre – 4 ottobre. <strong>Sito</strong>: totali dei 7 giorni 28 settembre – 4 ottobre; gli elenchi per pagina, Paese, referrer e dispositivo vengono dall'export 28 settembre – 5 ottobre, che comprende la mattina del 5 (11 visitatori e 16 views, meno dell'1%). <strong>Google Search Console</strong>: proprietà verificata il 29 settembre, dati non ancora disponibili.</div>
+    </details>
+  </section>
+
+  <!-- ================= ASSOCIATION — SEARCH ================= -->
+  <section id="assoc-search" style="--section-accent:var(--channel-search);">
+   <details class="section-toggle" open>
+    <summary class="section-summary">
+    <div class="section-head">
+      <h2><span class="dot-lg" style="background:var(--channel-search);"></span>Search — Google e Bing</h2>
+      <p class="section-note">Google Search Console non ancora disponibile · Bing Webmaster Tools 28 set – 3 ott</p>
+    </div>
+    </summary>
+    <details class="callout warn">
+      <summary><span class="callout-title">Google Search Console: dati da inserire</span></summary>
+      <div class="detail-body">La proprietà <code>https://rgbprotocol.org/</code> è stata verificata il 29 settembre 2026 e la sitemap <code>sitemap_index.xml</code> è da inviare. Quando Search Console mostrerà i dati di rendimento, questa sezione avrà le stesse tabelle della tab RGB Hub (clic, impression, CTR, posizione, query).</div>
+    </details>
+    <details class="callout">
+      <summary><span class="callout-title">Bing — citazioni Copilot e ricerca organica</span></summary>
+      <div class="detail-body"><strong>7 citazioni Copilot, tutte il 29 settembre</strong>, su 2 pagine diverse; zero negli altri cinque giorni (28 set – 3 ott, il 4 ottobre non è ancora nell'export). Lo stesso giorno rgb.info ha 5 citazioni. Il 29 settembre è il giorno di pubblicazione del comunicato su BTCHEL 2026. Ricerca organica Bing: <strong>0 clic e 4 impression</strong> in 6 giorni. Il file non indica quali pagine sono citate.</div>
+    </details>
+   </details>
+  </section>
+
+  <!-- ================= ASSOCIATION — X ================= -->
+  <section id="assoc-x" style="--section-accent:var(--channel-x);">
+   <details class="section-toggle" open>
+    <summary class="section-summary">
+    <div class="section-head">
+      <h2><span class="dot-lg" style="background:var(--channel-x);"></span>X — @RGBAssociation</h2>
+      <p class="section-note">X Analytics · andamento giornaliero 29 set – 4 ott (6 giorni), post 28 set – 4 ott</p>
+    </div>
+    </summary>
+
+    <div class="chart-grid-2">
+      <div class="chart-card">
+        <p class="chart-subtitle" style="margin:0 0 4px;font-weight:600;color:var(--text-secondary);">Impression</p>
+        <svg class="chart-svg" id="chart-assoc-x-impressions"></svg>
+        <p class="chart-subtitle" style="margin:12px 0 4px;font-weight:600;color:var(--text-secondary);">Engagement</p>
+        <svg class="chart-svg" id="chart-assoc-x-engagement"></svg>
+        <table class="table-view visible" style="margin-top:12px;">
+          <thead><tr><th>Data</th><th>Impr.</th><th>Eng.</th><th>+F</th><th>−F</th></tr></thead>
+          <tbody id="assoc-x-table-body"></tbody>
+        </table>
+      </div>
+
+      <div class="chart-card">
+        <details class="callout good">
+          <summary><span class="callout-title">Il post su Utexo co-sponsor porta metà delle impression e il 62% dell'engagement</span></summary>
+          <div class="detail-body">In 6 giorni l'account raccoglie <strong>11.474 impression, 534 engagement (4,65%) e +44 follower netti</strong> (55 nuovi, 11 unfollow). Il <strong>2 e il 3 ottobre</strong> valgono da soli il 56% delle impression (3.166 e 3.207) e il 73% dell'engagement (240 e 149): sono i giorni del post su <strong>Utexo co-sponsor dell'hackathon</strong> (5.427 impression, 552 engagement, 10,2%, 62 visite al profilo) e del post sulle centinaia di candidature ricevute. Nei due giorni arrivano 31 dei 55 nuovi follower e 99 dei 119 repost della settimana. Il giorno più debole è il 29 settembre (444 impression, nessun post).</div>
+        </details>
+        <details class="callout">
+          <summary><span class="callout-title">Top 5 post del periodo</span></summary>
+          <div class="detail-body">
+            <table class="table-view visible" style="margin-bottom:8px;">
+              <thead><tr><th>Data</th><th>Impr.</th><th>Contenuto</th></tr></thead>
+              <tbody>
+                <tr><td>2 ott</td><td class="num">5.427</td><td>Utexo co-sponsor dell'hackathon, Tether main sponsor (552 eng., 10,2%; 62 visite al profilo)</td></tr>
+                <tr><td>3 ott</td><td class="num">1.183</td><td>Centinaia di candidature per l'hackathon di Torino (84 eng., 7,1%)</td></tr>
+                <tr><td>30 set</td><td class="num">888</td><td>Partnership con il Politecnico di Torino (36 eng., 4,1%)</td></tr>
+                <tr><td>30 set</td><td class="num">766</td><td>Premi dell'hackathon e semifinali CypherTank (61 eng., 8,0%)</td></tr>
+                <tr><td>28 set</td><td class="num">672</td><td>Le quattro track dell'hackathon, primo post del thread (44 eng., 6,5%)</td></tr>
+              </tbody>
+            </table>
+            17 contenuti pubblicati (16 post, compresi quelli dei thread e con il solo link, e 1 risposta), per 11.078 impression e 893 engagement in totale. <strong>Tutti i post principali riguardano l'hackathon</strong>, tranne quello sullo Stablecoin Summit del 1 ottobre (639 impression, 5,8%). <strong>Link:</strong> solo 14 click in settimana, quasi tutti dai post di risposta con il link ("Apply here" 6 e 3, pagina dello Stablecoin Summit 3): come su @RGB_Bitcoin, il link nella prima risposta viene visto da pochi (97–181 impression contro 641–1.183 del post principale).
+          </div>
+        </details>
+      </div>
+    </div>
+   </details>
+  </section>
+
+  <!-- ================= ASSOCIATION — SITO ================= -->
+  <section id="assoc-site" style="--section-accent:var(--channel-site);">
+   <details class="section-toggle" open>
+    <summary class="section-summary">
+    <div class="section-head">
+      <h2><span class="dot-lg" style="background:var(--channel-site);"></span>Sito — rgbprotocol.org</h2>
+      <p class="section-note">WP Statistics · 28 settembre – 4 ottobre (7 giorni)</p>
+    </div>
+    </summary>
+
+    <div class="chart-card" style="margin-bottom:16px;">
+      <p class="chart-title">Andamento visite nel periodo (28 set – 4 ott)</p>
+      <p class="chart-subtitle" style="margin:0 0 4px;font-weight:600;color:var(--text-secondary);">Views</p>
+      <svg class="chart-svg" id="chart-assoc-site-views"></svg>
+      <p class="chart-subtitle" style="margin:12px 0 4px;font-weight:600;color:var(--text-secondary);">Visitatori</p>
+      <svg class="chart-svg" id="chart-assoc-site-visitors"></svg>
+      <p class="section-note" style="margin-top:10px;">⚠️ <strong>Stima approssimativa</strong>, non dati esatti: serie ricostruita dalla forma del grafico "Traffic Trends" di WP Statistics e fatta coincidere con i totali reali dei 7 giorni (1.423 visitatori, 1.589 views); il 4 ottobre (45 e 59) è un dato esatto.</p>
+    </div>
+
+    <div class="scorecard-grid" style="margin-bottom:16px;">
+      <div class="stat-tile">
+        <p class="stat-label">Visitatori</p>
+        <div class="stat-value-row">
+          <span class="stat-value">1.423</span>
+          <span class="stat-trend up">▲ +31%</span>
+        </div>
+        <p class="stat-caption">vs i 7 giorni precedenti (WP Statistics) · 203/giorno · ultimi 28 giorni: 2.950 (+402%)</p>
+      </div>
+      <div class="stat-tile">
+        <p class="stat-label">Views</p>
+        <div class="stat-value-row">
+          <span class="stat-value">1.589</span>
+          <span class="stat-trend up">▲ +22,7%</span>
+        </div>
+        <p class="stat-caption">vs i 7 giorni precedenti (WP Statistics) · 1,1 pagine per visitatore · bounce rate 92,5%</p>
+      </div>
+      <div class="stat-tile">
+        <p class="stat-label">Visitatori dai social</p>
+        <div class="stat-value-row">
+          <span class="stat-value">1.102</span>
+          <span class="stat-trend up">▲ +38%</span>
+        </div>
+        <p class="stat-caption">vs 796 nel periodo precedente · Instagram 1.055, X 43, LinkedIn 3 · il 77% dei visitatori del sito</p>
+      </div>
+    </div>
+
+    <details class="callout good">
+      <summary><span class="callout-title">Traffico quasi tutto sull'hackathon, da Instagram e Facebook, dall'Italia e da smartphone</span></summary>
+      <div class="detail-body">
+        <ul style="margin:0; padding-left:18px;">
+          <li><strong>Una sola pagina</strong>: <em>Agentic Dollars on Bitcoin Hackathon</em> ha 1.324 views su 1.605 (82%); seguono home (109), Members (29), il comunicato di annuncio dell'hackathon (29) e About (15).</li>
+          <li><strong>Origine</strong>: instagram.com 840 e m.facebook.com 199 fanno l'86% dei visitatori arrivati da un referrer (1.202); il 73% delle visite avviene nel browser interno di Instagram. Seguono t.co 43, dev.events 40 e google.com 37.</li>
+          <li><strong>Pubblico</strong>: Italia 1.128 visitatori (79% del totale), con Roma 123, Milano 99, Torino 57, Napoli 46, Bologna 32. Smartphone e phablet 82,7%, desktop 16,4%. È il profilo opposto a quello di rgb.info (Asia 60%, desktop 75,6%).</li>
+          <li><strong>Andamento</strong>: circa 280–300 visitatori al giorno dal 28 settembre al 1 ottobre, poi un calo netto: circa 157 il 2 ottobre, 63 il 3 e 45 il 4. Nel periodo precedente la crescita era iniziata intorno al 24–25 settembre. Un andamento a gradino di questo tipo, concentrato su Instagram e Facebook, è compatibile con una <strong>promozione sui social terminata intorno al 1–2 ottobre</strong>: da confermare con chi ha gestito la promozione dell'hackathon.</li>
+          <li><strong>Qualità</strong>: bounce rate 92,5% e 1,1 pagine per visitatore; chi arriva legge la pagina dell'hackathon ed esce. Il dato utile per valutare la promozione è il numero di candidature ricevute (centinaia per 70 posti, scadenza anticipata al 5 ottobre).</li>
+        </ul>
+      </div>
+    </details>
+    <details class="callout">
+      <summary><span class="callout-title">Motori di ricerca, AI e contenuti</span></summary>
+      <div class="detail-body">
+        <ul style="margin:0; padding-left:18px;">
+          <li><strong>Motori di ricerca</strong>: 48 visitatori (52 nel periodo precedente), di cui Google 37, ChatGPT 6, DuckDuckGo 3.</li>
+          <li><strong>dev.events</strong>: 40 visitatori da un portale di eventi per sviluppatori, sulla pagina dell'hackathon.</li>
+          <li><strong>Comunicati (post)</strong>: 72 visitatori e 74 views in tutto. Il più letto è l'annuncio dell'hackathon (29 views), poi le conferenze 2026 (11), Tether e USDt su RGB (7), v0.11.1 su mainnet (5), il roundup di luglio (5) e il comunicato su BTCHEL 2026 (5, pubblicato il 29 settembre).</li>
+          <li><strong>Altri Paesi</strong>: Stati Uniti 51, Nigeria 29, Singapore 26, Cina 25.</li>
+        </ul></div>
+    </details>
+
+    <div class="macro-grid" style="margin-top:16px;">
+      <div class="macro-card">
+        <h3>Pagine più visitate</h3>
+        <ul class="macro-list">
+          <li><span>Agentic Dollars on Bitcoin Hackathon</span><span>1.324</span></li>
+          <li><span>Home</span><span>109</span></li>
+          <li><span>Members</span><span>29</span></li>
+          <li><span>Annuncio dell'hackathon (comunicato)</span><span>29</span></li>
+          <li><span>About</span><span>15</span></li>
+        </ul>
+      </div>
+      <div class="macro-card">
+        <h3>Top Paesi</h3>
+        <ul class="macro-list">
+          <li><span>Italia</span><span>1.128</span></li>
+          <li><span>Stati Uniti</span><span>51</span></li>
+          <li><span>Nigeria</span><span>29</span></li>
+          <li><span>Singapore</span><span>26</span></li>
+          <li><span>Cina</span><span>25</span></li>
+        </ul>
+      </div>
+      <div class="macro-card">
+        <h3>Top Referrer</h3>
+        <ul class="macro-list">
+          <li><span>instagram.com</span><span>840</span></li>
+          <li><span>m.facebook.com</span><span>199</span></li>
+          <li><span>t.co (X)</span><span>43</span></li>
+          <li><span>dev.events</span><span>40</span></li>
+          <li><span>google.com</span><span>37</span></li>
+        </ul>
+      </div>
+      <div class="macro-card">
+        <h3>Dispositivi</h3>
+        <ul class="macro-list">
+          <li><span>Smartphone</span><span>943 (65,8%)</span></li>
+          <li><span>Phablet</span><span>242 (16,9%)</span></li>
+          <li><span>Desktop</span><span>235 (16,4%)</span></li>
+          <li><span>Tablet</span><span>14 (1,0%)</span></li>
+        </ul>
+      </div>
+    </div>
+    <p class="section-note" style="margin-top:10px;">Fonte: WP Statistics (Overview, Visitor Insights, Geographic, Referrals, Page/Content/Category Analytics; export del 5 ottobre). Visitatori e views totali sono dei 7 giorni 28 set – 4 ott; gli elenchi comprendono anche la mattina del 5 ottobre (11 visitatori, 16 views). Prima rilevazione: nessuna variazione rispetto a settembre.</p>
+   </details>
+  </section>
+
+  <!-- ================= ASSOCIATION — COMUNICATI ED EVENTI ================= -->
+  <section id="assoc-events" style="--section-accent:var(--channel-community);">
+   <details class="section-toggle" open>
+    <summary class="section-summary">
+    <div class="section-head">
+      <h2><span class="dot-lg" style="background:var(--channel-community);"></span>Comunicati ed eventi</h2>
+      <p class="section-note">Comunicati pubblicati su rgbprotocol.org, annunci su X ed eventi del periodo</p>
+    </div>
+    </summary>
+    <div class="chart-card" style="overflow-x:auto;">
+      <table class="table-view visible">
+        <thead><tr><th>Data</th><th>Tipo</th><th>Cosa</th><th>Riscontro</th></tr></thead>
+        <tbody>
+          <tr><td>28 set</td><td>X</td><td>Thread sulle quattro track dell'hackathon e sui criteri di valutazione</td><td>672 impression il primo post, 29–105 i successivi</td></tr>
+          <tr><td>29 set</td><td>Comunicato</td><td><em>RGB Protocol Association at BTCHEL 2026 in Helsinki</em></td><td>5 views sul sito; 7 citazioni Copilot lo stesso giorno</td></tr>
+          <tr><td>30 set</td><td>Evento</td><td>Community call "Presenting the Hackathon" (Birk, Filippo Farenga, Luca Visconti)</td><td>17 presenti in diretta su X; post di invito 641 impression</td></tr>
+          <tr><td>30 set</td><td>X</td><td>Partnership con il Politecnico di Torino tramite BitPolito; scadenza delle candidature spostata al 10 ottobre</td><td>888 impression, 36 engagement</td></tr>
+          <tr><td>30 set</td><td>X</td><td>Premi dell'hackathon (€4.000, €1.500, €500) e posto alle semifinali CypherTank</td><td>766 impression, 61 engagement (8,0%)</td></tr>
+          <tr><td>1 ott</td><td>X</td><td>Stablecoin Summit di Lugano, follow-up dell'annuncio</td><td>639 impression, 37 engagement (5,8%)</td></tr>
+          <tr><td>2 ott</td><td>X + sito</td><td>Utexo co-sponsor dell'hackathon; pagina dell'evento aggiornata (sponsor, nuova scadenza, tutorial)</td><td>5.427 impression, 552 engagement (10,2%): il post più visto della settimana</td></tr>
+          <tr><td>2 ott</td><td>X</td><td>Repost con citazione dell'annuncio di Utexo sulla licenza commerciale di Tether</td><td>non presente nell'export dei post</td></tr>
+          <tr><td>3 ott</td><td>X</td><td>Ringraziamento per le centinaia di candidature ricevute (overbooking, scadenza anticipata al 5 ottobre, ore 12:00 CEST)</td><td>1.183 impression, 84 engagement (7,1%)</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="section-note" style="margin-top:10px;">Fonti: log delle attività, X Analytics (post 28 set – 4 ott), WP Statistics. Prossimi eventi: hackathon "Agentic Dollars on Bitcoin" a Torino (17–18 ottobre) e Stablecoin Summit a Lugano.</p>
+   </details>
+  </section>
+
+  <footer>
+    Report generato per RGB Protocol Association — canali dell'Association, ottobre 2026 (parziale, 28 settembre – 4 ottobre)
+  </footer>
+
+</div>
+
+<script>
+  // ============ SETTIMANE DEL REPORT ============
+  // Unica fonte per etichette e pulsanti. Aggiungere una chiave (w2, ...) per estendere il report.
+  const periodLabels = {
+    w1: "28 set – 4 ott",
+  };
+  const periodShort = { w1: "28 set–4 ott" };
+  // Settimana precedente (report di settembre), mostrata come riga di riferimento nelle tabelle
+  const prevWeek = { label: "21–27 set (rif.)", clicks: 49, impr: 1280, ctr: "3,83%", pos: "5.1", xImpr: 19016, xEng: 468, xRate: "2,46%", xNet: "+102" };
+
+  // ============ DATI ============
+  // Fonte: Grafico.csv (GSC, Performance on Search), export 5 ottobre 2026, tipo di ricerca Web
+  const searchDaily = {
+    w1: [
+      {date:'28 set', clicks:8, impr:149, pos:4.5},
+      {date:'29 set', clicks:7, impr:148, pos:4.6},
+      {date:'30 set', clicks:5, impr:212, pos:4.7},
+      {date:'1 ott', clicks:7, impr:141, pos:6.1},
+      {date:'2 ott', clicks:15, impr:214, pos:4.1},
+      {date:'3 ott', clicks:6, impr:140, pos:6.4},
+      {date:'4 ott', clicks:4, impr:103, pos:4.2},
+    ],
+  };
+  // Fonte: account_overview_analytics.csv (X Analytics), export 5 ottobre 2026 (28 set – 4 ott)
+  const xDaily = {
+    w1: [
+      {date:'28 set', impressions:2442, engagements:82, newFollows:11, unfollows:7},
+      {date:'29 set', impressions:6094, engagements:120, newFollows:10, unfollows:2},
+      {date:'30 set', impressions:6086, engagements:98, newFollows:12, unfollows:3},
+      {date:'1 ott', impressions:3658, engagements:64, newFollows:7, unfollows:0},
+      {date:'2 ott', impressions:1859, engagements:49, newFollows:12, unfollows:1},
+      {date:'3 ott', impressions:3373, engagements:217, newFollows:23, unfollows:0},
+      {date:'4 ott', impressions:2146, engagements:61, newFollows:176, unfollows:6},
+    ],
+  };
+  // Forma letta dal grafico "Traffic Trends" (Visitor Insights, export del 5 ottobre), scalata per coincidere
+  // con i totali reali dei 7 giorni completi: 1.046 visitatori e 1.523 views. 4 ott = dato esatto (174 e 227).
+  const siteDaily = [
+    {date:'28 set', visitors:104, views:155}, {date:'29 set', visitors:110, views:186},
+    {date:'30 set', visitors:163, views:258}, {date:'1 ott', visitors:168, views:238},
+    {date:'2 ott', visitors:143, views:206}, {date:'3 ott', visitors:184, views:253},
+    {date:'4 ott', visitors:174, views:227},
+  ];
+
+  // ============ MINI HELPER SVG CHARTS ============
+  const NS = 'http://www.w3.org/2000/svg';
+  function el(tag, attrs) {
+    const e = document.createElementNS(NS, tag);
+    for (const k in attrs) e.setAttribute(k, attrs[k]);
+    return e;
+  }
+  function fmt(n) { return String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, '.'); }
+  const cssVar = (name) => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+
+  // Single-series line chart with dots + hover title. Con dati vuoti mostra solo lo stato "non ancora inseriti".
+  function renderLineChart(svgId, data, valueKey, color, opts = {}) {
+    const svg = document.getElementById(svgId);
+    if (!svg) return;
+    svg.innerHTML = '';
+    const W = 600, H = 150, padL = 44, padB = 20, padT = 14, padR = 12;
+    svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+    const innerW = W - padL - padR, innerH = H - padT - padB;
+    svg.appendChild(el('line', { class: 'axis-line', x1: padL, y1: H - padB, x2: W - padR, y2: H - padB }));
+
+    if (!data.length) {
+      svg.appendChild(el('text', {
+        class: 'axis-label', x: W / 2, y: H / 2, 'text-anchor': 'middle'
+      })).textContent = 'Dati non ancora inseriti';
+      return;
+    }
+
+    const dataMax = Math.max(...data.map(d => d[valueKey]));
+    const dataMin = Math.min(...data.map(d => d[valueKey]));
+    const max = dataMax * 1.15;
+    const n = data.length;
+    const stepX = n > 1 ? innerW / (n - 1) : 0;
+
+    const fmtTick = (v) => v >= 1000 ? fmt(v) : (Number.isInteger(v) ? v : v.toFixed(1));
+    const tickVals = opts.invert ? [dataMin, (dataMin + dataMax) / 2, dataMax] : [0, max / 2, max];
+    tickVals.forEach(v => {
+      const frac = max > 0 ? (v / max) : 0;
+      const y = opts.invert ? (padT + frac * innerH) : (padT + innerH - frac * innerH);
+      svg.appendChild(el('line', {
+        x1: padL, y1: y, x2: W - padR, y2: y,
+        stroke: 'var(--border)', 'stroke-width': 1, 'stroke-dasharray': '2,3'
+      }));
+      svg.appendChild(el('text', {
+        class: 'axis-label', x: padL - 6, y: y + 3, 'text-anchor': 'end'
+      })).textContent = fmtTick(v);
+    });
+
+    const pts = data.map((d, i) => {
+      const x = padL + i * stepX;
+      const frac = max > 0 ? (d[valueKey] / max) * innerH : 0;
+      const y = opts.invert ? (padT + frac) : (padT + innerH - frac);
+      return [x, y];
+    });
+
+    const areaPts = `${padL},${H - padB} ` + pts.map(p => p.join(',')).join(' ') + ` ${padL + (n-1)*stepX},${H - padB}`;
+    svg.appendChild(el('polygon', { class: 'line-area', points: areaPts, fill: color }));
+    svg.appendChild(el('polyline', { class: 'line-path', points: pts.map(p => p.join(',')).join(' '), stroke: color }));
+
+    const labelEvery = n > 10 ? Math.ceil(n / 8) : 1;
+    data.forEach((d, i) => {
+      const [x, y] = pts[i];
+      const dot = el('circle', { class: 'line-dot', cx: x, cy: y, r: n > 10 ? 2.2 : 3, fill: color });
+      const title = el('title', {});
+      title.textContent = `${d.date}: ${fmt(d[valueKey])}`;
+      dot.appendChild(title);
+      svg.appendChild(dot);
+
+      if (i % labelEvery === 0 || i === n - 1) {
+        svg.appendChild(el('text', {
+          class: 'axis-label', x, y: H - 6, 'text-anchor': 'middle'
+        })).textContent = d.date.replace(/ (ago|set|ott)$/, '');
+      }
+    });
+  }
+
+  const flatten = (obj) => Object.values(obj).flat();
+  const emptyRow = (cols) => `<tr>${'<td class="num">—</td>'.repeat(cols)}</tr>`;
+
+  // ============ RENDER: confronto tra settimane ============
+  function renderWeeklyCharts() {
+    const blue = cssVar('--accent-blue'), red = cssVar('--logo-red');
+    const green = cssVar('--logo-green'), gblue = cssVar('--logo-blue');
+
+    const allSearchDays = flatten(searchDaily);
+    renderLineChart('chart-monthly-search-clicks', allSearchDays, 'clicks', blue);
+    renderLineChart('chart-monthly-search-impressions', allSearchDays, 'impr', blue);
+    renderLineChart('chart-monthly-search-position', allSearchDays, 'pos', red, { invert: true });
+
+    const allXDays = flatten(xDaily);
+    renderLineChart('chart-monthly-social-impressions', allXDays, 'impressions', green);
+    renderLineChart('chart-monthly-social-engagement', allXDays, 'engagements', gblue);
+
+    // Tabelle riepilogo per settimana (una riga per settimana; valori "—" finché mancano i dati)
+    document.getElementById('weekly-search-table-body').innerHTML = Object.keys(periodLabels).map(k => {
+      const d = searchDaily[k];
+      if (!d.length) return `<tr><td>${periodShort[k]}</td>${'<td class="num">—</td>'.repeat(4)}</tr>`;
+      const clicks = d.reduce((s, x) => s + x.clicks, 0), impr = d.reduce((s, x) => s + x.impr, 0);
+      const pos = (d.reduce((s, x) => s + x.pos, 0) / d.length).toFixed(1);
+      const ctr = impr > 0 ? (clicks / impr * 100).toFixed(2).replace('.', ',') + '%' : '0%';
+      return `<tr><td>${periodShort[k]}</td><td class="num">${fmt(clicks)}</td><td class="num">${fmt(impr)}</td><td class="num">${ctr}</td><td class="num">${pos}</td></tr>`;
+    }).join('') + `<tr style="opacity:.7;"><td>${prevWeek.label}</td><td class="num">${fmt(prevWeek.clicks)}</td><td class="num">${fmt(prevWeek.impr)}</td><td class="num">${prevWeek.ctr}</td><td class="num">${prevWeek.pos}</td></tr>`;
+
+    document.getElementById('weekly-x-table-body').innerHTML = Object.keys(periodLabels).map(k => {
+      const d = xDaily[k];
+      if (!d.length) return `<tr><td>${periodShort[k]}</td>${'<td class="num">—</td>'.repeat(4)}</tr>`;
+      const impr = d.reduce((s, x) => s + x.impressions, 0), eng = d.reduce((s, x) => s + x.engagements, 0);
+      const net = d.reduce((s, x) => s + x.newFollows - x.unfollows, 0);
+      const rate = impr > 0 ? (eng / impr * 100).toFixed(2).replace('.', ',') + '%' : '0%';
+      return `<tr><td>${periodShort[k]}</td><td class="num">${fmt(impr)}</td><td class="num">${fmt(eng)}</td><td class="num">${rate}</td><td class="num">${net >= 0 ? '+' : ''}${net}</td></tr>`;
+    }).join('') + `<tr style="opacity:.7;"><td>${prevWeek.label}</td><td class="num">${fmt(prevWeek.xImpr)}</td><td class="num">${fmt(prevWeek.xEng)}</td><td class="num">${prevWeek.xRate}</td><td class="num">${prevWeek.xNet}</td></tr>`;
+  }
+
+  // ============ RENDER: andamento sito (WP Statistics) ============
+  function renderSiteTrend() {
+    renderLineChart('chart-site-views', siteDaily, 'views', cssVar('--navy'));
+    renderLineChart('chart-site-visitors', siteDaily, 'visitors', cssVar('--accent-blue'));
+  }
+
+  // ============ RENDER: drill-down giornaliero (entrambi i canali) ============
+  function renderDailyDrilldown(period) {
+    const blue = cssVar('--accent-blue'), green = cssVar('--logo-green');
+
+    // Search
+    const sData = searchDaily[period];
+    renderLineChart('chart-daily-clicks', sData, 'clicks', blue);
+    document.getElementById('daily-table-body').innerHTML = sData.length
+      ? sData.map(d => {
+          const ctr = d.impr > 0 ? ((d.clicks / d.impr) * 100).toFixed(2) + '%' : '0%';
+          return `<tr><td>${d.date}</td><td class="num">${fmt(d.clicks)}</td><td class="num">${fmt(d.impr)}</td><td class="num">${ctr}</td><td class="num">${d.pos}</td></tr>`;
+        }).join('')
+      : emptyRow(5);
+    if (sData.length) {
+      const sClicks = sData.reduce((s, d) => s + d.clicks, 0);
+      const sImpr = sData.reduce((s, d) => s + d.impr, 0);
+      const sAvgPos = (sData.reduce((s, d) => s + d.pos, 0) / sData.length).toFixed(1);
+      const sPeak = sData.reduce((a, b) => b.clicks > a.clicks ? b : a);
+      document.getElementById('narrative-callout').innerHTML =
+        `<strong>${periodLabels[period]}:</strong> ${fmt(sClicks)} click, ${fmt(sImpr)} impression, posizione media ${sAvgPos}. Top: ${sPeak.date} (${sPeak.clicks} click).`;
+    } else {
+      document.getElementById('narrative-callout').innerHTML = `<strong>${periodLabels[period]}:</strong> dati non ancora inseriti.`;
+    }
+
+    // X
+    const xData = xDaily[period];
+    renderLineChart('chart-daily-social', xData, 'impressions', green);
+    document.getElementById('social-table-body').innerHTML = xData.length
+      ? xData.map(d =>
+          `<tr><td>${d.date}</td><td class="num">${fmt(d.impressions)}</td><td class="num">${fmt(d.engagements)}</td><td class="num">${d.newFollows}</td><td class="num">${d.unfollows}</td></tr>`
+        ).join('')
+      : emptyRow(5);
+    if (xData.length) {
+      const xImpr = xData.reduce((s, d) => s + d.impressions, 0);
+      const xPeak = xData.reduce((a, b) => b.impressions > a.impressions ? b : a);
+      const xNet = xData.reduce((s, d) => s + d.newFollows - d.unfollows, 0);
+      document.getElementById('narrative-callout-social').innerHTML =
+        `<strong>${periodLabels[period]}:</strong> ${fmt(xImpr)} impression, picco ${xPeak.date} (${fmt(xPeak.impressions)}). Follower netti: ${xNet >= 0 ? '+' : ''}${xNet}.`;
+    } else {
+      document.getElementById('narrative-callout-social').innerHTML = `<strong>${periodLabels[period]}:</strong> dati non ancora inseriti.`;
+    }
+  }
+
+  // ============ Selettore settimana (unico, controlla entrambi i canali) ============
+  const selector = document.getElementById('periodSelector');
+  const currentLabel = document.getElementById('periodLabel');
+  Object.keys(periodLabels).forEach((k, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'period-btn' + (i === 0 ? ' active' : '');
+    btn.dataset.period = k;
+    btn.textContent = periodLabels[k];
+    selector.insertBefore(btn, currentLabel.parentElement);
+  });
+  currentLabel.textContent = periodLabels[Object.keys(periodLabels)[0]];
+
+  selector.addEventListener('click', (e) => {
+    const btn = e.target.closest('.period-btn');
+    if (!btn) return;
+    selector.querySelectorAll('.period-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentLabel.textContent = periodLabels[btn.dataset.period];
+    renderDailyDrilldown(btn.dataset.period);
+  });
+
+  // Toggle grafico <-> tabella
+  document.querySelectorAll('[data-toggle-table]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const table = document.getElementById(btn.dataset.toggleTable);
+      table.classList.toggle('visible');
+      btn.textContent = table.classList.contains('visible') ? 'Nascondi' : 'Tabella';
+    });
+  });
+
+  // ============ ASSOCIATION — DATI ============
+  // Fonte: account_overview_analytics.csv di @RGBAssociation, export 5 ottobre 2026 (29 set – 4 ott; il 28 set non è nell'export)
+  const assocXDaily = [
+    {date:'29 set', impressions:444, engagements:8, newFollows:2, unfollows:1},
+    {date:'30 set', impressions:1662, engagements:66, newFollows:7, unfollows:2},
+    {date:'1 ott', impressions:1322, engagements:36, newFollows:3, unfollows:1},
+    {date:'2 ott', impressions:3166, engagements:240, newFollows:17, unfollows:1},
+    {date:'3 ott', impressions:3207, engagements:149, newFollows:14, unfollows:1},
+    {date:'4 ott', impressions:1673, engagements:35, newFollows:12, unfollows:5},
+  ];
+  // Forma letta dal grafico "Traffic Trends" di rgbprotocol.org (export del 5 ottobre), scalata sui totali reali
+  // dei 7 giorni: 1.423 visitatori e 1.589 views. 4 ott = dato esatto (45 e 59).
+  const assocSiteDaily = [
+    {date:'28 set', visitors:300, views:322}, {date:'29 set', visitors:291, views:331},
+    {date:'30 set', visitors:276, views:297}, {date:'1 ott', visitors:291, views:321},
+    {date:'2 ott', visitors:157, views:172}, {date:'3 ott', visitors:63, views:87},
+    {date:'4 ott', visitors:45, views:59},
+  ];
+  function renderAssociation() {
+    renderLineChart('chart-assoc-x-impressions', assocXDaily, 'impressions', cssVar('--logo-green'));
+    renderLineChart('chart-assoc-x-engagement', assocXDaily, 'engagements', cssVar('--logo-blue'));
+    renderLineChart('chart-assoc-site-views', assocSiteDaily, 'views', cssVar('--navy'));
+    renderLineChart('chart-assoc-site-visitors', assocSiteDaily, 'visitors', cssVar('--accent-blue'));
+    const t = assocXDaily.reduce((a, d) => ({i: a.i + d.impressions, e: a.e + d.engagements, n: a.n + d.newFollows, u: a.u + d.unfollows}), {i:0, e:0, n:0, u:0});
+    document.getElementById('assoc-x-table-body').innerHTML = assocXDaily.map(d =>
+      `<tr><td>${d.date}</td><td class="num">${fmt(d.impressions)}</td><td class="num">${fmt(d.engagements)}</td><td class="num">${d.newFollows}</td><td class="num">${d.unfollows}</td></tr>`
+    ).join('') + `<tr><td><strong>Totale</strong></td><td class="num"><strong>${fmt(t.i)}</strong></td><td class="num"><strong>${fmt(t.e)}</strong></td><td class="num"><strong>${t.n}</strong></td><td class="num"><strong>${t.u}</strong></td></tr>`;
+  }
+
+  // ============ Tab dei due canali; link diretto alla tab Association: #association ============
+  const tabButtons = document.querySelectorAll('.report-tab');
+  function showTab(name) {
+    tabButtons.forEach(b => b.setAttribute('aria-selected', b.dataset.tab === name ? 'true' : 'false'));
+    document.getElementById('panel-hub').hidden = name !== 'hub';
+    document.getElementById('panel-association').hidden = name !== 'association';
+  }
+  const tabFromHash = () => /^#assoc/.test(location.hash) ? 'association' : 'hub';
+  tabButtons.forEach(b => b.addEventListener('click', () => {
+    showTab(b.dataset.tab);
+    history.replaceState(null, '', b.dataset.tab === 'association' ? '#association' : location.pathname + location.search);
+  }));
+  window.addEventListener('hashchange', () => showTab(tabFromHash()));
+
+  // ============ Init ============
+  renderAssociation();
+  showTab(tabFromHash());
+  renderWeeklyCharts();
+  renderDailyDrilldown(Object.keys(periodLabels)[0]);
+  renderSiteTrend();
+</script>
+</body>
+</html>
