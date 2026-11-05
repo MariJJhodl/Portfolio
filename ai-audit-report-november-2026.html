@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Visibility Re-audit — November 2026</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: 15px;
+    line-height: 1.7;
+    color: #1a1a2e;
+    background: #fff;
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 60px 48px;
+  }
+
+  /* HEADER */
+  .report-header {
+    border-bottom: 3px solid #e85a3a;
+    padding-bottom: 28px;
+    margin-bottom: 28px;
+  }
+
+  .report-header .logo-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 20px;
+  }
+
+  .rgb-badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    color: #e85a3a;
+    border: 1.5px solid #e85a3a;
+    padding: 3px 10px;
+    border-radius: 4px;
+    text-transform: uppercase;
+  }
+
+  .report-header h1 {
+    font-size: 26px;
+    font-weight: 700;
+    color: #0d0d1f;
+    line-height: 1.25;
+    margin-bottom: 8px;
+  }
+
+  .report-meta {
+    font-size: 13px;
+    color: #666;
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+
+  .report-meta span strong {
+    color: #333;
+  }
+
+  /* TAB SWITCHER */
+  .tab-switcher-label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #aaa;
+    margin-bottom: 10px;
+  }
+  .tab-switcher {
+    display: flex;
+    gap: 4px;
+    background: #fff;
+    border: 1.5px solid #0d0d1f;
+    border-radius: 10px;
+    padding: 5px;
+    margin-bottom: 40px;
+    width: 100%;
+  }
+  .tab-switcher button {
+    flex: 1;
+    text-align: center;
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    color: #777;
+    background: transparent;
+    border: none;
+    border-radius: 7px;
+    padding: 13px 28px;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+  }
+  .tab-switcher button.active {
+    background: #22c55e;
+    color: #0d0d1f;
+    box-shadow: 0 1px 6px rgba(34,197,94,0.45);
+  }
+  .tab-switcher button:hover:not(.active) { color: #333; }
+
+  /* STICKY MINI TAB SWITCHER */
+  #sticky-nav .sticky-tabs {
+    display: flex;
+    gap: 3px;
+    padding-right: 12px;
+    margin-right: 8px;
+    border-right: 1px solid #eaeaea;
+    flex-shrink: 0;
+  }
+  #sticky-nav .sticky-tabs button {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    color: #999;
+    background: transparent;
+    border: none;
+    border-radius: 5px;
+    padding: 6px 11px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.15s, color 0.15s;
+  }
+  #sticky-nav .sticky-tabs button.active {
+    background: #22c55e;
+    color: #0d0d1f;
+  }
+  #sticky-nav .sticky-tabs button:hover:not(.active) { color: #333; }
+
+  /* SOURCE CARDS (Visibility Report tab) */
+  .source-card {
+    background: #fff;
+    border: 1.5px solid var(--src-color, #999);
+    border-top: 4px solid var(--src-color, #999);
+    border-radius: 10px;
+    padding: 22px 24px 20px;
+    margin-bottom: 28px;
+  }
+  .source-card.accent-ai { --src-color: #7c3aed; }
+  .source-card.accent-bing { --src-color: #0891b2; }
+  .source-card.accent-google { --src-color: #2b6cb0; }
+  .source-card.accent-wp { --src-color: #e85a3a; }
+  .source-card.accent-x { --src-color: #000000; }
+  .source-card.accent-s01 { --src-color: #7c3aed; }
+  .source-card.accent-s02 { --src-color: #2b6cb0; }
+  .source-card.accent-s03 { --src-color: #db2777; }
+  .source-card.accent-s04 { --src-color: #d97706; }
+  .source-card.accent-s05 { --src-color: #dc2626; }
+  .source-card.accent-s06 { --src-color: #059669; }
+  .source-card.accent-s07 { --src-color: #4f46e5; }
+  .source-card.accent-s08 { --src-color: #e85a3a; }
+  .source-card.accent-s09 { --src-color: #64748b; }
+  .source-tag {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--src-color, #999);
+    margin-bottom: 14px;
+    cursor: pointer;
+    user-select: none;
+  }
+  .source-tag-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+  }
+  .source-tag-label::before {
+    content: "";
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--src-color, #999);
+    flex-shrink: 0;
+  }
+  .card-collapse-arrow {
+    font-size: 12px;
+    color: #ccc;
+    transition: transform 0.2s;
+  }
+  .card-body.collapsed { display: none; }
+  .source-card > h3:first-of-type { margin-top: 0 !important; }
+  .source-card > *:last-child { margin-bottom: 0 !important; }
+
+  /* REFERENCE / ARCHIVED DATA NOTES */
+  .ref-note {
+    display: block;
+    font-size: 12px;
+    color: #999;
+    background: #fafbfc;
+    border-left: 2px solid #d8dde5;
+    padding: 8px 12px;
+    margin-top: 14px;
+    border-radius: 0 5px 5px 0;
+  }
+  .ref-note .ref-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9.5px;
+    font-weight: 700;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: #b3b3b3;
+    display: block;
+    margin-bottom: 3px;
+  }
+
+  /* JUMP-TO PILLS (Visibility Report tab) */
+  .jump-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 36px;
+  }
+  .jump-pills a {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    color: #444;
+    background: #fff;
+    border: 1.5px solid #e0e6f0;
+    border-radius: 20px;
+    padding: 6px 14px;
+    text-decoration: none;
+    transition: border-color 0.15s, color 0.15s;
+  }
+  .jump-pills a::before {
+    content: "";
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--pill-color, #999);
+    flex-shrink: 0;
+  }
+  .jump-pills a:hover { border-color: var(--pill-color, #999); color: #0d0d1f; }
+  .jump-pills a.pill-ai { --pill-color: #7c3aed; }
+  .jump-pills a.pill-bing { --pill-color: #0891b2; }
+  .jump-pills a.pill-google { --pill-color: #2b6cb0; }
+  .jump-pills a.pill-wp { --pill-color: #e85a3a; }
+  .jump-pills a.pill-x { --pill-color: #000000; }
+
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  /* INTRO */
+  .intro {
+    background: #f7f9fc;
+    border-left: 4px solid #e85a3a;
+    padding: 18px 22px;
+    border-radius: 0 6px 6px 0;
+    margin-bottom: 44px;
+    font-size: 14.5px;
+    color: #333;
+  }
+
+  /* SECTION */
+  section {
+    margin-bottom: 48px;
+  }
+
+  .section-title {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    margin-bottom: 18px;
+    padding-bottom: 10px;
+    border-bottom: 1.5px solid #eaeaea;
+  }
+
+  .section-number {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    color: #e85a3a;
+    background: #fff4f1;
+    padding: 2px 8px;
+    border-radius: 4px;
+    flex-shrink: 0;
+  }
+
+  .section-title h2 {
+    font-size: 17px;
+    font-weight: 700;
+    color: #0d0d1f;
+  }
+
+  .section-subtitle {
+    font-size: 13px;
+    color: #888;
+    margin-bottom: 16px;
+    font-style: italic;
+  }
+
+  /* ITEMS */
+  .item-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .item-list li {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    font-size: 14.5px;
+  }
+
+  .badge {
+    flex-shrink: 0;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 12px;
+    margin-top: 3px;
+    letter-spacing: 0.03em;
+  }
+
+  .badge.done {
+    background: #e6f7ef;
+    color: #1a7a4a;
+  }
+
+  .badge.progress {
+    background: #fff3e0;
+    color: #b45309;
+  }
+
+  .item-text {
+    flex: 1;
+    color: #2d2d3a;
+  }
+
+  .item-text strong {
+    font-weight: 600;
+    color: #0d0d1f;
+  }
+
+  .item-note {
+    display: block;
+    font-size: 13px;
+    color: #777;
+    margin-top: 2px;
+  }
+
+  /* SUBSECTION */
+  .subsection {
+    margin-bottom: 20px;
+  }
+
+  .subsection-title {
+    font-size: 13.5px;
+    font-weight: 600;
+    color: #555;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 10px;
+    margin-top: 18px;
+  }
+
+  /* STATS ROW */
+  .stats-row {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+  }
+
+  .stat-box {
+    background: #f7f9fc;
+    border: 1.5px solid #e0e6f0;
+    border-radius: 8px;
+    padding: 14px 20px;
+    flex: 1;
+    min-width: 140px;
+    text-align: center;
+  }
+
+  .stat-box .stat-number {
+    font-size: 28px;
+    font-weight: 700;
+    color: #e85a3a;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .stat-box .stat-label {
+    font-size: 12px;
+    color: #666;
+    line-height: 1.3;
+  }
+
+  /* FOOTER */
+  .report-footer {
+    margin-top: 60px;
+    padding-top: 20px;
+    border-top: 1.5px solid #eaeaea;
+    font-size: 12.5px;
+    color: #aaa;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .report-footer a {
+    color: #e85a3a;
+    text-decoration: none;
+  }
+
+  /* PRINT */
+  @media print {
+    body { padding: 40px 36px; font-size: 13px; }
+    .report-header h1 { font-size: 22px; }
+    section { margin-bottom: 36px; }
+    .stats-row { gap: 10px; }
+    .stat-box .stat-number { font-size: 22px; }
+    #sticky-nav, #top-btn, .tab-switcher { display: none !important; }
+    .section-body { display: block !important; }
+    .tab-panel { display: block !important; }
+  }
+
+  /* STICKY NAV */
+  #sticky-nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    background: rgba(255,255,255,0.97);
+    border-bottom: 2px solid #e85a3a;
+    display: none;
+    align-items: center;
+    z-index: 1000;
+    padding: 0 24px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+    overflow-x: auto;
+    backdrop-filter: blur(4px);
+  }
+  #sticky-nav .snav-logo {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: #e85a3a;
+    font-weight: 700;
+    white-space: nowrap;
+    padding: 11px 16px 11px 0;
+    border-right: 1px solid #eaeaea;
+    margin-right: 6px;
+    letter-spacing: 0.05em;
+  }
+  #sticky-nav-links {
+    display: flex;
+    align-items: center;
+  }
+  #sticky-nav a {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    color: #bbb;
+    text-decoration: none;
+    padding: 11px 9px;
+    white-space: nowrap;
+    transition: color 0.15s;
+  }
+  #sticky-nav a:hover { color: #e85a3a; }
+  #sticky-nav a.active { color: #e85a3a; }
+
+  /* BACK TO TOP */
+  #top-btn {
+    position: fixed;
+    bottom: 28px;
+    right: 28px;
+    width: 40px;
+    height: 40px;
+    background: #e85a3a;
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    font-size: 18px;
+    cursor: pointer;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s;
+    z-index: 999;
+    box-shadow: 0 3px 10px rgba(232,90,58,0.35);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+  }
+  #top-btn:hover { background: #d44d2e; }
+
+  /* COLLAPSIBLE SECTIONS */
+  .section-title {
+    cursor: pointer;
+    user-select: none;
+  }
+  .section-title:hover h2 { color: #e85a3a; }
+  .collapse-arrow {
+    margin-left: auto;
+    font-size: 13px;
+    color: #ccc;
+    flex-shrink: 0;
+    transition: transform 0.2s;
+    padding-left: 8px;
+  }
+  .section-body.collapsed { display: none; }
+
+  /* TOC (shared) */
+  .toc { list-style:none; display:flex; flex-direction:column; gap:0; border:1.5px solid #eaeaea; border-radius:8px; overflow:hidden; }
+  .toc li { display:flex; align-items:baseline; border-bottom:1px solid #eaeaea; }
+  .toc li:last-child { border-bottom:none; }
+  .toc a { display:flex; align-items:baseline; gap:0; width:100%; padding:9px 16px; font-size:13.5px; color:#2d2d3a; text-decoration:none; transition:background 0.15s; }
+  .toc a:hover { background:#f7f9fc; }
+  .toc-num { font-family:'JetBrains Mono',monospace; font-size:11px; color:#e85a3a; font-weight:600; margin-right:14px; flex-shrink:0; width:22px; }
+  .toc-title { flex:1; }
+</style>
+</head>
+<body>
+
+<div class="report-header">
+  <div class="logo-row">
+    <span class="rgb-badge">RGB Protocol Association</span>
+    <span class="rgb-badge" style="border-color:#2b6cb0;color:#2b6cb0;">rgb.info</span>
+  </div>
+  <h1>AI Visibility Audit — Re-audit<br>July vs November 2026</h1>
+  <div class="report-meta">
+    <span><strong>Re-audit date:</strong> 5 November 2026</span>
+    <span><strong>Compared with:</strong> July 2026 re-audit</span>
+    <span><strong>Prepared by:</strong> MariJ</span>
+  </div>
+  <div style="margin-top:14px;font-size:13px;"><a href="index-report-rgb.html#audit" style="color:#2b6cb0;text-decoration:none;font-weight:600;">⌂ All reports</a></div>
+</div>
+
+<div class="intro">
+  This report compares the answers of 5 AI platforms about RGB Protocol on Bitcoin in July and November 2026. It tracks whether AI systems recognize rgb.info and docs.rgb.info as the authoritative source, recommend v0.11.1 as the production version, and describe the RGB Protocol Association accurately.
+</div>
+
+<!-- SECTION 1 — AI VISIBILITY AUDIT -->
+<section id="s10">
+  <div class="section-title">
+    <span class="section-number">01</span>
+    <h2>AI Visibility Audit — July vs November 2026</h2>
+  </div>
+
+  <p class="section-subtitle">12 questions (9 English + 3 Chinese) tested on 5 platforms. Baseline: March 2026. Re-audits: June 2026, July 2026, and November 2026.</p>
+
+  <div id="card-ai" class="source-card accent-ai">
+  <div class="source-tag"><span class="source-tag-label">AI Visibility Audit · 5 platforms</span></div>
+  <p style="font-size:13.5px;color:#555;margin-bottom:20px;">
+    <strong>What we're measuring:</strong> whether AI systems cite rgb.info and docs.rgb.info as the authoritative source for RGB Protocol on Bitcoin, rather than rgb.tech, and whether they give accurate answers about v0.11.1, the RGB Protocol Association, USDT on RGB, and the distinction between RGB Protocol on Bitcoin and RGB++.
+  </p>
+
+  <!-- METHODOLOGY -->
+  <div style="background:#f7f9fc;border:1.5px solid #e0e6f0;border-radius:8px;padding:16px 20px;margin-bottom:24px;font-size:13.5px;color:#444;">
+    <strong>Questions asked (same in all audits):</strong><br>
+    Q1 What is the RGB protocol for Bitcoin? &nbsp;·&nbsp;
+    Q2 Which version should I build on? &nbsp;·&nbsp;
+    Q3 Is RGB v0.11 safe to build on? &nbsp;·&nbsp;
+    Q4 Where can I learn about RGB protocol? &nbsp;·&nbsp;
+    Q5 What is the difference between rgb.info and rgb.tech? &nbsp;·&nbsp;
+    Q6 What is the RGB Protocol Association? &nbsp;·&nbsp;
+    Q7 RGB vs Taproot Assets? &nbsp;·&nbsp;
+    Q8 What happened with the RGB fork in 2025? &nbsp;·&nbsp;
+    Q9 How do I get started with RGB on Bitcoin?<br>
+    <span style="color:#888;">Chinese (Q10–12):</span>
+    Q10 什么是RGB协议？ &nbsp;·&nbsp;
+    Q11 RGB和RGB++有什么区别？ &nbsp;·&nbsp;
+    Q12 在哪里可以学习RGB协议？<br><br>
+    <strong>How the November checks were run:</strong> all questions were asked from private windows in Firefox, without logging in, on ChatGPT, Gemini, and Perplexity. Grok and DeepSeek require an account, so those two checks were run while logged in. DeepSeek answered the Chinese questions (Q10–12) in English.<br><br>
+    <a href="AI-questions-RGB-reaudit-november2026.txt" style="font-size:12.5px;color:#e85a3a;text-decoration:none;font-weight:600;" target="_blank">↗ Raw audit data — all 5 platforms, all 12 questions (November 2026)</a>
+    &nbsp;&nbsp;·&nbsp;&nbsp;
+    <a href="AI-questions-RGB-reaudit-july2026.txt" style="font-size:12.5px;color:#888;text-decoration:none;font-weight:600;" target="_blank">↗ Re-audit raw data (July 2026)</a>
+    &nbsp;&nbsp;·&nbsp;&nbsp;
+    <a href="AI-questions-RGB-reaudit-june2026.txt" style="font-size:12.5px;color:#888;text-decoration:none;font-weight:600;" target="_blank">↗ Re-audit raw data (June 2026)</a>
+    &nbsp;&nbsp;·&nbsp;&nbsp;
+    <a href="AI-questions-RGB.txt" style="font-size:12.5px;color:#888;text-decoration:none;font-weight:600;" target="_blank">↗ Baseline raw data (March 2026)</a>
+  </div>
+
+  <!-- TABLE STYLE -->
+  <style>
+    .audit-table { width:100%; border-collapse:collapse; font-size:13.5px; margin-bottom:32px; border:1.5px solid #d0d7e3; border-radius:8px; overflow:hidden; }
+    .audit-table th { background:#0d0d1f; color:#fff; padding:10px 14px; text-align:left; font-weight:600; border-right:1px solid #2a2a40; }
+    .audit-table th:last-child { border-right:none; }
+    .audit-table td { padding:10px 14px; border-bottom:1.5px solid #e0e6f0; border-right:1px solid #e0e6f0; vertical-align:top; }
+    .audit-table td:last-child { border-right:none; }
+    .audit-table tr:last-child td { border-bottom:none; }
+    .audit-table tr:nth-child(even) td { background:#f7f9fc; }
+    .audit-verdict { display:inline-block; font-size:11px; font-weight:700; padding:2px 8px; border-radius:10px; margin-bottom:4px; }
+    .v-bad { background:#fdecea; color:#b91c1c; }
+    .v-mixed { background:#fff3e0; color:#b45309; }
+    .v-good { background:#e6f7ef; color:#1a7a4a; }
+    .audit-quote { font-style:italic; color:#666; font-size:12.5px; margin-top:4px; display:block; }
+    .platform-col { font-weight:700; color:#0d0d1f; white-space:nowrap; }
+    .table-scroll { overflow-x:auto; -webkit-overflow-scrolling:touch; }
+    .ind-yes { color:#1a7a4a; font-weight:700; }
+    .ind-part { color:#b45309; font-weight:700; }
+    .ind-no { color:#b91c1c; font-weight:700; }
+    .summary-list { list-style:none; margin:8px 0 0; display:flex; flex-direction:column; gap:5px; }
+    .summary-list li { padding-left:14px; position:relative; }
+    .summary-list li::before { content:"–"; position:absolute; left:0; }
+  </style>
+
+  <div class="table-scroll">
+  <table class="audit-table">
+    <thead>
+      <tr>
+        <th style="width:12%;">Platform</th>
+        <th style="width:44%;">Re-audit — July 2026</th>
+        <th style="width:44%;">Re-audit — November 2026</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="platform-col">ChatGPT</td>
+        <td>
+          <span class="audit-verdict v-good">Improved further</span>
+          <span class="audit-quote">v0.11.1 framed as the production choice: "Mainnet-oriented. Supported by the RGB Protocol Association. Intended for production applications." v0.12 framed only as "a major redesign […] not wire-compatible."</span>
+        </td>
+        <td>
+          <span class="audit-verdict v-mixed">Slightly regressed — balanced again</span>
+          <span class="audit-quote">Back to two equal options: "Select v0.11.1 or v0.12 based on your chosen development ecosystem." Q3 opens with a detailed list of the July 18, 2025 LNP/BP allegations, then adds "These are competing claims […] not an independent security verdict." Positives: cites rgb.info, docs.rgb.info, rgb-protocol, RGB-Tools, and rgbprotocol.org; describes the Association correctly, with Utexo and Bitcoin Tribe among the members. Still attributes the origins of RGB only to LNP/BP and Maxim Orlovsky.</span>
+        </td>
+      </tr>
+      <tr>
+        <td class="platform-col">Gemini</td>
+        <td>
+          <span class="audit-verdict v-good">Stable — Correct</span>
+          <span class="audit-quote">"v0.11.1 remains the current stable, active standard." Association members listed (Bitfinex, Fulgur Ventures, DIBA/BitMask, Plan ₿ Network, Boosty Labs). Still used RGB20/RGB21 terminology.</span>
+        </td>
+        <td>
+          <span class="audit-verdict v-mixed">Mixed — regressed on rgb.info vs rgb.tech</span>
+          <span class="audit-quote">Safety answer holds: "Yes. Version 0.11.1 is currently the most widely deployed, production-ready release line." Now uses NIA and UDA instead of RGB20/RGB21. But Q4 lists rgb.tech next to rgb.info as "Official Portal &amp; Guides," and Q5 calls both sites "core community and technical hubs for the RGB ecosystem," with no mention of the split. Q6 says the Association manages "core specifications," which is incorrect.</span>
+        </td>
+      </tr>
+      <tr>
+        <td class="platform-col">Perplexity</td>
+        <td>
+          <span class="audit-verdict v-mixed">Partial improvement</span>
+          <span class="audit-quote">Generic answer on safety, no clear recommendation. rgb.tech described as "a more technical hub […] often pointing to the official docs.rgb.info." Association undefined: "I did not find a single concise official definition." RGB++ described as an upgrade of RGB.</span>
+        </td>
+        <td>
+          <span class="audit-verdict v-good">Much improved — accurate</span>
+          <span class="audit-quote">Separates the two lines clearly and quotes rgb.info directly: "v0.11.1 remains the latest stable release; v0.11.2-rc.1 is a release candidate for testing." Association now defined: "a Swiss nonprofit association founded in July 2025 […] not a Bitcoin consensus authority." RGB++ correctly described as a separate protocol. On safety, attributes the rgb.tech allegations to "a party to the split" but gives no blanket answer. Cites the rgb.info FAQ 9 times, but the rgb.tech post on the fork 13 times.</span>
+        </td>
+      </tr>
+      <tr>
+        <td class="platform-col">Grok</td>
+        <td>
+          <span class="audit-verdict v-bad">Regressed</span>
+          <span class="audit-quote">"Official channels issued security notices warning against production use of the fork […] the recommended path stayed with official RGB-WG/mainline versions." rgb.info and rgb.tech called "complementary parts of the same ecosystem."</span>
+        </td>
+        <td>
+          <span class="audit-verdict v-good">Recovered — most improved</span>
+          <span class="audit-quote">"Build on v0.11.1 (the production/mainnet line)." rgb.tech described as "associated with the v0.12 rewrite proposal […] not the official site or recommended path for the live mainnet protocol." Association: "It does not develop the protocol itself." Uses the full name RGB Protocol on Bitcoin and advises adding "Protocol on Bitcoin" to searches to avoid confusion with RGB++.</span>
+        </td>
+      </tr>
+      <tr>
+        <td class="platform-col">DeepSeek</td>
+        <td>
+          <span class="audit-verdict v-mixed">Mixed — regressed on safety</span>
+          <span class="audit-quote">"v0.11.1 is not recommended for production use" and advised "NOT to use products built with version v0.11.1 […] for any assets or purposes with any real value." Recommended v0.12 for production.</span>
+        </td>
+        <td>
+          <span class="audit-verdict v-good">Recovered</span>
+          <span class="audit-quote">"There is controversy, but the actual production ecosystem is built on v0.11.1." Recommends v0.11.1 and mentions Tether's plan for USDT on v0.11.1. Association: "does not develop the protocol itself." Lists the v0.11.1 schemas correctly (NIA, UDA, CFA, IFA, PFA). Cites the Chinese quick start <strong>rgb.info/zh/kaishi/</strong>: the first citation of a Chinese page of rgb.info in any audit.</span>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div style="border-top:1.5px dashed #e5e7eb; margin:4px 0 28px;"></div>
+
+  <!-- KEY INDICATORS -->
+  <h3 style="margin-bottom:12px;font-size:15px;color:#0d0d1f;">Key indicators — November 2026</h3>
+  <div class="table-scroll">
+  <table class="audit-table">
+    <thead>
+      <tr>
+        <th style="width:34%;">Indicator</th>
+        <th>ChatGPT</th>
+        <th>Gemini</th>
+        <th>Perplexity</th>
+        <th>Grok</th>
+        <th>DeepSeek</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>Recommends v0.11.1 for production</td><td class="ind-part">Both lines</td><td class="ind-yes">Yes</td><td class="ind-part">Both lines</td><td class="ind-yes">Yes</td><td class="ind-yes">Yes</td></tr>
+      <tr><td>Cites rgb.info / docs.rgb.info</td><td class="ind-yes">Yes</td><td class="ind-yes">Yes</td><td class="ind-yes">Yes</td><td class="ind-yes">Yes</td><td class="ind-yes">Yes</td></tr>
+      <tr><td>Treats rgb.tech as a separate line</td><td class="ind-yes">Yes</td><td class="ind-no">No</td><td class="ind-yes">Yes</td><td class="ind-yes">Yes</td><td class="ind-yes">Yes</td></tr>
+      <tr><td>Association described accurately</td><td class="ind-yes">Yes</td><td class="ind-no">No</td><td class="ind-yes">Yes</td><td class="ind-yes">Yes</td><td class="ind-yes">Yes</td></tr>
+      <tr><td>RGB vs RGB++ correct</td><td class="ind-yes">Yes</td><td class="ind-part">Partly</td><td class="ind-yes">Yes</td><td class="ind-yes">Yes</td><td class="ind-yes">Yes</td></tr>
+      <tr><td>Names RGB-Tools libraries (RGB Lib, RGB Lightning Node)</td><td class="ind-yes">Yes</td><td class="ind-yes">Yes</td><td class="ind-yes">Yes</td><td class="ind-yes">Yes</td><td class="ind-yes">Yes</td></tr>
+      <tr><td>Mentions USDT on RGB</td><td class="ind-no">No</td><td class="ind-part">In passing</td><td class="ind-no">No</td><td class="ind-no">No</td><td class="ind-yes">Yes</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div style="border-top:1.5px dashed #e5e7eb; margin:4px 0 28px;"></div>
+
+  <div style="background:#e6f7ef;border-left:4px solid #1a7a4a;padding:14px 18px;border-radius:0 6px 6px 0;font-size:13.5px;color:#333;margin-bottom:16px;">
+    <strong>Re-audit summary (July → November 2026):</strong>
+    <ul class="summary-list">
+      <li><strong>Grok and DeepSeek</strong> reversed the July regression: both now recommend v0.11.1 for production</li>
+      <li><strong>Perplexity</strong> moved from vague to accurate: clear split between the two lines, Association defined, RGB++ correct</li>
+      <li>All 5 platforms cite rgb.info and docs.rgb.info, and all 5 name the RGB-Tools libraries (3 in July)</li>
+      <li>All 5 describe RGB++ as a separate protocol, at least in part; in July, Perplexity called it an upgrade of RGB</li>
+      <li>First citation of a Chinese page of rgb.info (DeepSeek, <em>rgb.info/zh/kaishi/</em>)</li>
+    </ul>
+  </div>
+
+  <div style="background:#fdecea;border-left:4px solid #b91c1c;padding:14px 18px;border-radius:0 6px 6px 0;margin-bottom:16px;font-size:13.5px;color:#333;">
+    <strong>Open issues (November 2026):</strong>
+    <ul class="summary-list">
+      <li><strong>Gemini</strong> lists rgb.tech as an official portal and calls the two sites complementary hubs</li>
+      <li><strong>ChatGPT</strong> is back to a symmetric "v0.11.1 or v0.12" answer and opens the safety question with the rgb.tech allegations</li>
+      <li><strong>Perplexity</strong> uses the rgb.tech post on the fork as its main source for the split questions (13 citations, vs 9 for the rgb.info FAQ)</li>
+      <li><strong>USDT on RGB</strong> appears in only 2 of 5 answers, despite Tether's announcement</li>
+    </ul>
+  </div>
+
+  <div style="border-top:1.5px dashed #e5e7eb; margin:4px 0 24px;"></div>
+
+  <div style="background:#f7f9fc;border:1.5px solid #e0e6f0;border-radius:8px;padding:16px 20px;font-size:13.5px;color:#444;margin-bottom:16px;">
+    <strong>What changed between July and November.</strong> The July report pointed to one specific gap: rgb.tech's security notice was a single, quotable source, while rgb.info's answer was spread across many pages. On 8 September 2026, rgb.info published <a href="https://rgb.info/rgb-protocol-myths-debunked/" target="_blank" style="color:#2b6cb0;">Debunking the Myths About RGB Protocol on Bitcoin</a>, in English and Chinese, with one point-by-point page on v0.11.1 vs v0.12, rgb.info vs rgb.tech, the role of the Association, and RGB vs RGB++. AI answers never cite the article by name, but the corrections it contains now appear across platforms: "v0.12 as an unfinished rewrite" (Perplexity, Grok), "the Association does not develop the protocol" (Grok, DeepSeek, Perplexity, ChatGPT), RGB++ as a separate protocol (all 5). Release updates on rgb.info (RC11, the final v0.11.1 release of the core libraries in September, v0.11.2-rc.1 in October) give the platforms recent, citable evidence of active maintenance: Perplexity and Grok quote v0.11.2-rc.1 directly.
+  </div>
+
+  <div style="background:#f7f9fc;border:1.5px solid #e0e6f0;border-radius:8px;padding:16px 20px;font-size:13.5px;color:#444;margin-bottom:32px;">
+    <strong>Follow-up already in place.</strong> The rgb.info FAQ page is the rgb.info page most cited by Perplexity, so on 5 November 2026 the FAQ was updated in English and Chinese with four new entries that answer the open issues directly: <em>Is RGB v0.11.1 safe to build on?</em>, <em>What is the RGB Protocol Association?</em>, <em>Will USDT be available on RGB?</em>, and <em>What is the difference between rgb.info and rgb.tech?</em> The next re-audit will measure their effect. For the next round, the Chinese questions will be asked in a separate conversation, so that every platform answers in Chinese.
+  </div>
+  </div>
+
+</section>
+
+<div style="height:40px;"></div>
+
+</body>
+</html>

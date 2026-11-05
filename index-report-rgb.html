@@ -158,6 +158,27 @@
   .card-cta { font-size: 13px; font-weight: 700; color: var(--accent-blue); }
   a.report-card:hover .card-cta { text-decoration: underline; }
 
+  .tabs {
+    display: flex; gap: 4px; margin: 0 0 24px;
+    border-bottom: 1px solid var(--border);
+    overflow-x: auto;
+  }
+  .tab {
+    font: inherit; font-size: 14px; font-weight: 600;
+    color: var(--text-secondary); background: none;
+    border: 0; border-bottom: 3px solid transparent;
+    padding: 10px 16px; margin-bottom: -1px; cursor: pointer; white-space: nowrap;
+  }
+  .tab:hover { color: var(--text-main); }
+  .tab[aria-selected="true"] { color: var(--accent-blue); border-bottom-color: var(--accent-blue); }
+  .tab:focus-visible { outline: 2px solid var(--accent-blue); outline-offset: -2px; }
+  .tab-count {
+    display: inline-block; margin-left: 6px; font-size: 11px; font-weight: 700;
+    padding: 1px 7px; border-radius: 100px; background: var(--bg-alt); color: var(--text-light);
+  }
+  .tab-panel[hidden] { display: none; }
+  .pill.audit { color: var(--channel-community); background: var(--bg-alt); }
+
   .sources {
     margin-top: 40px; padding-top: 20px; border-top: 1px solid var(--border);
     font-size: 13px; color: var(--text-light);
@@ -174,13 +195,18 @@
   <div class="wrap">
     <p class="eyebrow">RGB Protocol Association</p>
     <h1>Report Performance</h1>
-    <p class="header-sub">Report mensili su rgb.info e @RGB_Bitcoin (ex @RGB_Hub): Search (Google, Bing), X, sito, community call e Reddit. Dal più recente al più vecchio.</p>
+    <p class="header-sub">Report mensili su rgb.info e @RGB_Bitcoin (ex @RGB_Hub): Search (Google, Bing), X, sito, community call e Reddit. Report dell'audit AI: come ChatGPT, Gemini, Perplexity, Grok e DeepSeek descrivono RGB Protocol on Bitcoin. Dal più recente al più vecchio.</p>
   </div>
 </header>
 
 <div class="wrap">
 
-  <p class="section-title">Report mensili</p>
+  <div class="tabs" role="tablist" aria-label="Tipo di report">
+    <button class="tab" role="tab" id="tab-mensili" aria-controls="panel-mensili" aria-selected="true">Report mensili<span class="tab-count">4</span></button>
+    <button class="tab" role="tab" id="tab-audit" aria-controls="panel-audit" aria-selected="false" tabindex="-1">Audit AI<span class="tab-count">2</span></button>
+  </div>
+
+  <section class="tab-panel" role="tabpanel" id="panel-mensili" aria-labelledby="tab-mensili">
   <div class="report-grid">
 
     <a class="report-card" href="rgb-report-ottobre-2026.html" style="--card-accent:var(--logo-blue);">
@@ -250,12 +276,80 @@
   </div>
 
   <p class="sources">Fonti: Google Search Console, Bing Webmaster Tools, X Analytics, WP Statistics, Reddit Mod Tools, Community Calls Calendar.</p>
+  </section>
+
+  <section class="tab-panel" role="tabpanel" id="panel-audit" aria-labelledby="tab-audit" hidden>
+  <div class="report-grid">
+
+    <a class="report-card" href="ai-audit-report-november-2026.html" style="--card-accent:var(--channel-community);">
+      <div class="card-top">
+        <h2 class="card-month">Novembre 2026</h2>
+        <span class="pill audit">Re-audit</span>
+      </div>
+      <p class="card-period">5 novembre 2026 · confronto con luglio</p>
+      <dl class="card-stats">
+        <div class="card-stat"><dt>Piattaforme</dt><dd>5</dd></div>
+        <div class="card-stat"><dt>Domande</dt><dd>12</dd></div>
+        <div class="card-stat"><dt>Citano rgb.info</dt><dd>5/5</dd></div>
+        <div class="card-stat"><dt>Citano USDT su RGB</dt><dd>2/5</dd></div>
+      </dl>
+      <p class="card-note">Grok e DeepSeek recuperano sulla sicurezza di v0.11.1, Perplexity molto più precisa, prima citazione di una pagina cinese di rgb.info. Restano aperti Gemini su rgb.info vs rgb.tech e la scarsa presenza di USDT.</p>
+      <span class="card-cta">Apri il report →</span>
+    </a>
+
+    <a class="report-card" href="activity-report-april-july-2026.html#s10" style="--card-accent:var(--logo-red);">
+      <div class="card-top">
+        <h2 class="card-month">Marzo – luglio 2026</h2>
+        <span class="pill audit">Baseline + 2 re-audit</span>
+      </div>
+      <p class="card-period">Baseline marzo · re-audit giugno e luglio 2026</p>
+      <dl class="card-stats">
+        <div class="card-stat"><dt>Piattaforme</dt><dd>5</dd></div>
+        <div class="card-stat"><dt>Domande</dt><dd>12</dd></div>
+        <div class="card-stat"><dt>rgb.info fonte ufficiale</dt><dd>0 → 5/5</dd></div>
+        <div class="card-stat"><dt>Regressioni a luglio</dt><dd>2/5</dd></div>
+      </dl>
+      <p class="card-note">Sezione AI Visibility Audit del report attività aprile–luglio: da marzo, quando tutte e 5 le piattaforme indicavano rgb.tech come fonte principale, a luglio, con rgb.info riconosciuta ovunque. Grok e DeepSeek in regressione sulla sicurezza di v0.11.1.</p>
+      <span class="card-cta">Apri la sezione →</span>
+    </a>
+
+  </div>
+  <p class="sources">Fonti: risposte di ChatGPT, Gemini, Perplexity, Grok e DeepSeek alle stesse 12 domande (9 in inglese, 3 in cinese); raw data collegati in ogni report.</p>
+  </section>
 
   <footer>
     Report generati per RGB Protocol Association
   </footer>
 
 </div>
+
+<script>
+(function () {
+  var tabs = Array.prototype.slice.call(document.querySelectorAll('[role="tab"]'));
+  var ids = { mensili: 'tab-mensili', audit: 'tab-audit' };
+  function select(tab, focus) {
+    tabs.forEach(function (t) {
+      var on = t === tab;
+      t.setAttribute('aria-selected', on ? 'true' : 'false');
+      t.tabIndex = on ? 0 : -1;
+      document.getElementById(t.getAttribute('aria-controls')).hidden = !on;
+    });
+    if (focus) tab.focus();
+  }
+  tabs.forEach(function (t, i) {
+    t.addEventListener('click', function () {
+      select(t);
+      history.replaceState(null, '', t.id === 'tab-audit' ? '#audit' : '#mensili');
+    });
+    t.addEventListener('keydown', function (e) {
+      var d = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0;
+      if (d) { e.preventDefault(); var n = tabs[(i + d + tabs.length) % tabs.length]; select(n, true); n.click(); }
+    });
+  });
+  var h = location.hash.replace('#', '');
+  if (ids[h]) select(document.getElementById(ids[h]));
+})();
+</script>
 
 </body>
 </html>
